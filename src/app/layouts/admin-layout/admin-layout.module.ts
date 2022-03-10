@@ -19,6 +19,10 @@ import { EditProductComponent } from "src/app/modals/products/edit/edit.componen
 import { NewProductComponent } from "src/app/modals/products/new/new.component";
 import { NewCategoryComponent } from "src/app/modals/categories/new/new_category.component";
 import { EditCategoryComponent } from "src/app/modals/categories/edit/edit_category.component";
+import { PumpsComponent } from "src/app/pages/pumps/pumps.component";
+import { EditPumpComponent } from "src/app/modals/pumps/edit/edit.component";
+import { NewPumpComponent } from "src/app/modals/pumps/new/new.component";
+import { EditTypeComponent } from "src/app/modals/pump_types/edit/edit_type.component";
 
 @NgModule({
   imports: [
@@ -41,7 +45,11 @@ import { EditCategoryComponent } from "src/app/modals/categories/edit/edit_categ
     EditProductComponent,
     NewProductComponent,
     NewCategoryComponent,
-    EditCategoryComponent
+    EditCategoryComponent,
+    PumpsComponent,
+    EditPumpComponent,
+    NewPumpComponent,
+    EditTypeComponent
   ]
 })
 export class AdminLayoutModule {}

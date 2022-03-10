@@ -151,4 +151,107 @@ export class WebService {
         throw data.error;
       })
   }
+  public getAllPumps():Promise<Array<any>>{
+    return fetch(webModule.baseUrl + '/pumps/', {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if(res.status==200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any[]
+        };
+        throw data.error;
+      })
+  }
+  public getAllPumpTypes():Promise<Array<any>>{
+    return fetch(webModule.baseUrl + '/pumps/type/', {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if(res.status==200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any[]
+        };
+        throw data.error;
+      })
+  }
+  public editPump(item:Pumps){
+    return fetch(webModule.baseUrl + `/pumps/${item.id}`, {
+      method: 'PUT',
+      headers: this.headersWithApiandAuth,
+      body:JSON.stringify(item)
+    }).then(
+      async res => {
+        const data = await res.json()
+        if(res.status==200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any[]
+        };
+        throw data.error;
+      })
+  }
+  public newPump(item):Promise<any>{
+    console.debug(item)
+    return fetch(webModule.baseUrl + '/pumps/add/', {
+      method: 'POST',
+      headers: this.headersWithApiandAuth,
+      body:JSON.stringify(item)
+    }).then(
+      async res => {
+        const data = await res.json()
+        if(res.status==200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any[]
+        };
+        throw data.error;
+      })
+  }
+  public editPumpType(item:PumpType){
+    return fetch(webModule.baseUrl + `/pumps/type/${item.id}`, {
+      method: 'PUT',
+      headers: this.headersWithApiandAuth,
+      body:JSON.stringify(item)
+    }).then(
+      async res => {
+        const data = await res.json()
+        if(res.status==200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any[]
+        };
+        throw data.error;
+      })
+  }
+  public removePumpType(id:number){
+    return fetch(webModule.baseUrl + `/pumps/type/${id}`, {
+      method: 'DELETE',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if(res.status==200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any[]
+        };
+        throw data.error;
+      })
+  }
+  public addPumpType(item):Promise<any>{
+    return fetch(webModule.baseUrl + '/pumps/type/add', {
+      method: 'POST',
+      headers: this.headersWithApiandAuth,
+      body:JSON.stringify(item)
+    }).then(
+      async res => {
+        const data = await res.json()
+        if(res.status==200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any[]
+        };
+        throw data.error;
+      })
+  }
 }

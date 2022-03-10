@@ -1,0 +1,36 @@
+<div class="modal-header">
+    <h4 class="modal-title">Nuevo Surtidor</h4>
+    <button type="button" class="btn-close btn btn-link" aria-label="Close" (click)="activeModal.dismiss('Cross click')">X</button>
+</div>
+<div class="modal-body">
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Descripcion</span>
+        <input [(ngModel)]="item.description" type="text" class="form-control"
+            aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div class="input-group mb-3">
+        <label class="input-group-text" for="inputGroupSelect01">Tipo</label>
+        <select class="form-control" id="inputGroupSelect01" [(ngModel)]="item.type_id">
+            <option [ngValue]="null">-</option>
+            <option *ngFor="let c of types" [ngValue]="c.id">{{c.name}}</option>
+        </select>
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text">Valor inicial de contador</span>
+        <input [(ngModel)]="item.meter_init_value" type="number" inputmode="numeric" min="0" class="form-control">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Máximo de contador</span>
+        <input [(ngModel)]="item.max_meter_value" type="number" inputmode="numeric" min="0" class="form-control">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Precio Unitario</span>
+        <span class="input-group-text">$</span>
+        <input [(ngModel)]="item.unit_price" type="number" inputmode="numeric" min="0" class="form-control">
+    </div>
+</div>
+<div class="modal-footer">
+
+    <button type="button" class="btn btn-danger" (click)="activeModal.dismiss('Cancel')">Cancelar</button>
+    <button type="button" class="btn btn-success" (click)="saveItem()">Guardar</button>
+</div>

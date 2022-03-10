@@ -12,27 +12,27 @@ export const ROUTES: RouteInfo[] = [
     path: "/dashboard",
     title: "Dashboard",
     rtlTitle: "لوحة القيادة",
-    icon: "icon-chart-pie-36",
+    icon: "tim-icons icon-chart-pie-36",
     class: ""
   },
   {
     path: "/icons",
     title: "Icons",
     rtlTitle: "الرموز",
-    icon: "icon-atom",
+    icon: "tim-icons icon-atom",
     class: ""
   },
   {
     path: "/maps",
     title: "Maps",
     rtlTitle: "خرائط",
-    icon: "icon-pin",
+    icon: "tim-icons icon-pin",
     class: "" },
   {
     path: "/notifications",
     title: "Notifications",
     rtlTitle: "إخطارات",
-    icon: "icon-bell-55",
+    icon: "tim-icons icon-bell-55",
     class: ""
   },
 
@@ -40,30 +40,37 @@ export const ROUTES: RouteInfo[] = [
     path: "/user",
     title: "User Profile",
     rtlTitle: "ملف تعريفي للمستخدم",
-    icon: "icon-single-02",
+    icon: "tim-icons icon-single-02",
     class: ""
   },
   {
     path: "/tables",
     title: "Table List",
     rtlTitle: "قائمة الجدول",
-    icon: "icon-puzzle-10",
+    icon: "tim-icons icon-puzzle-10",
     class: ""
   },
   {
     path: "/typography",
     title: "Typography",
     rtlTitle: "طباعة",
-    icon: "icon-align-center",
+    icon: "tim-icons icon-align-center",
     class: ""
   },
   {
     path: "/products",
     title: "Productos",
     rtlTitle: "طباعة",
-    icon: "icon-cart",
+    icon: "fa-solid fa-store",
     class: ""
-  }
+  },
+  {
+    path: "/pumps",
+    title: "Surtidores",
+    rtlTitle: "طباعة",
+    icon: "fa-solid fa-gas-pump",
+    class: ""
+  },
 ];
 
 @Component({

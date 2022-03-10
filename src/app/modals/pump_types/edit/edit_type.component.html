@@ -1,0 +1,76 @@
+<div class="modal-header">
+    <h4 class="modal-title">Editar Categorias</h4>
+    <button type="button" class="btn-close btn btn-link" aria-label="Close"
+        (click)="activeModal.dismiss('Cross click')">X</button>
+</div>
+<div class="modal-body">
+    <div class="table-responsive">
+        <table class=" table tablesorter" id="">
+            <thead class=" text-primary">
+                <tr>
+                    <th>#</th>
+                    <th>Tipo</th>
+                    <th>Unidad</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let c of types">
+
+                    <td>{{c.id}}</td>
+                    <td class="was-validated">{{c.editing?'':c.name}}
+                        <input *ngIf="c.editing" [(ngModel)]="c.name" type="text" class="form-control"
+                            aria-describedby="inputGroup-sizing-default" required>
+                            <div class="invalid-feedback">Requerido</div>
+                    </td>
+                    <td class="was-validated">{{c.editing?'':(c.unit)}}
+                        <input *ngIf="c.editing" [(ngModel)]="c.unit" type="text" class="form-control"
+                            aria-describedby="inputGroup-sizing-default" required>
+                            <div class="invalid-feedback">Requerido</div>
+                    </td>
+                    <td class=" td-actions text-primary">
+                        <button *ngIf="!c.editing" class=" btn btn-link" type="button" placement="bottom"
+                            container="body" (click)="editItem(c)">
+                            <i class=" tim-icons icon-pencil text-info"> </i>
+                        </button>
+                    </td>
+                    <td class=" td-actions text-danger">
+                        <button *ngIf="!c.editing;else saveBut" class=" btn btn-link" type="button" placement="bottom"
+                            container="body" (click)="deleteItem(c)">
+                            <i class=" tim-icons icon-trash-simple text-danger"> </i>
+                        </button>
+                        <ng-template #saveBut>
+                            <button class=" btn btn-link" type="button" placement="bottom" container="body"
+                                (click)="saveItem(c)">
+                                <i class=" tim-icons icon-check-2 text-success"> </i>
+                            </button>
+                        </ng-template>
+                    </td>
+                </tr>
+                <tr>
+                    <td>-</td>
+                    <td [ngClass]="{'was-validated':validated}">
+                        <input #newTypeName type="text" class="form-control"
+                            aria-describedby="inputGroup-sizing-default" required>
+                        <div class="invalid-feedback">Requerido</div>
+                    </td>
+                    <td [ngClass]="{'was-validated':validated}">
+                        <input #newTypeUnit type="text" class="form-control"
+                            aria-describedby="inputGroup-sizing-default" required>
+                        <div class="invalid-feedback">Requerido</div>
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+                        <button class=" btn btn-link" type="button" placement="bottom" container="body"
+                            (click)="addItem(newTypeName,newTypeUnit)">
+                            <i class=" tim-icons icon-simple-add text-success"> </i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

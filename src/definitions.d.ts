@@ -13,3 +13,17 @@ interface Categories{
     name:string,
     description:string
 }
+interface PumpType{
+    id:number,
+    name:string,
+    unit:string
+}
+interface Pumps{
+    id:number,
+    description?:string,
+    type_id?:PumpType["id"],
+    last_update:Date,
+    meter:number,
+    max_meter_value:number,
+    unit_price:number
+}

@@ -1,0 +1,73 @@
+<div class=" content">
+    <div class=" row">
+        <div class=" col">
+            <div class=" card card-tasks-table">
+                <div class=" card-header">
+                    <h4 class=" title d-inline">Listado de Surtidores</h4>
+                    <div ngbDropdown>
+                        <button class=" btn btn-link btn-icon" data-toggle="dropdown" ngbDropdownToggle type="button">
+                            <i class=" tim-icons icon-settings-gear-63"> </i>
+                        </button>
+                        <div aria-labelledby="dropdownMenuLink" class=" dropdown-menu-right" ngbDropdownMenu>
+                            <a href="javascript:void(0)" (click)="editCategoryModal()" ngbDropdownItem> Tipos </a>
+                        </div>
+                    </div>
+                    <button class=" btn btn-link dropdown-toggle" (click)="newModal()" type="button" style="top: -0.3em;float:right">
+                        Nuevo
+                    </button>
+                </div>
+                <div class=" card-body">
+                    <div class=" table-responsive">
+                        <table class=" table tablesorter" id="">
+                            <thead class=" text-primary">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tipo</th>
+                                    <th>Descripcion</th>
+                                    <th>Contador</th>
+                                    <th class=" text-center">Precio Unitario</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr></tr>
+                                <tr></tr>
+                                <tr></tr>
+                                <tr [ngClass]="{'d-none':!isLoading}">
+                                    <div class="sk-chase">
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                    </div>
+                                </tr>
+                                <tr></tr>
+                                <tr></tr>
+                                <tr></tr>
+                                <tr *ngFor="let item of pumps">
+                                    <ng-template #tipContent>Editar<br><small>Ultima modificacion:<br>{{item.last_update
+                                            | date:'d/M/yy H:mm'}}</small></ng-template>
+                                    <td>{{item.id}}</td>
+                                    <td>{{!item.type_id?'-':getTypebyId(item.type_id).name}}</td>
+                                    <td>{{!item.description?'-':item.description}}</td>
+                                    <td class="text-right">{{item.meter}}
+                                        <small>[{{!item.type_id?'-':getTypebyId(item.type_id).unit}}]</small>
+                                    </td>
+                                    <td class=" text-center">${{item.unit_price}}</td>
+                                    <td class=" td-actions text-primary">
+                                        <button class=" btn btn-link" type="button" placement="bottom"
+                                            [ngbTooltip]="tipContent" container="body" (click)="editModal(item)">
+                                            <i class=" tim-icons icon-pencil text-info"> </i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
