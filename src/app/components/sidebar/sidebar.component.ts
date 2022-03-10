@@ -56,6 +56,13 @@ export const ROUTES: RouteInfo[] = [
     rtlTitle: "طباعة",
     icon: "icon-align-center",
     class: ""
+  },
+  {
+    path: "/products",
+    title: "Productos",
+    rtlTitle: "طباعة",
+    icon: "icon-cart",
+    class: ""
   }
 ];
 

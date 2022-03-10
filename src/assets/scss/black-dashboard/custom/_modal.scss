@@ -2,8 +2,6 @@
 // Design element Dialogs
 // --------------------------------------------------
 .modal-content {
-  border: 0;
-
   // Modal header
   // Top section of the modal w/ title and dismiss
 
@@ -22,10 +20,6 @@
         color: $black;
         margin-top: 5px;
         margin-bottom: 0;
-    }
-
-    .modal-title{
-      color: $black;
     }
 
     i.tim-icons {
@@ -67,9 +61,6 @@
   .modal-body + .modal-footer {
     padding-top: 0;
   }
-}
-.modal-backdrop {
-  background: rgba(0,0,0,0.3);
 }
 
 .modal{

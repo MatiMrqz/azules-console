@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <h4 class="modal-title">Nueva Categoría</h4>
+    <button type="button" class="btn-close btn btn-link" aria-label="Close" (click)="activeModal.dismiss('Cross click')">X</button>
+</div>
+<div class="modal-body">
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Nombre</span>
+        <input [(ngModel)]="item.cname" type="text" class="form-control"
+            aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Descripcion</span>
+        <input [(ngModel)]="item.description" type="text" class="form-control"
+            aria-describedby="inputGroup-sizing-default">
+    </div>
+<div class="modal-footer">
+
+    <button type="button" class="btn btn-danger" (click)="activeModal.dismiss('Cancel')">Cancelar</button>
+    <button type="button" class="btn btn-success" (click)="saveItem()">Guardar</button>
+</div>

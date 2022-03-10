@@ -12,9 +12,13 @@ import { NotificationsComponent } from "../../pages/notifications/notifications.
 import { UserComponent } from "../../pages/user/user.component";
 import { TablesComponent } from "../../pages/tables/tables.component";
 import { TypographyComponent } from "../../pages/typography/typography.component";
-// import { RtlComponent } from "../../pages/rtl/rtl.component";
-
+import { ProductsComponent } from "src/app/pages/products/products.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { ProductPipe } from "src/app/pipes/product.pipe";
+import { EditProductComponent } from "src/app/modals/products/edit/edit.component";
+import { NewProductComponent } from "src/app/modals/products/new/new.component";
+import { NewCategoryComponent } from "src/app/modals/categories/new/new_category.component";
+import { EditCategoryComponent } from "src/app/modals/categories/edit/edit_category.component";
 
 @NgModule({
   imports: [
@@ -32,7 +36,12 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     TypographyComponent,
     NotificationsComponent,
     MapComponent,
-    // RtlComponent
+    ProductsComponent,
+    ProductPipe,
+    EditProductComponent,
+    NewProductComponent,
+    NewCategoryComponent,
+    EditCategoryComponent
   ]
 })
 export class AdminLayoutModule {}

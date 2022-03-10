@@ -28,3 +28,37 @@
     }
   }
 }
+
+.card-tasks-table {
+  max-height: 700px;
+
+  .card-header {
+    .title {
+      margin-right: 20px;
+      font-weight: $font-weight-normal;
+    }
+    button{
+      i{
+        padding-bottom: 0.4em;
+      }
+    }
+    .dropdown {
+      float: right;
+      color: darken($white, 20%);
+      button {
+        i {
+        font-size: 1.2em !important;
+      }
+    }
+    }
+  }
+
+  .card-body {
+    i {
+      font-size: 1.4em;
+      &:hover {
+        color: $white !important;
+      }
+    }
+  }
+}

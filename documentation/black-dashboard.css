@@ -5959,7 +5959,7 @@ button.close {
 }
 
 .modal-backdrop.show {
-  opacity: 0.16;
+  opacity: 0.6;
 }
 
 .modal-header {
