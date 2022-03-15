@@ -7,6 +7,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from "@angular/common/http";
 
 import { LoginComponent } from 'src/app/pages/login/login.component';
+import { DevAuthComponent } from 'src/app/pages/dev-auth/dev-auth.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -16,7 +17,8 @@ import { LoginComponent } from 'src/app/pages/login/login.component';
     NgbModule,
   ],
   declarations: [
-    LoginComponent
+    LoginComponent,
+    DevAuthComponent
   ]
 })
 export class AuthLayoutModule { }

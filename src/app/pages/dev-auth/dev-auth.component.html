@@ -1,0 +1,26 @@
+<div class="content content-login">
+    <div class=" row justify-content-center">
+        <div class=" col-md-8 col-lg-6">
+            <div class=" card card-plain">
+                <h3 class=" card-header text-muted">Authenticando dispositivo</h3>
+                <div class=" card-body text-center">
+                    <div>
+                        <main class="form-signin">
+                            <div class="d-flex justify-content-center align-items-center" style="min-height: 40vh;">
+                                <div class="sk-chase" style="font-size:5em" [ngClass]="{'d-none':!isLoading}">
+                                    <div class="sk-chase-dot"></div>
+                                    <div class="sk-chase-dot"></div>
+                                    <div class="sk-chase-dot"></div>
+                                    <div class="sk-chase-dot"></div>
+                                    <div class="sk-chase-dot"></div>
+                                    <div class="sk-chase-dot"></div>
+                                </div>
+                            </div>
+                            <h3>{{serverResponse}}</h3>
+                        </main>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

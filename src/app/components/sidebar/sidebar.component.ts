@@ -71,6 +71,13 @@ export const ROUTES: RouteInfo[] = [
     icon: "fa-solid fa-gas-pump",
     class: ""
   },
+  {
+    path: "/devices",
+    title: "Dispositivos",
+    rtlTitle: "طباعة",
+    icon: "fa-solid fa-mobile-screen-button",
+    class: ""
+  },
 ];
 
 @Component({

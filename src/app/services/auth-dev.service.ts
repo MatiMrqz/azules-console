@@ -4,27 +4,27 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
-
+export class AuthDevService {
   constructor(
     private router: Router
   ) { }
 
   public loggedIn():boolean{
-    return !!localStorage.getItem('token')
+    console.debug('Device login check')
+    return !!localStorage.getItem('devToken')
   }
 
   public getToken(){
-    return localStorage.getItem('token')
+    return localStorage.getItem('devToken')
   }
   
   public setToken(token:string){
-    localStorage.setItem('token',token)
+    localStorage.setItem('devToken',token)
   }
 
   public logout(){
-    localStorage.removeItem('token')
-    this.router.navigate(['/auth/login']);
+    localStorage.removeItem('devToken')
+    this.router.navigate(['/auth/device']);
   }
 
 }

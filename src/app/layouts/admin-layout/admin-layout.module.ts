@@ -23,6 +23,7 @@ import { PumpsComponent } from "src/app/pages/pumps/pumps.component";
 import { EditPumpComponent } from "src/app/modals/pumps/edit/edit.component";
 import { NewPumpComponent } from "src/app/modals/pumps/new/new.component";
 import { EditTypeComponent } from "src/app/modals/pump_types/edit/edit_type.component";
+import { DevicesComponent } from "src/app/pages/devices/devices.component";
 
 @NgModule({
   imports: [
@@ -49,7 +50,8 @@ import { EditTypeComponent } from "src/app/modals/pump_types/edit/edit_type.comp
     PumpsComponent,
     EditPumpComponent,
     NewPumpComponent,
-    EditTypeComponent
+    EditTypeComponent,
+    DevicesComponent
   ]
 })
 export class AdminLayoutModule {}

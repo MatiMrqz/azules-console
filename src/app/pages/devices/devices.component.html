@@ -1,0 +1,109 @@
+<div class=" content">
+    <div class="row">
+        <div class="card bg-primary mb-3" style="max-width: 18rem;">
+            <div class="card-header">
+                <div style="font-size: large;">Nuevo dispositivo</div>
+            </div>
+            <div class="card-body pt-0 text-center">
+                <button type="button" (click)="newDeviceModal(newModal)" class="btn btn-simple btn-neutral">Generar autorización</button>
+                <p class="card-text"> <small style="font-weight: 200;">Al autorizar un nuevo dispositivo, el mismo
+                        tendrá acceso al sistema.</small></p>
+            </div>
+        </div>
+    </div>
+    <h4>Dispositivos autorizados</h4>
+    <div class=" row">
+        <div [ngClass]="{'d-none':!isLoading}">
+            <div class="sk-chase">
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+            </div>
+        </div>
+
+        <div [ngClass]="{'d-none':isLoading}" *ngFor="let d of devices" class=" card card-chart d-flex flex-wrap m-2"
+            style="width: 12rem;">
+            <div class=" card-header">
+                <h5 class=" card-category">Dispositivo</h5>
+                <h3 class=" card-title text-center mb-2">
+                    {{d.alias}}<em *ngIf="!d.alias"> <small>Sin alias</small></em>
+                </h3>
+            </div>
+            <div class=" card-body text-center py-0">
+                <span><i [ngClass]="{'my-1 fa-solid':true,'fa-mobile-screen-button':d.info.device.type=='phablet'||d.info.device.type=='smartphone','fa-tablet-screen-button':d.info.device.type=='tablet','fa-desktop':d.info.device.type=='desktop','fa-question':!d.info.device.type}"
+                        class=" my-1" style="font-size: 2rem;"></i></span>
+                <h4 class="my-0"> <em>{{d.info.device.model?d.info.device.model:'-'}}</em></h4>
+                <p *ngIf="!(!d.info.os.name&&!d.info.client.name)"> <em> <i class="fa-solid fa-circle-info"
+                            style="font-size: 0.8rem;"></i> {{d.info.os.name}}, {{d.info.client.name}} </em></p>
+            </div>
+            <div class="card-footer text-center pt-0 mt-0">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-success btn-simple"
+                        (click)="setAliasModal(aliasModal,d)">Alias</button>
+                    <button type="button" class="btn btn-sm btn-danger btn-simple"
+                        (click)="eliminaModal(eliminarModal,d.uuid)">Eliminar</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<ng-template #aliasModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Nuevo Alias</h4>
+        <button type="button" class="btn-close btn btn-link" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">X</button>
+    </div>
+    <div class="modal-body">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">Alias</span>
+            <input #alias type="text" class="form-control" aria-describedby="inputGroup-sizing-default">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cancel')">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="modal.close(alias.value)">Guardar</button>
+    </div>
+</ng-template>
+
+<ng-template #eliminarModal let-conf>
+    <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-triangle-exclamation"></i> Advertencia</h3>
+        <button type="button" class="btn-close btn btn-link" aria-label="Close"
+            (click)="conf.dismiss('Cross click')">X</button>
+    </div>
+    <div class="modal-body">
+        <p class="bg-warning text-dark"> <strong>Esta accion es irreversible.</strong><br>Si continua, el dispositivo
+            seleccionado perderá el acceso al sistema. Ingrese su contraseña de administrador para confirmar.
+        </p>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">Contraseña de administrador</span>
+            <input type="password" class="form-control" aria-describedby="inputGroup-sizing-default">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-simple btn-danger" (click)="conf.close('Eliminado')">Eliminar</button>
+        <button type="button" class="btn btn-primary" (click)="conf.dismiss('Cancel')">Cancelar</button>
+    </div>
+</ng-template>
+
+<ng-template #newModal let-modal>
+    <div class="modal-header">
+        <h3 class="modal-title">Autorizando nuevo dispositivo</h3>
+        <button type="button" class="btn-close btn btn-link" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">X</button>
+    </div>
+    <div class="modal-body text-center">
+        <img src="https://chart.googleapis.com/chart?chs=300x300&amp;choe=UTF-8&amp;cht=qr&amp;chl={{qrContent}}" />
+        <p class="text-light">
+            Escanee el código en el dispositivo que desea autorizar. Una vez autorizado tendrá acceso al sistema.
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.dismiss('Cerrar')">Cerrar</button>
+    </div>
+</ng-template>

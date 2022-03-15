@@ -5,12 +5,24 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
-import { AuthGuard } from "./auth.guard";
+import { AuthGuard, AuthGuardDevice } from "./auth.guard";
+import { EmployeeLayoutComponent } from "./layouts/employee-layout/employee-layout.component";
 
 const routes: Routes = [
   {
+    path: "employee",
+    component:EmployeeLayoutComponent,
+    children: [
+      {
+        path: "",
+        loadChildren: () => import ("./layouts/employee-layout/employee-layout.module").then(m => m.EmployeeLayoutModule)
+      }
+    ],
+    canActivateChild:[AuthGuardDevice]
+  },
+  {
     path: "",
-    redirectTo: "login",
+    redirectTo: "dashboard",
     pathMatch: "full"
   },
   {
@@ -25,7 +37,7 @@ const routes: Routes = [
     canActivateChild:[AuthGuard]
   },
   {
-    path: "",
+    path: "auth",
     component: AuthLayoutComponent,
     children: [
       {

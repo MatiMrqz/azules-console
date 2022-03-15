@@ -4,7 +4,9 @@
             <div class=" card card-tasks-table">
                 <div class=" card-header">
                     <h4 class=" title d-inline">Listado de productos</h4>
-                        <input [(ngModel)]="searchString" type="search" class="form-control form-control-dark d-inline col-5 mx-5" placeholder="Buscar..." aria-label="Buscar">
+                    <input [(ngModel)]="searchString" type="search"
+                        class="form-control form-control-dark d-inline col-5 mx-5" placeholder="Buscar..."
+                        aria-label="Buscar">
                     <div ngbDropdown>
                         <button class=" btn btn-link btn-icon" data-toggle="dropdown" ngbDropdownToggle type="button">
                             <i class=" tim-icons icon-settings-gear-63"> </i>
@@ -43,22 +45,24 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr></tr>
-                                <tr></tr>
-                                <tr></tr>
                                 <tr [ngClass]="{'d-none':!isLoading}">
-                                    <div class="sk-chase">
-                                        <div class="sk-chase-dot"></div>
-                                        <div class="sk-chase-dot"></div>
-                                        <div class="sk-chase-dot"></div>
-                                        <div class="sk-chase-dot"></div>
-                                        <div class="sk-chase-dot"></div>
-                                        <div class="sk-chase-dot"></div>
-                                    </div>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <div class="sk-chase">
+                                            <div class="sk-chase-dot"></div>
+                                            <div class="sk-chase-dot"></div>
+                                            <div class="sk-chase-dot"></div>
+                                            <div class="sk-chase-dot"></div>
+                                            <div class="sk-chase-dot"></div>
+                                            <div class="sk-chase-dot"></div>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
-                                <tr></tr>
-                                <tr></tr>
-                                <tr></tr>
                                 <tr *ngFor="let item of products | product:showHidden.checked:searchString">
                                     <ng-template #tipContent>Editar<br><small>Ultima modificacion:<br>{{item.last_change
                                             | date:'d/M/yy H:mm'}}</small></ng-template>
