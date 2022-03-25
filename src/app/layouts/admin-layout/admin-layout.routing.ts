@@ -10,6 +10,7 @@ import { TypographyComponent } from "../../pages/typography/typography.component
 import { ProductsComponent } from "src/app/pages/products/products.component";
 import { PumpsComponent } from "src/app/pages/pumps/pumps.component";
 import { DevicesComponent } from "src/app/pages/devices/devices.component";
+import { UsersComponent } from "src/app/pages/users/users.component";
 
 export const AdminLayoutRoutes: Routes = [
   { path: "dashboard", component: DashboardComponent },
@@ -22,4 +23,5 @@ export const AdminLayoutRoutes: Routes = [
   { path: "products", component: ProductsComponent },
   { path: "pumps", component: PumpsComponent },
   { path: "devices", component: DevicesComponent },
+  { path: "users", component: UsersComponent },
 ];

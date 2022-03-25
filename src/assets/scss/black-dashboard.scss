@@ -77,7 +77,7 @@
  @import "black-dashboard/custom/sidebar-and-main-panel.scss";
  @import "black-dashboard/custom/misc.scss";
  @import "black-dashboard/custom/input-group.scss";
- @import "black-dashboard/custom/spinner";
+ @import "black-dashboard/custom/spinner.scss";
 
 
  // Vendor / Plugins
@@ -100,4 +100,7 @@
 
 // Angular Differences
 
-@import "black-dashboard/angular-differences/angular-differences"
+@import "black-dashboard/angular-differences/angular-differences";
+
+// Accordion
+@import "black-dashboard/custom/accordion";

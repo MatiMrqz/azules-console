@@ -15,7 +15,7 @@
                             <a (click)="showHidden.checked = !showHidden.checked" href="javascript:void(0)"
                                 ngbDropdownItem>
                                 <input #showHidden type="checkbox" value="" />
-                                Mostrar Ocultos </a>
+                                Mostrar Archivados </a>
                             <a href="javascript:void(0)" (click)="editCategoryModal()" ngbDropdownItem> Categorias </a>
                             <a href="javascript:void(0)" ngbDropdownItem> Something else </a>
                         </div>
@@ -39,7 +39,7 @@
                                     <th>Nombre</th>
                                     <th>Descripcion</th>
                                     <th>Categoría</th>
-                                    <th>Stock</th>
+                                    <th class=" text-center">Stock</th>
                                     <th class=" text-center">Precio Unitario</th>
                                     <th></th>
                                 </tr>
@@ -72,7 +72,7 @@
                                     </td>
                                     <td>{{!item.description?'-':item.description}}</td>
                                     <td>{{!item.category_id?'-':getCategorybyId(item.category_id).name}}</td>
-                                    <td class="text-right">{{item.stock}}</td>
+                                    <td class="text-center">{{item.stock}}</td>
                                     <td class=" text-center">${{item.unit_price}}</td>
                                     <td class=" td-actions text-primary">
                                         <button class=" btn btn-link" type="button" placement="bottom"

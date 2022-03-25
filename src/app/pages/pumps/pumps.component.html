@@ -24,7 +24,7 @@
                                     <th>#</th>
                                     <th>Tipo</th>
                                     <th>Descripcion</th>
-                                    <th>Contador</th>
+                                    <th class="text-center">Contador</th>
                                     <th class=" text-center">Precio Unitario</th>
                                     <th></th>
                                 </tr>
@@ -52,7 +52,7 @@
                                     <td>{{item.id}}</td>
                                     <td>{{!item.type_id?'-':getTypebyId(item.type_id).name}}</td>
                                     <td>{{!item.description?'-':item.description}}</td>
-                                    <td class="text-right">{{item.meter}}
+                                    <td class="text-center">{{item.meter}}
                                         <small>[{{!item.type_id?'-':getTypebyId(item.type_id).unit}}]</small>
                                     </td>
                                     <td class=" text-center">${{item.unit_price}}</td>

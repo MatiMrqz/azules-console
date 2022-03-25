@@ -24,6 +24,9 @@ import { EditPumpComponent } from "src/app/modals/pumps/edit/edit.component";
 import { NewPumpComponent } from "src/app/modals/pumps/new/new.component";
 import { EditTypeComponent } from "src/app/modals/pump_types/edit/edit_type.component";
 import { DevicesComponent } from "src/app/pages/devices/devices.component";
+import { UsersComponent } from "src/app/pages/users/users.component";
+import { UserPipe } from "src/app/pipes/user.pipe";
+
 
 @NgModule({
   imports: [
@@ -51,7 +54,9 @@ import { DevicesComponent } from "src/app/pages/devices/devices.component";
     EditPumpComponent,
     NewPumpComponent,
     EditTypeComponent,
-    DevicesComponent
+    DevicesComponent,
+    UsersComponent,
+    UserPipe
   ]
 })
 export class AdminLayoutModule {}

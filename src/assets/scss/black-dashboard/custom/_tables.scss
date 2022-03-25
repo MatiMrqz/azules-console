@@ -1,3 +1,10 @@
+.table-fix-head{
+  > thead > tr > th {
+    position: sticky;
+    top:0;
+    z-index: 1;
+  }
+}
 .table{
   > tbody > tr > td {
     color: rgba(255, 255, 255, 0.7) !important;
@@ -16,7 +23,7 @@
   }
 
   > tbody > tr.table-success > td{
-    background-color: darken($success,10%);
+    background-color: darken($success,20%);
   }
 
   > tbody > tr.table-info > td{
@@ -156,7 +163,8 @@
 }
 
 .table-responsive{
-  overflow: scroll;
+  overflow:auto;
+  max-height: calc(100vh - 7rem - 50px);
   padding-bottom: 10px;
 }
 
@@ -188,4 +196,11 @@ table.tablesorter thead tr .headerSortDown {
   .form-control-sm {
     font-size: 10px;
   }
+}
+
+.cell-ellipsis {
+  max-width: var(--mw);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

@@ -52,6 +52,7 @@ export class DevicesComponent implements OnInit {
   public async newDeviceModal(content) {
     this.webService.generateAuthorization()
     .then((res)=>{
+      console.log(`${webModule.fBaseUrl}#/auth/device/${res.authToken}`)
       this.qrContent = encodeURIComponent(`${webModule.fBaseUrl}#/auth/device/${res.authToken}`) 
       console.debug({next:this.qrContent})
     })

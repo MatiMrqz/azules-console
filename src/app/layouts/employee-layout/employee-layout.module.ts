@@ -6,7 +6,7 @@ import { FormsModule } from "@angular/forms";
 
 import { EmployeeLayoutRoutes } from "./employee-layout.routing";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { EmployeeComponent } from "src/app/pages/employee/employee.component";
+import { EmployeeComponent, ValidProductsPipe } from "src/app/pages/employee/employee.component";
 
 @NgModule({
   imports: [
@@ -17,7 +17,7 @@ import { EmployeeComponent } from "src/app/pages/employee/employee.component";
     NgbModule,
   ],
   declarations: [
-    EmployeeComponent
+    EmployeeComponent, ValidProductsPipe
   ]
 })
 export class EmployeeLayoutModule {}

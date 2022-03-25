@@ -78,6 +78,13 @@ export const ROUTES: RouteInfo[] = [
     icon: "fa-solid fa-mobile-screen-button",
     class: ""
   },
+  {
+    path: "/users",
+    title: "Usuarios",
+    rtlTitle: "طباعة",
+    icon: "fa-solid fa-users",
+    class: ""
+  },
 ];
 
 @Component({

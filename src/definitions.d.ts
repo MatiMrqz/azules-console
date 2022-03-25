@@ -27,3 +27,13 @@ interface Pumps{
     max_meter_value:number,
     unit_price:number
 }
+interface Employee{
+    uuid:string,
+    uname:string,
+    mail?:string,
+    phone?:string,
+    address?:string,
+    hidden:boolean,
+    dt_added:Date,
+    dt_modified:Date
+}

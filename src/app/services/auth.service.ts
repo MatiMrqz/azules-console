@@ -5,25 +5,29 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-
+  private token?: string
   constructor(
     private router: Router
-  ) { }
-
-  public loggedIn():boolean{
-    return !!localStorage.getItem('token')
+  ) {
+    this.token = localStorage.getItem('token')
   }
 
-  public getToken(){
-    return localStorage.getItem('token')
-  }
-  
-  public setToken(token:string){
-    localStorage.setItem('token',token)
+  public loggedIn(): boolean {
+    return !!this.token
   }
 
-  public logout(){
+  public getToken() {
+    return this.token
+  }
+
+  public setToken(token: string) {
+    localStorage.setItem('token', token)
+    this.token = token
+  }
+
+  public logout() {
     localStorage.removeItem('token')
+    this.token = null
     this.router.navigate(['/auth/login']);
   }
 
