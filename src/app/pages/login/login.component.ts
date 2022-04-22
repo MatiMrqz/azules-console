@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private webService: WebService,
     private toastr: ToastrService,
-    private router:Router
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -34,7 +34,9 @@ export class LoginComponent implements OnInit {
       this.isLoading = false
       this.showSuccess(res.msg)
       console.debug(res)
-      this.router.navigate(['/dashboard'])
+      setTimeout(() => {
+        this.router.navigate(['/dashboard'])
+      }, 500)
     } catch (error) {
       console.error(error)
       this.showError(error)

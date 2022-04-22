@@ -135,6 +135,16 @@ public newAdmin(content){
       })
   }
 
+  public newAdminApi(mail){
+    this.webService.newAdmin(mail)
+    .then(res=>{
+      this.showSuccess('Nuevo administrador agregado.')
+    })
+    .catch(err=>{
+      this.showError(err)
+    })
+  }
+
   public editModal(content, user: Employee) {
     this.user = { ...user };
     const modalRef = this.modalService.open(content)

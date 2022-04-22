@@ -12,56 +12,21 @@ export const ROUTES: RouteInfo[] = [
     path: "/dashboard",
     title: "Dashboard",
     rtlTitle: "لوحة القيادة",
-    icon: "tim-icons icon-chart-pie-36",
+    icon: "fa-solid fa-house",
     class: ""
   },
   {
-    path: "/icons",
-    title: "Icons",
-    rtlTitle: "الرموز",
-    icon: "tim-icons icon-atom",
-    class: ""
-  },
-  {
-    path: "/maps",
-    title: "Maps",
-    rtlTitle: "خرائط",
-    icon: "tim-icons icon-pin",
-    class: "" },
-  {
-    path: "/notifications",
-    title: "Notifications",
-    rtlTitle: "إخطارات",
-    icon: "tim-icons icon-bell-55",
-    class: ""
-  },
-
-  {
-    path: "/user",
-    title: "User Profile",
-    rtlTitle: "ملف تعريفي للمستخدم",
-    icon: "tim-icons icon-single-02",
-    class: ""
-  },
-  {
-    path: "/tables",
-    title: "Table List",
-    rtlTitle: "قائمة الجدول",
-    icon: "tim-icons icon-puzzle-10",
-    class: ""
-  },
-  {
-    path: "/typography",
-    title: "Typography",
+    path: "/operations",
+    title: "Registro",
     rtlTitle: "طباعة",
-    icon: "tim-icons icon-align-center",
+    icon: "fa-solid fa-business-time",
     class: ""
   },
   {
-    path: "/products",
-    title: "Productos",
+    path: "/users",
+    title: "Usuarios",
     rtlTitle: "طباعة",
-    icon: "fa-solid fa-store",
+    icon: "fa-solid fa-users",
     class: ""
   },
   {
@@ -72,19 +37,20 @@ export const ROUTES: RouteInfo[] = [
     class: ""
   },
   {
+    path: "/products",
+    title: "Productos",
+    rtlTitle: "طباعة",
+    icon: "fa-solid fa-store",
+    class: ""
+  },
+  {
     path: "/devices",
     title: "Dispositivos",
     rtlTitle: "طباعة",
     icon: "fa-solid fa-mobile-screen-button",
     class: ""
   },
-  {
-    path: "/users",
-    title: "Usuarios",
-    rtlTitle: "طباعة",
-    icon: "fa-solid fa-users",
-    class: ""
-  },
+  
 ];
 
 @Component({

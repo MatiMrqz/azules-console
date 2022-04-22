@@ -1,4 +1,7 @@
 import { Component, HostListener, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 import { WebService } from 'src/app/services/web.service';
 
 @Pipe({ name: 'validProducts' })
@@ -8,19 +11,22 @@ export class ValidProductsPipe implements PipeTransform {
   }
 }
 @Component({
-  selector: 'app-employee',
-  templateUrl: './employee.component.html',
+  selector: 'app-close-turn',
+  templateUrl: './close-turn.component.html',
   styles: [
   ]
 })
 
-export class EmployeeComponent implements OnInit {
+export class CloseTurnComponent implements OnInit {
 
   @HostListener('window:beforeunload', ['$event'])
   beforeunloadHandler(event) {
     return false;
   }
-
+  @HostListener('window:unload', ['$event'])
+  public turn: { name: string, schedule: string }
+  public employee: { uuid: string, uname: string } = { uname: '-', uuid: '' }
+  public saving: boolean = false
   public products = []
   public categories = []
   public gralMeter
@@ -57,10 +63,19 @@ export class EmployeeComponent implements OnInit {
   public accDoneCounter: number = 0
 
   constructor(
-    private webService: WebService
+    private webService: WebService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private toastr: ToastrService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
+    const subs = this.route.data.subscribe((data: OperationEmpDB) => {
+      this.employee = { uname: data.uname, uuid: data.employee_uuid }
+      this.turn = { name: data.turn_name, schedule: data.turn_schedule }
+    })
+    subs.unsubscribe()
     this.getAll()
   }
 
@@ -76,18 +91,14 @@ export class EmployeeComponent implements OnInit {
       this.isLoading = false
     })
   }
-
   private async updateProducts() {
     const tempProducts = await this.webService.getAllProductsDev()
     this.products = tempProducts.map(p => {
-      // if (p.hidden) return
       return { items_sold: p.stock == 0 ? 0 : null, items_replacement: null, end_stock: null, validated: null, ...p }
     })
-    console.log(this.products)
   }
   private async updateCategories() {
     this.categories = await this.webService.getAllCategoriesDev()
-    console.log(this.categories)
   }
   public getCategorybyId(id?: number) {
     if (!id) return null
@@ -97,20 +108,17 @@ export class EmployeeComponent implements OnInit {
   public async updatePumps() {
     const tempPumps = await this.webService.getAllPumpsDev()
     this.pumps = tempPumps.map(p => {
-      return { venting: null, meter_end: null, meter_diff: null, validated: null, ...p }
+      return { venting: null, meter_end: null, meter_diff: null, validated: null, reset_meter: false, ...p }
     })
-    console.log(this.pumps)
   }
 
   public async updateGralMeter() {
     const tempMeter = await this.webService.getGralMeterDev()
     this.gralMeter = { validated: null, meter_diff: null, meter_end: null, ...tempMeter }
-    console.log(this.gralMeter)
   }
 
   public async getPumpTypes() {
     this.pump_types = await this.webService.getAllPumpTypesDev()
-    console.log(this.pump_types)
   }
   public getTypebyId(id: number) {
     return this.pump_types.find(c => c.id == id) ?? '-'
@@ -159,14 +167,20 @@ export class EmployeeComponent implements OnInit {
   public accTotalAmount(): number {
     return this.acc.MercadoPago + this.acc.cards + this.acc.cash + this.acc.envelopes_cash + this.acc.others - this.acc.expenses - this.acc.vouchers;
   }
-  public saveDisabled(val?:string): boolean {
-    const status = !!val && (this.refreshDonePumps() == this.pumps.length) && this.gralMeter.validated===true && (this.refreshDoneProducts() == this.products.filter(p => p.hidden == false).length) && (this.accDoneUpdate() == 8)
+  public saveDisabled(val?: string): boolean {
+    const status = !!val && (this.refreshDonePumps() == this.pumps.length) && this.gralMeter.validated === true && (this.refreshDoneProducts() == this.products.filter(p => p.hidden == false).length) && (this.accDoneUpdate() == 8)
     return !status
   }
-  public print(val:any){
-    console.log(val)
+
+  public calcMeterDiff(i: number) {
+    const pumpItem = this.pumps[i]
+    if(+pumpItem.meter_end > +pumpItem.meter) pumpItem.reset_meter = false
+    pumpItem.meter_diff = pumpItem.reset_meter ? (+pumpItem.max_meter_value - +pumpItem.meter) + pumpItem.meter_end - +pumpItem.venting : +pumpItem.meter_end - +pumpItem.meter - +pumpItem.venting
+    pumpItem.validated = (pumpItem.meter_end != null && pumpItem.venting != null && (pumpItem.meter_diff >= 0 || pumpItem.reset_meter))
   }
+
   public storeClosingShift(observations: string, pass: string) {
+    this.saving = true
     const pump_operations = this.pumps.map(p => {
       if (p.meter == p.meter_end) return
       else {
@@ -189,9 +203,45 @@ export class EmployeeComponent implements OnInit {
       expenses: this.acc.expenses,
       others: this.acc.others
     }
-    const employee = { uuid: '64fe5e68-93e4-11ec-936d-e45a16609df4', pass }//HARDCODED
-    const turn = { name: 'PRUEBA', schedule: 'H1-H2' }
-    console.log({ employee, pump_operations, product_operations, gral_meter, accountancy, turn, observations })
-    this.webService.shiftClosingDev({ employee, pump_operations, product_operations, gral_meter, accountancy, turn, observations })
+    console.log({ pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, observations })
+    this.webService.shiftClosingDev({ employee: { uuid: this.employee.uuid, pass }, pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, observations })
+      .then(res => {
+        this.showSuccess(res.msg)
+        setTimeout(() => {
+          this.router.navigate(['employee'])
+        }, 500
+        )
+      })
+      .catch((err: string) => {
+        this.saving = false
+        if (err.includes('password')) err = 'Contraseña errónea. Intente nuevamente.'
+        this.showError(err)
+      })
+  }
+  private showError(msg: string) {
+    this.toastr.error('<span class="tim-icons icon-simple-remove" [data-notify]="icon"></span>' + msg, '', {
+      timeOut: 5000,
+      enableHtml: true,
+      toastClass: "alert alert-danger alert-with-icon",
+      positionClass: 'toast-top-center'
+    });
+  }
+
+  private showSuccess(msg: string) {
+    this.toastr.success('<span class="tim-icons icon-check-2" [data-notify]="icon"></span>' + msg, '', {
+      timeOut: 5000,
+      enableHtml: true,
+      toastClass: "alert alert-success alert-with-icon",
+      positionClass: 'toast-top-center'
+    });
+  }
+
+  public async showModal(content, i: number) {
+    this.modalService.open(content).result.then(
+      () => {
+        this.pumps[i].reset_meter = true
+        this.calcMeterDiff(i)
+      }
+    )
   }
 }

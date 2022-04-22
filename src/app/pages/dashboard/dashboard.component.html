@@ -1,62 +1,71 @@
-
 <div class=" content">
+  <div class="row">
+    <div class="col-12">
+      <div class="card card-chart">
+        <div class="card-header">
+          <h5 class=" card-category" style="width: fit-content;">Estado actual <a href="javascript:void(0)"
+              (click)="getLastOperationStatus()"><i class="fa-solid fa-rotate-right text-light"></i></a></h5>
+        </div>
+        <div class="card-body mx-3">
+          <div class="row align-items-center justify-content-evenly">
+            <div class="col-lg-4">
+              <h3 class=" card-title">
+                <i [ngClass]="{'fa-door-open text-success':lastOperation.operation_type=='OPEN','fa-door-closed text-danger':lastOperation.operation_type=='CLOSE'}"
+                  class="fa-solid"> </i> {{lastOperation.operation_type=='CLOSE'?'Turno
+                Cerrado':'Turno Abierto'}}
+                <h5 class="font-italic text-muted">Sincronizado {{lastOpDate|dateAgo}}</h5>
+              </h3>
+            </div>
+            <div class="col-lg-4">
+              <h3 class=" card-title">
+                <i class=" fa-solid fa-calendar-check text-light"> </i> {{lastOperation.turn_name}}
+                <h5 class=" text-muted">{{lastOperation.timestamp|date:'E d, HH:mm'}}</h5>
+              </h3>
+            </div>
+            <div class="col-lg-4">
+              <h3 class=" card-title">
+                <i class=" fa-solid fa-user text-info"> </i> {{lastOperation.uname??'-'}}
+                <h5 class=" text-muted">Encargado</h5>
+              </h3>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="card">
+
+        <div class="card-body">
+          <div class="dp-hidden position-absolute">
+            <div class="input-group">
+              <input placeholder="" name="datepicker" class="form-control" ngbDatepicker #datepicker="ngbDatepicker"
+                [autoClose]="'outside'" [navigation]="'select'" (dateSelect)="onDateSelection($event)" [displayMonths]="2"
+                [dayTemplate]="t" outsideDays="hidden" [startDate]="fromDate!" tabindex="-1">
+            </div>
+          </div>
+          <div class="input-group">
+            <input #dpFromDate class="form-control" placeholder="dd-mm-yyyy" name="dpFromDate"
+              [value]="formatter.format(fromDate)" (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
+            <input #dpToDate class="form-control" placeholder="dd-mm-yyyy" name="dpToDate"
+              [value]="formatter.format(toDate)" (input)="toDate = validateInput(toDate, dpToDate.value)">
+            <div class="input-group-append">
+              <button class="btn btn-simple btn-neutral" (click)="datepicker.toggle()" type="button"><i
+                  class="fa-solid fa-calendar-days"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class=" row">
     <div class=" col-12">
       <div class=" card card-chart">
         <div class=" card-header">
-          <div class=" row">
-            <div class=" col-sm-6 text-left">
-              <h5 class=" card-category">Total Shipments</h5>
-              <h2 class=" card-title">Performance</h2>
-            </div>
-            <div class=" col-sm-6">
-              <div
-                class=" btn-group btn-group-toggle float-right"
-                data-toggle="buttons"
-              >
-                <label class=" btn btn-sm btn-danger btn-simple" (click)="data=datasets[0];updateOptions();clicked=true;clicked1=false;clicked2=false" [ngClass]="{'active':clicked===true}">
-                  <input checked="checked" name="options" type="radio" />
-
-                  <span
-                    class=" d-none d-sm-block d-md-block d-lg-block d-xl-block"
-                  >
-                    Accounts
-                  </span>
-                  <span class=" d-block d-sm-none">
-                    <i class=" tim-icons icon-single-02"> </i>
-                  </span>
-                </label>
-                <label class=" btn btn-sm btn-danger btn-simple" (click)="data=datasets[1];updateOptions();clicked=false;clicked1=true;clicked2=false" [ngClass]="{'active':clicked1===true}">
-                  <input
-                    class=" d-none d-sm-none"
-                    name="options"
-                    type="radio"
-                  />
-
-                  <span
-                    class=" d-none d-sm-block d-md-block d-lg-block d-xl-block"
-                  >
-                    Purchases
-                  </span>
-                  <span class=" d-block d-sm-none">
-                    <i class=" tim-icons icon-gift-2"> </i>
-                  </span>
-                </label>
-                <label class=" btn btn-sm btn-danger btn-simple" (click)="data=datasets[2];updateOptions();clicked=false;clicked1=false;clicked2=true" [ngClass]="{'active':clicked2===true}">
-                  <input class=" d-none" name="options" type="radio" />
-
-                  <span
-                    class=" d-none d-sm-block d-md-block d-lg-block d-xl-block"
-                  >
-                    Sessions
-                  </span>
-                  <span class=" d-block d-sm-none">
-                    <i class=" tim-icons icon-tap-02"> </i>
-                  </span>
-                </label>
-              </div>
-            </div>
-          </div>
+          <h5 class=" card-category">Ventas</h5>
+          <h2 class=" card-title">Total Diario</h2>
         </div>
         <div class=" card-body">
           <div class=" chart-area"><canvas id="chartBig1"> </canvas></div>
@@ -64,26 +73,13 @@
       </div>
     </div>
   </div>
-  <div class=" row">
-    <div class=" col-lg-4">
+  <div class="row">
+    <div class=" col-12">
       <div class=" card card-chart">
         <div class=" card-header">
-          <h5 class=" card-category">Total Shipments</h5>
+          <h5 class=" card-category">Rendiciones</h5>
           <h3 class=" card-title">
-            <i class=" tim-icons icon-bell-55 text-danger-states"> </i> 763,215
-          </h3>
-        </div>
-        <div class=" card-body">
-          <div class=" chart-area"><canvas id="chartLineRed"> </canvas></div>
-        </div>
-      </div>
-    </div>
-    <div class=" col-lg-4">
-      <div class=" card card-chart">
-        <div class=" card-header">
-          <h5 class=" card-category">Daily Sales</h5>
-          <h3 class=" card-title">
-            <i class=" tim-icons icon-delivery-fast text-info"> </i> 3,500€
+            <i class=" fa-solid fa-scale-balanced text-primary"> </i> Diferencias S/F
           </h3>
         </div>
         <div class=" card-body">
@@ -91,12 +87,27 @@
         </div>
       </div>
     </div>
-    <div class=" col-lg-4">
+  </div>
+  <div class=" row">
+    <div class=" col-lg-6">
       <div class=" card card-chart">
         <div class=" card-header">
-          <h5 class=" card-category">Completed Tasks</h5>
+          <h5 class=" card-category">m³ vendidos</h5>
           <h3 class=" card-title">
-            <i class=" tim-icons icon-send text-success"> </i> 12,100K
+            <i class=" fa-solid fa-gauge-simple text-danger-states"> </i> Promedio:{{!gasAverage?'-':gasAverage}}[m³]
+          </h3>
+        </div>
+        <div class=" card-body">
+          <div class=" chart-area"><canvas id="chartLineRed"> </canvas></div>
+        </div>
+      </div>
+    </div>
+    <div class=" col-lg-6">
+      <div class=" card card-chart">
+        <div class=" card-header">
+          <h5 class=" card-category">Ventas</h5>
+          <h3 class=" card-title">
+            <i class=" fa-solid fa-cash-register text-light"> </i> <span style="color: #00d6b4;">Productos</span>/<span style="color:#d600d6;">Surtidores</span> 
           </h3>
         </div>
         <div class=" card-body">
@@ -105,280 +116,80 @@
       </div>
     </div>
   </div>
+
   <div class=" row">
-    <div class=" col-lg-6 col-md-12">
-      <div class=" card card-tasks">
-        <div class=" card-header">
-          <h6 class=" title d-inline">Tasks(5)</h6>
-          <p class=" card-category d-inline">today</p>
-          <div ngbDropdown>
-            <button
-              class=" btn btn-link btn-icon"
-              data-toggle="dropdown"
-              ngbDropdownToggle
-              type="button"
-            >
-              <i class=" tim-icons icon-settings-gear-63"> </i>
-            </button>
-            <div
-              aria-labelledby="dropdownMenuLink"
-              class=" dropdown-menu-right"
-              ngbDropdownMenu
-            >
-              <a href="javascript:void(0)" ngbDropdownItem> Action </a>
-              <a href="javascript:void(0)" ngbDropdownItem> Another action </a>
-              <a href="javascript:void(0)" ngbDropdownItem> Something else </a>
-            </div>
-          </div>
-        </div>
-        <div class=" card-body">
-          <div class=" table-full-width table-responsive">
-            <table class=" table">
-              <tbody>
-                <tr>
-                  <td>
-                    <div class=" form-check">
-                      <label class=" form-check-label">
-                        <input
-                          class=" form-check-input"
-                          type="checkbox"
-                          value=""
-                        />
-
-                        <span class=" form-check-sign">
-                          <span class=" check"> </span>
-                        </span>
-                      </label>
-                    </div>
-                  </td>
-                  <td>
-                    <p class=" title">Update the Documentation</p>
-                    <p class=" text-muted">
-                      Dwuamish Head, Seattle, WA 8:47 AM
-                    </p>
-                  </td>
-                  <td class=" td-actions text-right">
-                    <button class=" btn btn-link" type="button" placement="left" ngbTooltip="Edit Task" container="body" >
-                      <i class=" tim-icons icon-pencil"> </i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class=" form-check">
-                      <label class=" form-check-label">
-                        <input
-                          checked=""
-                          class=" form-check-input"
-                          type="checkbox"
-                          value=""
-                        />
-
-                        <span class=" form-check-sign">
-                          <span class=" check"> </span>
-                        </span>
-                      </label>
-                    </div>
-                  </td>
-                  <td>
-                    <p class=" title">GDPR Compliance</p>
-                    <p class=" text-muted">
-                      The GDPR is a regulation that requires businesses to
-                      protect the personal data and privacy of Europe citizens
-                      for transactions that occur within EU member states.
-                    </p>
-                  </td>
-                  <td class=" td-actions text-right">
-                    <button class=" btn btn-link" type="button" placement="left" ngbTooltip="Edit Task" container="body" >
-                      <i class=" tim-icons icon-pencil"> </i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class=" form-check">
-                      <label class=" form-check-label">
-                        <input
-                          class=" form-check-input"
-                          type="checkbox"
-                          value=""
-                        />
-
-                        <span class=" form-check-sign">
-                          <span class=" check"> </span>
-                        </span>
-                      </label>
-                    </div>
-                  </td>
-                  <td>
-                    <p class=" title">Solve the issues</p>
-                    <p class=" text-muted">
-                      Fifty percent of all respondents said they would be more
-                      likely to shop at a company
-                    </p>
-                  </td>
-                  <td class=" td-actions text-right">
-                    <button class=" btn btn-link" type="button" placement="left" ngbTooltip="Edit Task" container="body" >
-                      <i class=" tim-icons icon-pencil"> </i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class=" form-check">
-                      <label class=" form-check-label">
-                        <input
-                          class=" form-check-input"
-                          type="checkbox"
-                          value=""
-                        />
-
-                        <span class=" form-check-sign">
-                          <span class=" check"> </span>
-                        </span>
-                      </label>
-                    </div>
-                  </td>
-                  <td>
-                    <p class=" title">Release v2.0.0</p>
-                    <p class=" text-muted">
-                      Ra Ave SW, Seattle, WA 98116, SUA 11:19 AM
-                    </p>
-                  </td>
-                  <td class=" td-actions text-right">
-                    <button class=" btn btn-link" type="button" placement="left" ngbTooltip="Edit Task" container="body"  >
-                      <i class=" tim-icons icon-pencil"> </i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class=" form-check">
-                      <label class=" form-check-label">
-                        <input
-                          class=" form-check-input"
-                          type="checkbox"
-                          value=""
-                        />
-
-                        <span class=" form-check-sign">
-                          <span class=" check"> </span>
-                        </span>
-                      </label>
-                    </div>
-                  </td>
-                  <td>
-                    <p class=" title">Export the processed files</p>
-                    <p class=" text-muted">
-                      The report also shows that consumers will not easily
-                      forgive a company once a breach exposing their personal
-                      data occurs.
-                    </p>
-                  </td>
-                  <td class=" td-actions text-right">
-                    <button class=" btn btn-link" type="button" placement="left" ngbTooltip="Edit Task" container="body" >
-                      <i class=" tim-icons icon-pencil"> </i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class=" form-check">
-                      <label class=" form-check-label">
-                        <input
-                          class=" form-check-input"
-                          type="checkbox"
-                          value=""
-                        />
-
-                        <span class=" form-check-sign">
-                          <span class=" check"> </span>
-                        </span>
-                      </label>
-                    </div>
-                  </td>
-                  <td>
-                    <p class=" title">Arival at export process</p>
-                    <p class=" text-muted">
-                      Capitol Hill, Seattle, WA 12:34 AM
-                    </p>
-                  </td>
-                  <td class=" td-actions text-right">
-                    <button class=" btn btn-link" type="button" placement="left" ngbTooltip="Edit Task" container="body" >
-                      <i class=" tim-icons icon-pencil"> </i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class=" col-lg-6 col-md-12">
+    <div class=" col-12">
       <div class=" card">
         <div class=" card-header">
-          <h4 class=" card-title">Simple Table</h4>
+          <h4 class=" card-title">Por encargado</h4>
         </div>
         <div class=" card-body">
-          <div class=" table-responsive">
-            <table class=" table tablesorter" id="">
+          <div class="col-11 ml-4">
+            <table class=" table tablesorter text-center" id="">
               <thead class=" text-primary">
                 <tr>
-                  <th>Name</th>
-                  <th>Country</th>
-                  <th>City</th>
-                  <th class=" text-center">Salary</th>
+                  <th class="col-1">Nº</th>
+                  <th class="col-2">Encargado</th>
+                  <th class="col-2">Productos</th>
+                  <th class="col-2">Surtidores</th>
+                  <th class="col-2">Rendido</th>
+                  <th class="col-2">Diferencia</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>Dakota Rice</td>
-                  <td>Niger</td>
-                  <td>Oud-Turnhout</td>
-                  <td class=" text-center">$36,738</td>
-                </tr>
-                <tr>
-                  <td>Minerva Hooper</td>
-                  <td>CuraÃ§ao</td>
-                  <td>Sinaai-Waas</td>
-                  <td class=" text-center">$23,789</td>
-                </tr>
-                <tr>
-                  <td>Sage Rodriguez</td>
-                  <td>Netherlands</td>
-                  <td>Baileux</td>
-                  <td class=" text-center">$56,142</td>
-                </tr>
-                <tr>
-                  <td>Philip Chaney</td>
-                  <td>Korea, South</td>
-                  <td>Overland Park</td>
-                  <td class=" text-center">$38,735</td>
-                </tr>
-                <tr>
-                  <td>Doris Greene</td>
-                  <td>Malawi</td>
-                  <td>Feldkirchen in KÃ¤rnten</td>
-                  <td class=" text-center">$63,542</td>
-                </tr>
-                <tr>
-                  <td>Mason Porter</td>
-                  <td>Chile</td>
-                  <td>Gloucester</td>
-                  <td class=" text-center">$78,615</td>
-                </tr>
-                <tr>
-                  <td>Jon Porter</td>
-                  <td>Portugal</td>
-                  <td>Gloucester</td>
-                  <td class=" text-center">$98,615</td>
-                </tr>
-              </tbody>
             </table>
           </div>
+          <ngb-accordion [closeOthers]="true" activeIds="" *ngFor="let e of employeeSummary">
+            <ngb-panel [id]="e.uname">
+              <ng-template ngbPanelTitle>
+                <table style="width: 100%;">
+                  <thead>
+                    <tr class="text-center">
+                      <th class="col-1">{{e.N_OP}}</th>
+                      <th class="col-2">{{e.uname}}</th>
+                      <th class="col-2 text-muted">{{e.PRODUCTS_TOTAL|currency:'ARS'}}</th>
+                      <th class="col-2 text-muted">{{e.PUMPS_TOTAL|currency:'ARS'}}</th>
+                      <th class="col-2 text-muted">{{e.REPORT|currency:'ARS'}}</th>
+                      <th class="col-2" [ngClass]="{'text-danger-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))<0,'text-success-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))>0}">{{(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))|currency:'ARS'}}</th>
+                    </tr>
+                  </thead>
+                </table>
+              </ng-template>
+              <ng-template ngbPanelContent>
+                <table class=" table tablesorter" id="">
+                  <thead class=" text-primary">
+                    <tr>
+                      <th>ID</th>
+                      <th>Fecha</th>
+                      <th>Venta Productos</th>
+                      <th>Venta Surtidores</th>
+                      <th>Total Rendido</th>
+                      <th>Diferencia S/F</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let item of operationsReport|byuname:e.employee_id">
+                    <tr>
+                      <td><a [routerLink]="['/operations/detail/'+item.id]" href="" target="_blank">{{item.id}}</a></td>
+                      <td>{{item.timestamp|date:'dd/MM/YY, HH:mm hs'}}</td>
+                      <td>{{item.PRODUCT_AMOUNT_SOLD??0|currency:'ARS'}}</td>
+                      <td>{{item.PUMPS_AMOUNT_SOLD??0|currency:'ARS'}}</td>
+                      <td>{{item.REPORT??0|currency:'ARS'}}</td>
+                      <td>{{(+item.REPORT-(+item.PUMPS_AMOUNT_SOLD+ +item.PRODUCT_AMOUNT_SOLD))|currency:'ARS'}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-template>
+            </ngb-panel>
+          </ngb-accordion>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<ng-template #t let-date let-focused="focused">
+  <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
+    [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date"
+    (mouseleave)="hoveredDate = null">
+    {{ date.day }}
+  </span>
+</ng-template>

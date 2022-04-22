@@ -1,0 +1,579 @@
+<div class="container-md">
+    <div class="row justify-content-center mx-0">
+        <div class="col-md-11 col-xl-10">
+            <div class=" card mt-5">
+                <div *ngIf="!isLoading; else spinnerBlock"
+                    class="px-4 card-header d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-list-check fa-3x"></i>
+                        <div class="ml-3">
+                            <p *ngIf="operationDetail.operation.operation_type=='CLOSE'"
+                                class=" display-4 text-uppercase">Cierre de turno</p>
+                            <p *ngIf="operationDetail.operation.operation_type=='OPEN'"
+                                class=" display-4 text-uppercase">Apertura de turno</p>
+                            <p class="h4 mb-1 font-weight-light">{{operationDetail.operation.uname}}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="h3 mb-1 text-muted font-italic font-weight-lighter">Turno
+                            {{operationDetail.operation.turn_name}}</div>
+                        <div class="h5 mb-1 text-muted font-italic font-weight-lighter">
+                            {{operationDetail.operation.timestamp|date:'E d/MM/YYYY, HH:mm'}}hs</div>
+                        <div class="h5 mb-1 text-muted">Planilla Nº{{operationDetail.operation.id}}</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="h4">Registro:</p>
+                    <ngb-accordion [closeOthers]="true" activeIds="">
+                        <ngb-panel id="pumps">
+                            <ng-template ngbPanelTitle>
+                                <div *ngIf="!isLoading" class="d-flex align-items-center">
+                                    <div class="mx-3">
+                                        <p class="text-dark title">
+                                            Surtidores</p>
+                                    </div>
+                                    <div class="mx-5">
+                                        <p class="text-muted m-0" style="font-size: larger;">
+                                            {{pumpTotalAmount()|currency:'ARS'}}</p>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template ngbPanelContent>
+                                <div class="table-responsive">
+                                    <table class=" table table-fix-head" id="">
+                                        <thead class="thead-dark text-primary">
+                                            <tr>
+                                                <th class="text-center">#</th>
+                                                <th class="d-none d-lg-table-cell">Tipo</th>
+                                                <th class="d-none d-lg-table-cell">Descripcion</th>
+                                                <th class="text-center">Lectura Inicial</th>
+                                                <th class="text-center">Lectura Final</th>
+                                                <th class="text-center">Venteo</th>
+                                                <th class="text-center">Vendido</th>
+                                                <th class="d-none d-lg-table-cell text-center">Precio Unitario</th>
+                                                <th class=" text-center">Importe</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngIf="!isLoading">
+                                            <tr *ngFor="let item of operationDetail.pumps"
+                                                [ngClass]="{'bg-primary':!!item.venting||!!item.meter_diff}">
+                                                <td class="text-center">{{item.pump_id}}
+                                                </td>
+                                                <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                                                    {{item.type_name}}</td>
+                                                <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                                                    {{!item.description?'-':item.description}}</td>
+                                                <td class=" text-center">
+                                                    {{item.init_meter| number:'1.2-2'}}<small>[{{item.unit}}]</small>
+                                                </td>
+                                                <td>
+                                                    {{+item.init_meter +
+                                                    +item.meter_diff | number:'1.2-2'}}<small>[{{item.unit}}]</small>
+                                                </td>
+                                                <td>
+                                                    {{item.venting??0| number:'1.2-2'}}<small>[{{item.unit}}]</small>
+                                                </td>
+                                                <td class="text-center">
+                                                    <strong>{{item.meter_diff??0|
+                                                        number:'1.2-2'}}</strong><small>[{{item.unit}}]</small>
+                                                </td>
+
+                                                <td class="d-none d-lg-table-cell text-center">
+                                                    {{item.unit_price|currency:'ARS'}}
+                                                </td>
+                                                <td class=" text-center">{{item.amount_sold??0|currency:'ARS'}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </ng-template>
+                        </ngb-panel>
+                        <ngb-panel id="gral_meter">
+                            <ng-template ngbPanelTitle>
+                                <div *ngIf="!isLoading" class="d-flex align-items-center">
+                                    <div class="mx-3">
+                                        <p class="text-dark title">
+                                            Medidor General</p>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template ngbPanelContent>
+                                <div class="table-responsive">
+                                    <table class=" table table-fix-head" id="">
+                                        <thead class="thead-dark text-primary">
+                                            <tr>
+                                                <th class="text-center">#</th>
+                                                <th class="text-center">Lectura Inicial</th>
+                                                <th class="text-center">Diferencia</th>
+                                                <th class="text-center">Lectura Final</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngIf="!isLoading">
+                                            <tr>
+                                                <td>GRAL</td>
+                                                <td class="text-center">{{(+operationDetail.gralMeter.accumulated -
+                                                    +operationDetail.gralMeter.meter_diff)>0 ?
+                                                    (+operationDetail.gralMeter.accumulated -
+                                                    +operationDetail.gralMeter.meter_diff) : '0'| number:'1.2-2' }}</td>
+                                                <td class="text-center">{{operationDetail.gralMeter.meter_diff |
+                                                    number:'1.2-2'}}</td>
+                                                <td class="text-center">{{+operationDetail.gralMeter.accumulated |
+                                                    number:'1.2-2'}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </ng-template>
+                        </ngb-panel>
+                        <ngb-panel id="products">
+                            <ng-template ngbPanelTitle>
+                                <div *ngIf="!isLoading" class="d-flex align-items-center">
+                                    <div class="mx-3">
+                                        <p class="text-dark title">
+                                            Productos</p>
+                                    </div>
+                                    <div class="mx-5">
+                                        <p class="text-muted m-0" style="font-size: larger;">
+                                            {{productTotalAmount()|currency:'ARS'}}</p>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template ngbPanelContent>
+                                <div class="table-responsive">
+                                    <table class=" table table-fix-head" id="">
+                                        <thead class="thead-dark text-primary">
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th class="d-none d-lg-table-cell">Descripcion</th>
+                                                <th class="d-none d-lg-table-cell">Categoría</th>
+                                                <th class="text-center">Stock inicial</th>
+                                                <th class="text-center">Vendidos</th>
+                                                <th class="text-center">Repuestos</th>
+                                                <th class="text-center">Stock Final</th>
+                                                <th class="d-none d-lg-table-cell text-center">Precio Unitario</th>
+                                                <th class=" text-center">Importe</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngIf="!isLoading">
+                                            <tr *ngFor="let item of operationDetail.products"
+                                                [ngClass]="{'bg-primary':!!item.items_sold||!!item.items_replacement}">
+                                                <td class="cell-ellipsis" style="--mw:90px;">{{item.name}}
+                                                </td>
+                                                <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                                                    {{!item.description?'-':item.description}}</td>
+                                                <td class="d-none d-lg-table-cell">
+                                                    {{item.category??'-'}}
+                                                </td>
+                                                <td class=" text-center">{{item.init_stock}}</td>
+                                                <td class=" text-center">
+                                                    {{item.items_sold??0}}
+                                                </td>
+                                                <td class=" text-center">
+                                                    {{item.items_replacement??0}}
+                                                </td>
+                                                <td class=" text-center">
+                                                    {{+item.init_stock + +(item.items_replacement??0) -
+                                                    +(item.items_sold??0)}}
+                                                </td>
+                                                <td class="d-none d-lg-table-cell text-center">
+                                                    {{item.unit_price|currency:'ARS'}}
+                                                </td>
+                                                <td class=" text-center">{{item.amount_sold??0|currency:'ARS'}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </ng-template>
+                        </ngb-panel>
+                        <ngb-panel id="accounts">
+                            <ng-template ngbPanelTitle>
+                                <div *ngIf="!isLoading" class="d-flex align-items-center">
+                                    <div class="mx-3">
+                                        <p class="text-dark title">
+                                            Rendición</p>
+                                    </div>
+                                    <div class="mx-5">
+                                        <p class="text-muted m-0" style="font-size: larger;">
+                                            {{accTotalAmount()|currency:'ARS'}}</p>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template ngbPanelContent>
+                                <div class="table-responsive">
+                                    <table class=" table table-fix-head" id="">
+                                        <thead class="thead-dark text-primary">
+                                            <tr>
+                                                <th>Tipo</th>
+                                                <th class="d-none d-lg-table-cell">Descripcion</th>
+                                                <th>Monto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngIf="!isLoading">
+                                            <tr
+                                                [ngClass]="{'table-success':+operationDetail.accountancy.envelopes_cash>0}">
+                                                <td>Sobres</td>
+                                                <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">Nº
+                                                    de
+                                                    sobres/Total entregado</td>
+                                                <td>
+                                                    <div>
+                                                        {{operationDetail.accountancy.n_envelopes}}/{{operationDetail.accountancy.envelopes_cash|currency:'ARS'}}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr [ngClass]="{'table-success':+operationDetail.accountancy.cash>0}">
+                                                <td>Efectivo</td>
+                                                <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                                                    Dinero
+                                                    en
+                                                    efectivo</td>
+                                                <td>{{operationDetail.accountancy.cash|currency:'ARS'}}
+                                                </td>
+                                            </tr>
+                                            <tr
+                                                [ngClass]="{'table-danger':+operationDetail.accountancy.envelopes_cash>0}">
+                                                <td>Vales</td>
+                                                <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                                                    Vales
+                                                    entregados</td>
+                                                <td>{{operationDetail.accountancy.vouchers|currency:'ARS'}}
+                                                </td>
+                                            </tr>
+                                            <tr [ngClass]="{'table-success':+operationDetail.accountancy.cards>0}">
+                                                <td>Tarjetas</td>
+                                                <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                                                    Crédito/Débito</td>
+                                                <td>{{operationDetail.accountancy.cards|currency:'ARS'}}
+                                                </td>
+                                            </tr>
+                                            <tr [ngClass]="{'table-danger':+operationDetail.accountancy.expenses>0}">
+                                                <td>Gastos</td>
+                                                <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                                                    Retiros
+                                                </td>
+                                                <td>{{operationDetail.accountancy.expenses|currency:'ARS'}}
+                                                </td>
+                                            </tr>
+                                            <tr
+                                                [ngClass]="{'table-success':+operationDetail.accountancy.MercadoPago>0}">
+                                                <td>MPago</td>
+                                                <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                                                    MercadoPago
+                                                </td>
+                                                <td>{{operationDetail.accountancy.MercadoPago|currency:'ARS'}}
+                                                </td>
+                                            </tr>
+                                            <tr [ngClass]="{'table-success':+operationDetail.accountancy.others>0}">
+                                                <td>Otros</td>
+                                                <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                                                    Ingreso
+                                                </td>
+                                                <td>{{operationDetail.accountancy.others|currency:'ARS'}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </ng-template>
+                        </ngb-panel>
+                    </ngb-accordion>
+                    <div class="p-4">
+                        <p class="display-4 text-uppercase text-center text-md-left">Resultado del turno</p>
+                        <div *ngIf="!isLoading" class="mt-3 row align-items-center justify-content-center text-center"
+                            style="font-size: 1.5em;">
+                            <div class="col-xl-3 col-md-5 flex-column ">
+                                <p class="font-weight-light text-muted mb-0">Rendición</p>
+                                <p class="font-weight-light" style="font-size: 1.7em;">
+                                    {{accTotalAmount()|currency:'ARS'}}</p>
+                            </div>
+
+                            <div class="col-xl-1 col-md-2">
+                                <p class="font-weight-bold" style="font-size: 1.7em;">-</p>
+                            </div>
+                            <div class="col-xl-3 col-md-5 flex-column">
+                                <p class="font-weight-light text-muted mb-0">Ventas</p>
+                                <p class="font-weight-light" style="font-size: 1.7em;">
+                                    {{productTotalAmount()+pumpTotalAmount()|currency:'ARS'}}</p>
+                            </div>
+
+                            <div class="col-md-1">
+                                <p class="font-weight-bold" style="font-size: 1.7em;">=</p>
+                            </div>
+                            <div class="col-xl-3 col-md-5 flex-column">
+                                <p class="font-weight-light text-muted mb-0">Diferencia <span
+                                        class="text-success">S</span>/<span class="text-danger">F</span></p>
+                                <p class="font-weight-bold"
+                                    [ngClass]="{'text-success':accTotalAmount()-(productTotalAmount()+pumpTotalAmount())>0,'text-danger':accTotalAmount()-(productTotalAmount()+pumpTotalAmount())<0}"
+                                    style="font-size: 1.7em;">
+                                    {{accTotalAmount()-(productTotalAmount()+pumpTotalAmount())|currency:'ARS'}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!isLoading" class="p-4">
+                        <div *ngIf="operationDetail.operation.observations!=''" class="row mt-3">
+                            <div class="col">
+                                <p class="display-4 text-uppercase text-center text-md-left">Observaciones</p>
+                                <p class="font-weight-light text-center text-md-left mb-0">
+                                    {{isLoading?'':operationDetail.operation.observations}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="col text-center">
+                            <button class="btn btn-simple btn-neutral " (click)="print(PrintTemplate)"><i
+                                    class="fa-solid fa-print"></i> Imprimir</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <ng-template #spinnerBlock>
+        <div class="row py-5">
+            <div class="col d-flex align-items-center justify-content-center">
+                <div class="sk-chase" style="font-size: 5em;">
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template #PrintTemplate>
+        <div class="white-content" style="background: #fff !important;" *ngIf="!isLoading">
+            <h1 class="text-center display-2">Planilla de Turno Nº {{operationDetail.operation.id}}</h1>
+            <p *ngIf="operationDetail.operation.operation_type=='CLOSE'" class=" display-3">CIERRE DE TURNO
+            </p>
+            <p *ngIf="operationDetail.operation.operation_type=='OPEN'" class=" display-3">APERTURA DE TURNO
+            </p>
+            <p> <span class="font-weight-bold">Turno:</span> {{operationDetail.operation.turn_name}}</p>
+            <p><span class="font-weight-bold">Fecha/Hora:</span> {{operationDetail.operation.timestamp|date:'E
+                d/MM/YYYY,
+                HH:mm'}}hs</p>
+            <p><span class="font-weight-bold">Encargado:</span> {{operationDetail.operation.uname}}</p>
+            <p><span class="font-weight-bold">Observaciones:</span> {{operationDetail.operation.observations}}</p>
+
+            <p class="display-4 font-weight-bold pt-4">REGISTRO:</p>
+            <p class="display-4">Surtidores</p>
+            <table class=" table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="d-none d-lg-table-cell">Tipo</th>
+                        <th class="d-none d-lg-table-cell">Descripcion</th>
+                        <th class="text-center">Lectura Inicial</th>
+                        <th class="text-center">Lectura Final</th>
+                        <th class="text-center">Venteo</th>
+                        <th class="text-center">Vendido</th>
+                        <th class="d-none d-lg-table-cell text-center">Precio Unitario</th>
+                        <th class=" text-center">Importe</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of operationDetail.pumps">
+                        <td class="text-center">{{item.pump_id}}
+                        </td>
+                        <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                            {{item.type_name}}</td>
+                        <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                            {{!item.description?'-':item.description}}</td>
+                        <td class=" text-center">
+                            {{item.init_meter| number:'1.2-2'}}<small>[{{item.unit}}]</small>
+                        </td>
+                        <td>
+                            {{+item.init_meter +
+                            +item.meter_diff | number:'1.2-2'}}<small>[{{item.unit}}]</small>
+                        </td>
+                        <td>
+                            {{item.venting??0| number:'1.2-2'}}<small>[{{item.unit}}]</small>
+                        </td>
+                        <td class="text-center">
+                            <strong>{{item.meter_diff??0|
+                                number:'1.2-2'}}</strong><small>[{{item.unit}}]</small>
+                        </td>
+
+                        <td class="d-none d-lg-table-cell text-center">
+                            {{item.unit_price|currency:'ARS'}}
+                        </td>
+                        <td class=" text-center">{{item.amount_sold??0|currency:'ARS'}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="display-4 pt-4 ">Medidor General</p>
+            <table class=" table table-bordered" id="">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Lectura Inicial</th>
+                        <th class="text-center">Diferencia</th>
+                        <th class="text-center">Lectura Final</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="!isLoading">
+                    <tr>
+                        <td>GRAL</td>
+                        <td class="text-center">{{(+operationDetail.gralMeter.accumulated -
+                            +operationDetail.gralMeter.meter_diff)>0 ? (+operationDetail.gralMeter.accumulated -
+                            +operationDetail.gralMeter.meter_diff) : '0'| number:'1.2-2' }}</td>
+                        <td class="text-center">{{operationDetail.gralMeter.meter_diff |
+                            number:'1.2-2'}}</td>
+                        <td class="text-center">{{operationDetail.gralMeter.accumulated| number:'1.2-2'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="display-4 pt-4 ">Productos</p>
+            <table class=" table table-bordered" id="">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th class="d-none d-lg-table-cell">Descripcion</th>
+                        <th class="d-none d-lg-table-cell">Categoría</th>
+                        <th class="text-center">Stock inicial</th>
+                        <th class="text-center">Vendidos</th>
+                        <th class="text-center">Repuestos</th>
+                        <th class="text-center">Stock Final</th>
+                        <th class="d-none d-lg-table-cell text-center">Precio Unitario</th>
+                        <th class=" text-center">Importe</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of operationDetail.products">
+                        <td class="cell-ellipsis" style="--mw:90px;">{{item.name}}
+                        </td>
+                        <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                            {{!item.description?'-':item.description}}</td>
+                        <td class="d-none d-lg-table-cell">
+                            {{item.category??'-'}}
+                        </td>
+                        <td class=" text-center">{{item.init_stock}}</td>
+                        <td class=" text-center">
+                            {{item.items_sold??0}}
+                        </td>
+                        <td class=" text-center">
+                            {{item.items_replacement??0}}
+                        </td>
+                        <td class=" text-center">
+                            {{+item.init_stock + +(item.items_replacement??0) - +(item.items_sold??0) }}
+                        </td>
+                        <td class="d-none d-lg-table-cell text-center">
+                            {{item.unit_price|currency:'ARS'}}
+                        </td>
+                        <td class=" text-center">{{item.amount_sold??0|currency:'ARS'}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="display-4 pt-4 ">Rendición</p>
+            <table class=" table table-bordered" id="">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th class="d-none d-lg-table-cell">Descripcion</th>
+                        <th>Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sobres</td>
+                        <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">Nº
+                            de
+                            sobres/Total entregado</td>
+                        <td>
+                            <div>
+                                {{operationDetail.accountancy.n_envelopes}}/{{operationDetail.accountancy.envelopes_cash|currency:'ARS'}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Efectivo</td>
+                        <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                            Dinero
+                            en
+                            efectivo</td>
+                        <td>{{operationDetail.accountancy.cash|currency:'ARS'}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Vales</td>
+                        <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                            Vales
+                            entregados</td>
+                        <td>{{operationDetail.accountancy.vouchers|currency:'ARS'}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tarjetas</td>
+                        <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                            Crédito/Débito</td>
+                        <td>{{operationDetail.accountancy.cards|currency:'ARS'}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Gastos</td>
+                        <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                            Retiros
+                        </td>
+                        <td>{{operationDetail.accountancy.expenses|currency:'ARS'}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>MPago</td>
+                        <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                            MercadoPago
+                        </td>
+                        <td>{{operationDetail.accountancy.MercadoPago|currency:'ARS'}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Otros</td>
+                        <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                            Ingreso
+                        </td>
+                        <td>{{operationDetail.accountancy.others|currency:'ARS'}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="display-4 text-uppercase text-center text-md-left">Resultado del turno</p>
+            <div class="mt-3 row align-items-center justify-content-center text-center" style="font-size: 1.5em;">
+                <div class="col-xl-3 col-md-5 flex-column ">
+                    <p class="font-weight-light text-muted mb-0">Rendición</p>
+                    <p class="font-weight-light" style="font-size: 1.7em;">
+                        {{accTotalAmount()|currency:'ARS'}}</p>
+                </div>
+
+                <div class="col-xl-1 col-md-2">
+                    <p class="font-weight-bold" style="font-size: 1.7em;">-</p>
+                </div>
+                <div class="col-xl-3 col-md-5 flex-column">
+                    <p class="font-weight-light text-muted mb-0">Ventas</p>
+                    <p class="font-weight-light" style="font-size: 1.7em;">
+                        {{productTotalAmount()+pumpTotalAmount()|currency:'ARS'}}</p>
+                </div>
+
+                <div class="col-md-1">
+                    <p class="font-weight-bold" style="font-size: 1.7em;">=</p>
+                </div>
+                <div class="col-xl-3 col-md-5 flex-column">
+                    <p class="font-weight-light text-muted mb-0">Diferencia S/F</p>
+                    <p class="font-weight-bold" style="font-size: 1.7em;">
+                        {{accTotalAmount()-(productTotalAmount()+pumpTotalAmount())|currency:'ARS'}}</p>
+                </div>
+            </div>
+
+        </div>
+    </ng-template>

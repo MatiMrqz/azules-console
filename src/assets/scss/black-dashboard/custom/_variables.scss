@@ -109,7 +109,7 @@ $black:         #222a42 !default;
 
 // gradient
 $default-states:       #263148 !default;
-$primary-states:       #6a5de0 !default;
+$primary-states:       #220e33 !default;
 $success-states:       #0098f0 !default;
 $info-states:          #3358f4 !default;
 $warning-states:       #ff6491 !default;
@@ -380,7 +380,7 @@ $general-transition-time:     300ms             !default;
 $font-family-base:            'Inter', sans-serif !default;
 $font-family-alt:             'Inter', sans-serif !default;
 
-$font-size-dash:              .875rem !default;
+$font-size-dash:              1rem !default;
 
 $font-size-base:              $font-size-dash !default; // Assumes the browser default, typically `16px`
 $font-size-xl:                ($font-size-base * 1.428);

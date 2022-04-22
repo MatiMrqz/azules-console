@@ -6,8 +6,10 @@ import { FormsModule } from "@angular/forms";
 
 import { EmployeeLayoutRoutes } from "./employee-layout.routing";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { EmployeeComponent, ValidProductsPipe } from "src/app/pages/employee/employee.component";
-
+import { CloseTurnComponent, ValidProductsPipe } from "src/app/pages/employee/close-turn.component";
+import { LoadingComponent } from "src/app/pages/loading/loading.component";
+import { OpenTurnComponent } from "src/app/pages/open-turn/open-turn.component";
+import { DynamicRouteGuard } from "./dynamic-route.guard";
 @NgModule({
   imports: [
     CommonModule,
@@ -17,7 +19,9 @@ import { EmployeeComponent, ValidProductsPipe } from "src/app/pages/employee/emp
     NgbModule,
   ],
   declarations: [
-    EmployeeComponent, ValidProductsPipe
-  ]
+    CloseTurnComponent, ValidProductsPipe, LoadingComponent, OpenTurnComponent
+  ],
+  providers:[DynamicRouteGuard],
+
 })
-export class EmployeeLayoutModule {}
+export class EmployeeLayoutModule { }

@@ -3,9 +3,7 @@ import { webModule } from 'src/environments/environment.prod';
 import { AuthDevService } from './auth-dev.service';
 import { AuthService } from './auth.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class WebService {
 
   constructor(
@@ -32,23 +30,51 @@ export class WebService {
     if (!token) {
       return
     }
-    console.log('Setting new token')
+    console.debug('Setting new AuthToken')
     this.authService.setToken(token)
+    this.headersWithApiandAuth = {
+      'Content-Type': 'application/json',
+      'Api-Key': webModule.apiKey,
+      'Authorization': this.authService.getToken()
+    }
   }
 
   private updateDevToken(token?: string) {
     if (!token) {
       return
     }
-    console.log('Setting new token')
+    console.log('Setting new Dev AuthToken')
     this.authDevService.setToken(token)
+    this.headersWithApiandDevAuth = {
+      'Content-Type': 'application/json',
+      'Api-Key': webModule.apiKey,
+      'Authorization': this.authDevService.getToken()
+    }
   }
 
-  public adminLogin(user: { mail: string, pass: string }) {
+  public async adminLogin(user: { mail: string, pass: string }) {
     return fetch(webModule.baseUrl + '/auth/admin/login', {
       method: 'POST',
       headers: this.headersWithApi,
       body: JSON.stringify(user)
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          // this.authService.setToken(res.headers.get('authorization'))
+          return data
+        };
+
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+
+  public newAdmin(mail: string) {
+    return fetch(webModule.baseUrl + '/auth/admin/new', {
+      method: 'POST',
+      headers: this.headersWithApiandAuth,
+      body: JSON.stringify({ mail })
     }).then(
       async res => {
         const data = await res.json()
@@ -263,6 +289,20 @@ export class WebService {
         const data = await res.json()
         if (res.status == 200) {
           this.updateDevToken(res.headers.get('authorization'))
+          return data
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getGralMeter(): Promise<{ accumulated: number }> {
+    return fetch(webModule.baseUrl + '/pumps/gral-meter', {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
           return data
         }
         throw data.error;
@@ -546,6 +586,20 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
+  public getTurnsDev(): Promise<Array<any>> {
+    return fetch(webModule.baseUrl + '/employees/turns', {
+      method: 'GET',
+      headers: this.headersWithApiandDevAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateDevToken(res.headers.get('authorization'))
+          return data as any[]
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
   public newTurn(item: { name: string, schedule?: string }): Promise<any> {
     return fetch(webModule.baseUrl + '/employees/turns/', {
       method: 'POST',
@@ -599,17 +653,204 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public shiftClosingDev(operation:object): Promise<Array<any>> {
+  public shiftClosingDev(operation: object): Promise<any> {
     return fetch(webModule.baseUrl + '/operations/close/', {
       method: 'POST',
       headers: this.headersWithApiandDevAuth,
-      body:JSON.stringify(operation)
+      body: JSON.stringify(operation)
     }).then(
       async res => {
         const data = await res.json()
         if (res.status == 200) {
           this.updateDevToken(res.headers.get('authorization'))
-          return data as any[]
+          return data as any
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public shiftOpeningDev(operation: object): Promise<any> {
+    return fetch(webModule.baseUrl + '/operations/open', {
+      method: 'POST',
+      headers: this.headersWithApiandDevAuth,
+      body: JSON.stringify(operation)
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateDevToken(res.headers.get('authorization'))
+          return data as any
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getLastOperation(): Promise<OperationEmpDB> {
+    return fetch(webModule.baseUrl + '/operations/', {
+      method: 'GET',
+      headers: this.headersWithApiandDevAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateDevToken(res.headers.get('authorization'))
+          return data as OperationEmpDB
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getLastOperationDash(): Promise<OperationEmpDB> {
+    return fetch(webModule.baseUrl + '/operations/', {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as OperationEmpDB
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getEmployeesDev(): Promise<Employee[]> {
+    return fetch(webModule.baseUrl + '/employees/all', {
+      method: 'GET',
+      headers: this.headersWithApiandDevAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateDevToken(res.headers.get('authorization'))
+          return data as Employee[]
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getEmployeesbyUuidDev(uuid: string): Promise<Employee> {
+    return fetch(webModule.baseUrl + `/employees/uuid/${uuid}`, {
+      method: 'GET',
+      headers: this.headersWithApiandDevAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateDevToken(res.headers.get('authorization'))
+          return data as Employee
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getOperationReport(fromDate?: string, toDate?: string): Promise<OperationsReport[]> {
+    return fetch(webModule.baseUrl + `/operations/report/all`, {
+      method: 'POST',
+      headers: this.headersWithApiandAuth,
+      body: JSON.stringify({ fromDate, toDate })
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getDailybyTurnsReport(fromDate?: string, toDate?: string): Promise<{ turn: string, schedule: string, dailyOperations: OperationsReport[] }[]> {
+    return fetch(webModule.baseUrl + `/operations/report/byturns`, {
+      method: 'POST',
+      headers: this.headersWithApiandAuth,
+      body: JSON.stringify({ fromDate, toDate })
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getPumpsGasSold(fromDate?: string, toDate?: string): Promise<{ id: number, PUMPS_M3_SOLD: number, timestamp: string }[]> {
+    return fetch(webModule.baseUrl + `/operations/report/gassold`, {
+      method: 'POST',
+      headers: this.headersWithApiandAuth,
+      body: JSON.stringify({ fromDate, toDate })
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public authorizeDevice(authToken: string): Promise<any> {
+    return fetch(webModule.baseUrl + `/device/authorize/${authToken}`, {
+      method: 'GET',
+      headers: this.headersWithApi,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateDevToken(res.headers.get('authorization'))
+          return data as any
+        };
+        throw data.error;
+      })
+  }
+  public getOperationsSumarybyEmployee(fromDate?: string, toDate?: string): Promise<OperationsEmployeeSummary[]> {
+    return fetch(webModule.baseUrl + '/operations/report/byemployee', {
+      method: 'POST',
+      headers: this.headersWithApiandAuth,
+      body: JSON.stringify({ fromDate, toDate })
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getOperationDetailbyId(id:number): Promise<{operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy}> {
+    return fetch(webModule.baseUrl + `/operations/${id}`, {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as {operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy}
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getAllOperations(period?:"1M"|"1Y"|"5Y"):Promise<Array<Operation>>{
+    return fetch(webModule.baseUrl + `/operations/all/${period}`, {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as Array<Operation>
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public registerNewAdmin(userData):Promise<void>{
+    return fetch(webModule.baseUrl + '/auth/admin/registration', {
+      method: 'POST',
+      headers: this.headersWithApiandAuth,
+      body:JSON.stringify(userData)
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          return
         }
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet

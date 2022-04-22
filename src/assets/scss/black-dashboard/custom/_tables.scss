@@ -7,7 +7,7 @@
 }
 .table{
   > tbody > tr > td {
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: $white !important;
 
     .photo {
       height: 30px;
@@ -203,4 +203,9 @@ table.tablesorter thead tr .headerSortDown {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.ngb-highlight{
+  font-weight: 800;
+  background-color: brown;
 }

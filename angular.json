@@ -36,6 +36,22 @@
             "scripts": []
           },
           "configurations": {
+            "dev": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -131,6 +147,9 @@
           },
           "configurations": {
             "production": {
+              "devServerTarget": "black-dashboard-angular:serve"
+            },
+            "dev":{
               "devServerTarget": "black-dashboard-angular:serve"
             }
           }

@@ -210,7 +210,16 @@
     transform: translateY(-1px);
     -webkit-transform: translateY(-1px);
 }
-
+.btn-group{
+  input[type="radio"]{
+    display: none;
+  }
+}
+.btn-group{
+  input[type="checkbox"]{
+    display: none;
+  }
+}
 .btn-round{
     border-width: $border-thin;
     border-radius: $btn-round-radius;

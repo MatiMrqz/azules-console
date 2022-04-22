@@ -17,7 +17,6 @@
                                 <input #showHidden type="checkbox" value="" />
                                 Mostrar Archivados </a>
                             <a href="javascript:void(0)" (click)="editCategoryModal()" ngbDropdownItem> Categorias </a>
-                            <a href="javascript:void(0)" ngbDropdownItem> Something else </a>
                         </div>
                     </div>
                     <div ngbDropdown>
@@ -68,7 +67,7 @@
                                             | date:'d/M/yy H:mm'}}</small></ng-template>
                                     <td>{{item.id}}</td>
                                     <td>{{item.name}}<span *ngIf="item.hidden"
-                                            class="badge bg-danger ml-2">Archivado</span>
+                                            class="badge bg-warning text-dark ml-2">Archivado</span>
                                     </td>
                                     <td>{{!item.description?'-':item.description}}</td>
                                     <td>{{!item.category_id?'-':getCategorybyId(item.category_id).name}}</td>
@@ -77,7 +76,7 @@
                                     <td class=" td-actions text-primary">
                                         <button class=" btn btn-link" type="button" placement="bottom"
                                             [ngbTooltip]="tipContent" container="body" (click)="editModal(item)">
-                                            <i class=" tim-icons icon-pencil text-info"> </i>
+                                            <i class=" tim-icons icon-pencil text-danger"> </i>
                                         </button>
                                     </td>
                                 </tr>

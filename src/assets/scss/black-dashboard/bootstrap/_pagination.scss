@@ -7,7 +7,7 @@
 .page-link {
   position: relative;
   display: block;
-  padding: $pagination-padding-y $pagination-padding-x;
+  padding: .5rem $pagination-padding-x;
   margin-left: -$pagination-border-width;
   line-height: $pagination-line-height;
   color: $pagination-color;
@@ -51,7 +51,7 @@
     z-index: 1;
     color: $pagination-active-color;
     background-color: $pagination-active-bg;
-    border-color: $pagination-active-border-color;
+    border-color: $white;
   }
 
   &.disabled .page-link {

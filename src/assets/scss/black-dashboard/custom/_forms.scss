@@ -131,3 +131,17 @@
     color: $danger-states;
   }
 }
+
+form > .simple-text{
+  text-transform: uppercase;
+  padding: $padding-base-vertical $padding-base-horizontal;
+  display: block;
+  white-space: nowrap;
+  color: $white !important;
+  text-decoration: none;
+  font-weight: $font-weight-extra-bold !important;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 2.5rem;
+  line-height: 30px;
+  overflow: hidden;
+}

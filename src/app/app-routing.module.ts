@@ -7,6 +7,7 @@ import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.compon
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { AuthGuard, AuthGuardDevice } from "./auth.guard";
 import { EmployeeLayoutComponent } from "./layouts/employee-layout/employee-layout.component";
+import { OperationDetailComponent } from "./pages/operation-detail/operation-detail.component";
 
 const routes: Routes = [
   {
@@ -16,9 +17,18 @@ const routes: Routes = [
       {
         path: "",
         loadChildren: () => import ("./layouts/employee-layout/employee-layout.module").then(m => m.EmployeeLayoutModule)
-      }
+      },
+      {
+        path: "**",
+        redirectTo:"",
+      },
     ],
     canActivateChild:[AuthGuardDevice]
+  },
+  {
+    path: "operations/detail/:id",
+    component: OperationDetailComponent,
+    canActivate:[AuthGuard]
   },
   {
     path: "",

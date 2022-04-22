@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WebDevService } from 'src/app/services/web-dev.service';
 import { WebService } from 'src/app/services/web.service';
 
 @Component({
@@ -13,7 +12,7 @@ export class DevAuthComponent implements OnInit {
   public isLoading:boolean=true;
   constructor(
     private route: ActivatedRoute,
-    private webDevService:WebDevService,
+    private webDevService:WebService,
     private router:Router
   ) { }
   private authToken?: string;

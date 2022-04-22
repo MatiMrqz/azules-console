@@ -1,42 +1,52 @@
-<div class="content content-login">
-    <div class=" row justify-content-center">
+<div class="container">
+    <div class=" row justify-content-center align-items-center" style="height: 95vh;">
         <div class=" col-md-8 col-lg-6">
             <div class=" card card-plain">
-                <div class=" card-header text-muted">Consola de Administración</div>
+                <div class=" card-header text-muted">Inicio de sesión</div>
                 <div class=" card-body text-center">
                     <div>
-                        <main class="form-signin">
-                            <form >
-                                <img class="mb-4" src="../../../assets/img/Logo_full.png" alt="" height="100"
-                                    height="57">
-                                <h1 class="h3 mb-3 fw-normal">Inicio de sesión</h1>
+                        <main>
+                            <form #f="ngForm" [ngClass]="{'was-validated':!f.valid&&f.touched}">
+                                <!-- <img class="mb-4" src="../../../assets/img/Logo_full.png" alt="" height="100"
+                                    height="57"> -->
+                                <a class="simple-text mt-2">
+                                    AZULES <span class="font-weight-light">SA</span>
+                                </a>
+                                <p class="h4 mb-2 fw-normal">Consola de administración</p>
 
-                                <div class="form-label text-left">
+                                <div class="form-label text-left position-relative">
                                     <label for="floatingInput">Email</label>
-                                    <input [(ngModel)]="mail" type="email" class="form-control" id="floatingInput"
-                                    placeholder="mail@ejemplo.com">
+                                    <input [(ngModel)]="mail" name="email" type="email" class="form-control"
+                                        id="floatingInput" placeholder="mail@ejemplo.com"
+                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required>
+                                    <div class="invalid-tooltip">
+                                        {{!mail?'Ingrese mail':'Mail inválido'}}
+                                    </div>
                                 </div>
-                                <div class="form-label text-left">
+                                <div class="form-label text-left position-relative">
                                     <label for="floatingPassword">Contraseña</label>
-                                    <input [(ngModel)]="pass" type="password" class="form-control" id="floatingPassword"
-                                    placeholder="Password">
+                                    <input [(ngModel)]="pass" name="password" type="password" class="form-control"
+                                        id="floatingPassword" placeholder="******" required>
+                                    <div class="invalid-tooltip">
+                                        Ingrese una contraseña
+                                    </div>
                                 </div>
-
-                                <div class="checkbox mb-3">
+                                <!-- <div class="checkbox mb-3">
                                     <label>
                                         <input type="checkbox" value="remember-me"> Recordarme
                                     </label>
-                                </div>
-                                <button class="w-50 btn btn btn-primary" type="button" (click)="adminLogin(mail,pass)" [disabled]="isLoading">
-                                        Acceder<div class="sk-chase" [ngClass]="{'d-none':!isLoading}">
-                                            <div class="sk-chase-dot"></div>
-                                            <div class="sk-chase-dot"></div>
-                                            <div class="sk-chase-dot"></div>
-                                            <div class="sk-chase-dot"></div>
-                                            <div class="sk-chase-dot"></div>
-                                            <div class="sk-chase-dot"></div>
-                                        </div>
-                                    </button>
+                                </div> -->
+                                <button class="w-50 btn btn btn-primary" type="button" (click)="adminLogin(mail,pass)"
+                                    [disabled]="!f.valid||isLoading">
+                                    Acceder<div class="sk-chase" [ngClass]="{'d-none':!isLoading}">
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                    </div>
+                                </button>
                                 <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
                             </form>
                         </main>

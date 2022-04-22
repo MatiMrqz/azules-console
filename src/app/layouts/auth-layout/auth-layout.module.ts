@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -8,6 +8,7 @@ import { HttpClientModule } from "@angular/common/http";
 
 import { LoginComponent } from 'src/app/pages/login/login.component';
 import { DevAuthComponent } from 'src/app/pages/dev-auth/dev-auth.component';
+import { RegisterComponent } from 'src/app/pages/register/register.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -18,7 +19,9 @@ import { DevAuthComponent } from 'src/app/pages/dev-auth/dev-auth.component';
   ],
   declarations: [
     LoginComponent,
-    DevAuthComponent
-  ]
+    DevAuthComponent,
+    RegisterComponent
+  ],
+  providers:[]
 })
 export class AuthLayoutModule { }

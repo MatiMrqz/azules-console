@@ -65,7 +65,7 @@
                                             | date:'d/M/yy H:mm'}}</small></ng-template>
                                     <td>{{i+1}}</td>
                                     <td>{{item.uname}}<span *ngIf="item.hidden"
-                                            class="badge bg-danger ml-2">Archivado</span>
+                                            class="badge bg-warning text-dark ml-2">Archivado</span>
                                     </td>
                                     <td>{{item.mail??'-'}}</td>
                                     <td>{{item.phone??'-'}}</td>
@@ -74,7 +74,7 @@
                                         <button class=" btn btn-link" type="button" placement="bottom"
                                             [ngbTooltip]="tipContent" container="body"
                                             (click)="editModal(editEmployeeModal,item)">
-                                            <i class=" tim-icons icon-pencil text-info"> </i>
+                                            <i class=" tim-icons icon-pencil text-danger"> </i>
                                         </button>
                                     </td>
                                 </tr>
@@ -222,7 +222,7 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cancel')">Cancelar</button>
-        <button type="button" class="btn btn-success" (click)="modal.close()" [disabled]="!adMail.valid"><i
+        <button type="button" class="btn btn-success" (click)="newAdminApi(adMail.value);modal.close()" [disabled]="!adMail.valid"><i
                 class="fa-solid fa-envelope-circle-check"> </i>Enviar</button>
     </div>
 </ng-template>

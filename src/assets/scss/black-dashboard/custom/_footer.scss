@@ -1,5 +1,8 @@
 .footer{
-    padding: 24px 0 24px 250px;
+    padding: 24px 0 5px 250px;
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
 
     [class*="container-"] {
       padding: 0;
@@ -24,7 +27,7 @@
     .nav-link {
       color: $white;
       padding: 0 $padding-base-vertical;
-      font-size: $font-size-sm;
+      font-size: $font-size-xs;
       text-transform: uppercase;
       text-decoration: none;
 
@@ -36,8 +39,7 @@
 
 
     .copyright{
-        font-size: $font-size-sm;
-        line-height: 1.8;
+        font-size: $font-size-xs;
         color: $white;
     }
 
