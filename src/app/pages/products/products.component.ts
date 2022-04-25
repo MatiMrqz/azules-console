@@ -42,11 +42,9 @@ export class ProductsComponent implements OnInit {
 
   private async updateProducts() {
     this.products = await this.webService.getAllProducts()
-    console.log(this.products)
   }
   private async updateCategories() {
     this.categories = await this.webService.getAllCategories()
-    console.log(this.categories)
   }
   public getCategorybyId(id?: number) {
     if (!id) return null
@@ -62,7 +60,7 @@ export class ProductsComponent implements OnInit {
     modalRef.componentInstance.categories = this.categories
     modalRef.result.then(
       (closed: string) => {
-        console.log(`Closed reason: ${closed}`)
+        console.debug(`Closed reason: ${closed}`)
         if (!closed.includes('Error:')) {
           this.showSuccess(closed)
           this.getAll()
@@ -70,9 +68,6 @@ export class ProductsComponent implements OnInit {
         }
         this.showError(closed)
         return
-      },
-      dismissed => {
-        console.log(`Dissmiss reason: ${dismissed}`)
       }
     )
   }
@@ -84,7 +79,7 @@ export class ProductsComponent implements OnInit {
     modalRef.componentInstance.categories = this.categories
     modalRef.result.then(
       (closed: string) => {
-        console.log(`Closed reason: ${closed}`)
+        console.debug(`Closed reason: ${closed}`)
         if (!closed.includes('Error:')) {
           this.showSuccess(closed)
           this.getAll()
@@ -92,9 +87,6 @@ export class ProductsComponent implements OnInit {
         }
         this.showError(closed)
         return
-      },
-      dismissed => {
-        console.log(`Dissmiss reason: ${dismissed}`)
       }
     )
   }
@@ -105,7 +97,7 @@ export class ProductsComponent implements OnInit {
       })
     modalRef.result.then(
       (closed: string) => {
-        console.log(`Closed reason: ${closed}`)
+        console.debug(`Closed reason: ${closed}`)
         if (!closed.includes('Error:')) {
           this.showSuccess(closed)
           this.getAll()
@@ -113,9 +105,6 @@ export class ProductsComponent implements OnInit {
         }
         this.showError(closed)
         return
-      },
-      dismissed => {
-        console.log(`Dissmiss reason: ${dismissed}`)
       }
     )
   }
@@ -129,10 +118,7 @@ export class ProductsComponent implements OnInit {
     modalRef.componentInstance.appendToggle()
     modalRef.result.then(
       (closed: string) => {
-        console.log(`Closed reason: ${closed}`)
-      },
-      dismissed => {
-        console.log(`Dissmiss reason: ${dismissed}`)
+        console.debug(`Closed reason: ${closed}`)
       }
     )
       .finally(() => {

@@ -55,10 +55,10 @@
                                     <td>{{item.id}}</td>
                                     <td>{{!item.type_id?'-':getTypebyId(item.type_id).name}}</td>
                                     <td>{{!item.description?'-':item.description}}</td>
-                                    <td class="text-center">{{item.meter}}
+                                    <td class="text-center">{{item.meter|number:'1.2-2'}}
                                         <small>[{{!item.type_id?'-':getTypebyId(item.type_id).unit}}]</small>
                                     </td>
-                                    <td class=" text-center">${{item.unit_price}}</td>
+                                    <td class=" text-center">{{item.unit_price|currency:'ARS'}}</td>
                                     <td class=" td-actions text-primary">
                                         <button class=" btn btn-link" type="button" placement="bottom"
                                             [ngbTooltip]="tipContent" container="body" (click)="editModal(item)">

@@ -13,7 +13,7 @@ export class ProductPipe implements PipeTransform {
     } else {
       return value.filter(v => { 
         v.description??=''
-        return (hidden ? true : v.hidden == hidden) && (v.name.toLowerCase().includes(searchString) || v.description.toLowerCase().includes(searchString))
+        return (hidden ? true : v.hidden == hidden) && (v.name.toLowerCase().includes(searchString) || v.description.toLowerCase().includes(searchString)|| v.unit_price.toString().includes(searchString.replace(/,/g,'.')))
       })
     }
   }

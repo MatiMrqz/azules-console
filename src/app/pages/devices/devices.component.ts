@@ -26,7 +26,7 @@ export class DevicesComponent implements OnInit {
     this.isLoading = true
     this.devices = await this.webService.getDevices()
     this.isLoading = false
-    console.debug(this.devices)
+    // console.debug(this.devices)
   }
 
   ngOnInit(): void {
@@ -57,7 +57,10 @@ export class DevicesComponent implements OnInit {
       console.debug({next:this.qrContent})
     })
     .then(()=>{
-      this.modalService.open(content)
+      this.modalService.open(content).result
+      .then(()=>{
+        this.updateDevices()
+      })
     })
     .catch((err)=>{
       this.showError(err);

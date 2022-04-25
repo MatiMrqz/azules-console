@@ -43,11 +43,9 @@ export class PumpsComponent implements OnInit {
 
   private async updatePumps() {
     this.pumps = await this.webService.getAllPumps()
-    console.log(this.pumps)
   }
   private async updateTypes() {
     this.types = await this.webService.getAllPumpTypes()
-    console.log(this.types)
   }
   public getTypebyId(id: number) {
     return this.types.find(c => c.id == id) ?? '-'
@@ -62,7 +60,7 @@ export class PumpsComponent implements OnInit {
     modalRef.componentInstance.types = this.types
     modalRef.result.then(
       (closed: string) => {
-        console.log(`Closed reason: ${closed}`)
+        console.debug(`Closed reason: ${closed}`)
         if (!closed.includes('Error:')) {
           this.showSuccess(closed)
           this.getAll()
@@ -70,9 +68,6 @@ export class PumpsComponent implements OnInit {
         }
         this.showError(closed)
         return
-      },
-      dismissed => {
-        console.log(`Dissmiss reason: ${dismissed}`)
       }
     )
   }
@@ -84,7 +79,7 @@ export class PumpsComponent implements OnInit {
     modalRef.componentInstance.types = this.types
     modalRef.result.then(
       (closed: string) => {
-        console.log(`Closed reason: ${closed}`)
+        console.debug(`Closed reason: ${closed}`)
         if (!closed.includes('Error:')) {
           this.showSuccess(closed)
           this.getAll()
@@ -92,9 +87,6 @@ export class PumpsComponent implements OnInit {
         }
         this.showError(closed)
         return
-      },
-      dismissed => {
-        console.log(`Dissmiss reason: ${dismissed}`)
       }
     )
   }
@@ -105,7 +97,7 @@ export class PumpsComponent implements OnInit {
       })
     modalRef.result.then(
       (closed: string) => {
-        console.log(`Closed reason: ${closed}`)
+        console.debug(`Closed reason: ${closed}`)
         if (!closed.includes('Error:')) {
           this.showSuccess(closed)
           this.getAll()
@@ -113,9 +105,6 @@ export class PumpsComponent implements OnInit {
         }
         this.showError(closed)
         return
-      },
-      dismissed => {
-        console.log(`Dissmiss reason: ${dismissed}`)
       }
     )
   }
@@ -129,10 +118,7 @@ export class PumpsComponent implements OnInit {
     modalRef.componentInstance.appendToggle()
     modalRef.result.then(
       (closed: string) => {
-        console.log(`Closed reason: ${closed}`)
-      },
-      dismissed => {
-        console.log(`Dissmiss reason: ${dismissed}`)
+        console.debug(`Closed reason: ${closed}`)
       }
     )
       .finally(() => {
@@ -150,7 +136,7 @@ export class PumpsComponent implements OnInit {
           modalRef.componentInstance.maxVal = res.gral_meter_max_value
           modalRef.result.then(
             (closed: string) => {
-              console.log(`Closed reason: ${closed}`)
+              console.debug(`Closed reason: ${closed}`)
               this.showSuccess(closed)
             },
             (dismissed:string)=>{
@@ -158,15 +144,6 @@ export class PumpsComponent implements OnInit {
             }
           )
       })
-  }
-
-  public setGralMeterMaxValueModal(content) {
-    this.modalService.open(content).result
-      .then(
-        val => {
-
-        }
-      )
   }
 
   private showError(msg: string) {

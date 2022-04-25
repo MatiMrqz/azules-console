@@ -41,14 +41,12 @@ export class UsersComponent implements OnInit {
 
   private async updateUsers() {
     this.users = await this.webService.getUsers()
-    console.log(this.users)
   }
   private async updateTurns() {
     const tempTurns = await this.webService.getTurns()
     this.turns = tempTurns.map(e => {
       return { editing: false, newName: e.name, ...e }
     })
-    console.log(this.turns)
   }
   public turnModal(content){
     const modalRef = this.modalService.open(content, {
@@ -56,7 +54,7 @@ export class UsersComponent implements OnInit {
     })
     modalRef.result.then(
       (closed: string) => {
-        console.log(closed)
+        console.debug(closed)
         // this.webService.newUser(this.user)
         //   .then(() => {
         //     this.showSuccess('Usuario añadido')
@@ -64,9 +62,6 @@ export class UsersComponent implements OnInit {
         //     this.getAll()
         //     this.setPass(this.user.pass)
         //   })
-      },
-      dismissed => {
-        console.log(`Dissmiss reason: ${dismissed}`)
       }
     )
   }
@@ -78,7 +73,7 @@ export class UsersComponent implements OnInit {
         this.isLoading = true
         newNameInput.value = ''
         newScheduleInput.value = ''
-        console.log(res)
+        console.debug(res)
         this.updateTurns().then(() => { this.isLoading = false })
       })
   }
@@ -86,7 +81,6 @@ export class UsersComponent implements OnInit {
     this.webService.editTurn({ name, newName, newSchedule })
       .then(res => {
         this.isLoading = true
-        console.log(res)
         this.updateTurns().then(() => { this.isLoading = false })
       })
   }
@@ -94,7 +88,6 @@ export class UsersComponent implements OnInit {
     this.webService.deleteTurn(name)
       .then(res => {
         this.isLoading = true
-        console.log(res)
         this.updateTurns().then(() => { this.isLoading = false })
       })
   }
@@ -105,7 +98,7 @@ public newAdmin(content){
   })
   modalRef.result.then(
     (closed: string) => {
-      console.log(closed)
+      console.debug(closed)
       // this.webService.newUser(this.user)
       //   .then(() => {
       //     this.showSuccess('Usuario añadido')
@@ -113,9 +106,6 @@ public newAdmin(content){
       //     this.getAll()
       //     this.setPass(this.user.pass)
       //   })
-    },
-    dismissed => {
-      console.log(`Dissmiss reason: ${dismissed}`)
     }
   )
 }
@@ -158,9 +148,6 @@ public newAdmin(content){
           .catch((err) => {
             this.showError(err)
           })
-      },
-      dismissed => {
-        console.log(`Dissmiss reason: ${dismissed}`)
       }
     )
   }
@@ -184,9 +171,6 @@ public newAdmin(content){
             this.getAll()
             this.setPass(this.user.pass)
           })
-      },
-      dismissed => {
-        console.log(`Dissmiss reason: ${dismissed}`)
       }
     )
   }
@@ -198,12 +182,8 @@ public newAdmin(content){
     })
     modalRef.result.then(
       (closed: string) => {
-        console.log(closed)
+        console.debug(closed)
         this.modalService.dismissAll('User Stored')
-      },
-      dismissed => {
-        console.log(`Dissmiss reason: ${dismissed}`)
-        this.modalService.dismissAll('External close')
       }
     )
   }

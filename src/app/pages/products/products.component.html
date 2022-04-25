@@ -66,13 +66,13 @@
                                     <ng-template #tipContent>Editar<br><small>Ultima modificacion:<br>{{item.last_change
                                             | date:'d/M/yy H:mm'}}</small></ng-template>
                                     <td>{{item.id}}</td>
-                                    <td>{{item.name}}<span *ngIf="item.hidden"
+                                    <td> <ngb-highlight [result]="item.name" [term]="searchString"></ngb-highlight><span *ngIf="item.hidden"
                                             class="badge bg-warning text-dark ml-2">Archivado</span>
                                     </td>
-                                    <td>{{!item.description?'-':item.description}}</td>
+                                    <td> <ngb-highlight [result]="item.description" [term]="searchString"></ngb-highlight></td>
                                     <td>{{!item.category_id?'-':getCategorybyId(item.category_id).name}}</td>
                                     <td class="text-center">{{item.stock}}</td>
-                                    <td class=" text-center">${{item.unit_price}}</td>
+                                    <td class=" text-center"> <ngb-highlight [result]="item.unit_price|currency:'ARS'" [term]="searchString"></ngb-highlight></td>
                                     <td class=" td-actions text-primary">
                                         <button class=" btn btn-link" type="button" placement="bottom"
                                             [ngbTooltip]="tipContent" container="body" (click)="editModal(item)">
