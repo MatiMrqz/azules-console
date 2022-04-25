@@ -1,0 +1,17 @@
+<div class="modal-header">
+    <h3 class="modal-title">Limite de contador Medidor General</h3>
+</div>
+<div class="modal-body was-validated">
+    <div class="form-group">
+        <label class="font-weight-light" style="font-size: 1em;" for="value">Máximo Valor:</label>
+        <input name="value" [(ngModel)]="maxVal" id="value" type="text"
+            class="form-control text-center mb-0" minlength="4" required>
+        <div class="invalid-tooltip">
+           Debe ingresar un valor
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="activeModal.dismiss('Cerrar')">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="saveItem()" [disabled]="!maxVal">Guardar</button>
+</div>

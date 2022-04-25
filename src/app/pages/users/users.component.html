@@ -135,9 +135,9 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-danger"
             (click)="toggleHiddenProperty(user)">{{user.hidden?'Desarchivar':'Archivar'}}</button>
-        <button type="button" class="btn btn-warning" (click)="changePass(user.uuid)" [disabled]="user.hidden">Cambiar
+        <button type="button" class="btn btn-danger btn-simple" (click)="changePass(user.uuid)" [disabled]="user.hidden">Cambiar
             PIN</button>
-        <button type="button" class="btn btn-success" (click)="modal.close()"
+        <button type="button" class="btn btn-primary" (click)="modal.close()"
             [disabled]="user.hidden||!user.uname">Guardar</button>
     </div>
 </ng-template>
@@ -172,7 +172,7 @@
         </div>
     </div>
     <div class="modal-footer" style="justify-content: flex-end !important;">
-        <button type="button" class="btn btn-success" (click)="modal.close('Save')"
+        <button type="button" class="btn btn-primary" (click)="modal.close('Save')"
             [disabled]="!user.uname">Guardar</button>
     </div>
 </ng-template>

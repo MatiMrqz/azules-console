@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { NewCategoryComponent } from 'src/app/modals/categories/new/new_category.component';
 import { EditPumpComponent } from 'src/app/modals/pumps/edit/edit.component';
+import { EditGralMeterMax } from 'src/app/modals/pumps/gral-meter/max-val-gral.component';
 import { NewPumpComponent } from 'src/app/modals/pumps/new/new.component';
 import { EditTypeComponent } from 'src/app/modals/pump_types/edit/edit_type.component';
 import { WebService } from 'src/app/services/web.service';
@@ -137,6 +138,35 @@ export class PumpsComponent implements OnInit {
       .finally(() => {
         this.getAll()
       })
+  }
+
+  public editGralMeterMaxValue() {
+    this.webService.getGralMeterMax()
+      .then(res => {
+        const modalRef = this.modalService.open(EditGralMeterMax,
+          {
+            container: 'app-pumps'
+          })
+          modalRef.componentInstance.maxVal = res.gral_meter_max_value
+          modalRef.result.then(
+            (closed: string) => {
+              console.log(`Closed reason: ${closed}`)
+              this.showSuccess(closed)
+            },
+            (dismissed:string)=>{
+              if (dismissed.includes('Error')) this.showError(dismissed)
+            }
+          )
+      })
+  }
+
+  public setGralMeterMaxValueModal(content) {
+    this.modalService.open(content).result
+      .then(
+        val => {
+
+        }
+      )
   }
 
   private showError(msg: string) {

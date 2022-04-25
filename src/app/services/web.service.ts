@@ -308,6 +308,35 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
+  public getGralMeterMax(): Promise<{ gral_meter_max_value: number }> {
+    return fetch(webModule.baseUrl + '/pumps/gral-meter-max', {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public setGralMeterMax(value:number): Promise<{msg:string}> {
+    return fetch(webModule.baseUrl + '/pumps/set-gral-meter-max', {
+      method: 'POST',
+      headers: this.headersWithApiandAuth,
+      body:JSON.stringify({maxValue:value})
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
   public getAllPumpTypes(): Promise<Array<any>> {
     return fetch(webModule.baseUrl + '/pumps/type/', {
       method: 'GET',

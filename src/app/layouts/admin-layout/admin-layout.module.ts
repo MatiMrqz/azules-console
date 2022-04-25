@@ -22,6 +22,7 @@ import { UsersComponent } from "src/app/pages/users/users.component";
 import { UserPipe } from "src/app/pipes/user.pipe";
 import { DateAgoPipe } from "src/app/pipes/date-ago.pipe";
 import { OperationsComponent } from "src/app/pages/operations/operations.component";
+import { EditGralMeterMax } from "src/app/modals/pumps/gral-meter/max-val-gral.component";
 
 @NgModule({
   imports: [
@@ -48,7 +49,8 @@ import { OperationsComponent } from "src/app/pages/operations/operations.compone
     UserPipe,
     OpByUname,
     DateAgoPipe,
-    OperationsComponent
+    OperationsComponent,
+    EditGralMeterMax
   ],
   providers:[]
 })
