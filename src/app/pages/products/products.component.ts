@@ -68,7 +68,8 @@ export class ProductsComponent implements OnInit {
         }
         this.showError(closed)
         return
-      }
+      },
+      ()=>{}
     )
   }
   public newModal() {
@@ -87,7 +88,8 @@ export class ProductsComponent implements OnInit {
         }
         this.showError(closed)
         return
-      }
+      },
+      ()=>{}
     )
   }
   public newCategoryModal() {
@@ -105,7 +107,8 @@ export class ProductsComponent implements OnInit {
         }
         this.showError(closed)
         return
-      }
+      },
+      ()=>{}
     )
   }
 
@@ -119,7 +122,8 @@ export class ProductsComponent implements OnInit {
     modalRef.result.then(
       (closed: string) => {
         console.debug(`Closed reason: ${closed}`)
-      }
+      },
+      ()=>{}
     )
       .finally(() => {
         this.getAll()

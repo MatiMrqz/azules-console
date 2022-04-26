@@ -62,7 +62,8 @@ export class UsersComponent implements OnInit {
         //     this.getAll()
         //     this.setPass(this.user.pass)
         //   })
-      }
+      },
+      ()=>{}
     )
   }
   public newTurn(newNameInput: HTMLInputElement, newScheduleInput: HTMLInputElement) {
@@ -106,7 +107,8 @@ public newAdmin(content){
       //     this.getAll()
       //     this.setPass(this.user.pass)
       //   })
-    }
+    },
+    (err)=>{}
   )
 }
 
@@ -148,7 +150,8 @@ public newAdmin(content){
           .catch((err) => {
             this.showError(err)
           })
-      }
+      },
+      ()=>{}
     )
   }
   public newModal(content) {
@@ -171,7 +174,8 @@ public newAdmin(content){
             this.getAll()
             this.setPass(this.user.pass)
           })
-      }
+      },
+      ()=>{}
     )
   }
   public setPass(inPin: string) {
@@ -184,7 +188,8 @@ public newAdmin(content){
       (closed: string) => {
         console.debug(closed)
         this.modalService.dismissAll('User Stored')
-      }
+      },
+      ()=>{}
     )
   }
   public changePass(uuid: string) {
