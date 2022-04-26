@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { webModule } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 import { AuthDevService } from './auth-dev.service';
 import { AuthService } from './auth.service';
 
@@ -13,16 +13,16 @@ export class WebService {
 
   private headersWithApi = {
     'Content-Type': 'application/json',
-    'Api-Key': webModule.apiKey
+    'Api-Key': environment.apiKey
   }
   private headersWithApiandAuth = {
     'Content-Type': 'application/json',
-    'Api-Key': webModule.apiKey,
+    'Api-Key': environment.apiKey,
     'Authorization': this.authService.getToken()
   }
   private headersWithApiandDevAuth = {
     'Content-Type': 'application/json',
-    'Api-Key': webModule.apiKey,
+    'Api-Key': environment.apiKey,
     'Authorization': this.authDevService.getToken()
   }
 
@@ -34,7 +34,7 @@ export class WebService {
     this.authService.setToken(token)
     this.headersWithApiandAuth = {
       'Content-Type': 'application/json',
-      'Api-Key': webModule.apiKey,
+      'Api-Key': environment.apiKey,
       'Authorization': this.authService.getToken()
     }
   }
@@ -47,13 +47,13 @@ export class WebService {
     this.authDevService.setToken(token)
     this.headersWithApiandDevAuth = {
       'Content-Type': 'application/json',
-      'Api-Key': webModule.apiKey,
+      'Api-Key': environment.apiKey,
       'Authorization': this.authDevService.getToken()
     }
   }
 
   public async adminLogin(user: { mail: string, pass: string }) {
-    return fetch(webModule.baseUrl + '/auth/admin/login', {
+    return fetch(environment.baseUrl + '/auth/admin/login', {
       method: 'POST',
       headers: this.headersWithApi,
       body: JSON.stringify(user)
@@ -71,7 +71,7 @@ export class WebService {
   }
 
   public newAdmin(mail: string) {
-    return fetch(webModule.baseUrl + '/auth/admin/new', {
+    return fetch(environment.baseUrl + '/auth/admin/new', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify({ mail })
@@ -87,7 +87,7 @@ export class WebService {
   }
 
   public getAllProducts(): Promise<Array<any>> {
-    return fetch(webModule.baseUrl + '/products/', {
+    return fetch(environment.baseUrl + '/products/', {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -105,7 +105,7 @@ export class WebService {
   }
 
   public getAllProductsDev(): Promise<Array<any>> {
-    return fetch(webModule.baseUrl + '/products/', {
+    return fetch(environment.baseUrl + '/products/', {
       method: 'GET',
       headers: this.headersWithApiandDevAuth,
     }).then(
@@ -123,7 +123,7 @@ export class WebService {
   }
 
   public getAllCategories(): Promise<Array<any>> {
-    return fetch(webModule.baseUrl + '/products/categories/', {
+    return fetch(environment.baseUrl + '/products/categories/', {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -141,7 +141,7 @@ export class WebService {
   }
 
   public getAllCategoriesDev(): Promise<Array<any>> {
-    return fetch(webModule.baseUrl + '/products/categories/', {
+    return fetch(environment.baseUrl + '/products/categories/', {
       method: 'GET',
       headers: this.headersWithApiandDevAuth,
     }).then(
@@ -160,7 +160,7 @@ export class WebService {
 
   public updateProduct(item: Products): Promise<any> {
     console.debug(item)
-    return fetch(webModule.baseUrl + `/products/update/${item.id}`, {
+    return fetch(environment.baseUrl + `/products/update/${item.id}`, {
       method: 'PUT',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify(item)
@@ -179,7 +179,7 @@ export class WebService {
   }
   public newProduct(item): Promise<any> {
     console.debug(item)
-    return fetch(webModule.baseUrl + '/products/new/', {
+    return fetch(environment.baseUrl + '/products/new/', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify(item)
@@ -197,7 +197,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public newCategory(item): Promise<any> {
-    return fetch(webModule.baseUrl + '/products/categories/new/', {
+    return fetch(environment.baseUrl + '/products/categories/new/', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify(item)
@@ -215,7 +215,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public removeCategory(id: number) {
-    return fetch(webModule.baseUrl + `/products/categories/${id}`, {
+    return fetch(environment.baseUrl + `/products/categories/${id}`, {
       method: 'DELETE',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -232,7 +232,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public editCategory(item: Categories) {
-    return fetch(webModule.baseUrl + `/products/categories/${item.id}`, {
+    return fetch(environment.baseUrl + `/products/categories/${item.id}`, {
       method: 'PUT',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify(item)
@@ -250,7 +250,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getAllPumps(): Promise<Array<any>> {
-    return fetch(webModule.baseUrl + '/pumps/', {
+    return fetch(environment.baseUrl + '/pumps/', {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -267,7 +267,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getAllPumpsDev(): Promise<Array<any>> {
-    return fetch(webModule.baseUrl + '/pumps/', {
+    return fetch(environment.baseUrl + '/pumps/', {
       method: 'GET',
       headers: this.headersWithApiandDevAuth,
     }).then(
@@ -281,7 +281,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getGralMeterDev(): Promise<any> {
-    return fetch(webModule.baseUrl + '/pumps/gral-meter', {
+    return fetch(environment.baseUrl + '/pumps/gral-meter', {
       method: 'GET',
       headers: this.headersWithApiandDevAuth,
     }).then(
@@ -295,7 +295,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getGralMeter(): Promise<{ accumulated: number }> {
-    return fetch(webModule.baseUrl + '/pumps/gral-meter', {
+    return fetch(environment.baseUrl + '/pumps/gral-meter', {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -309,7 +309,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getGralMeterMax(): Promise<{ gral_meter_max_value: number }> {
-    return fetch(webModule.baseUrl + '/pumps/gral-meter-max', {
+    return fetch(environment.baseUrl + '/pumps/gral-meter-max', {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -323,7 +323,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public setGralMeterMax(value:number): Promise<{msg:string}> {
-    return fetch(webModule.baseUrl + '/pumps/set-gral-meter-max', {
+    return fetch(environment.baseUrl + '/pumps/set-gral-meter-max', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body:JSON.stringify({maxValue:value})
@@ -338,7 +338,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getAllPumpTypes(): Promise<Array<any>> {
-    return fetch(webModule.baseUrl + '/pumps/type/', {
+    return fetch(environment.baseUrl + '/pumps/type/', {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -355,7 +355,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getAllPumpTypesDev(): Promise<Array<any>> {
-    return fetch(webModule.baseUrl + '/pumps/type/', {
+    return fetch(environment.baseUrl + '/pumps/type/', {
       method: 'GET',
       headers: this.headersWithApiandDevAuth,
     }).then(
@@ -369,7 +369,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public editPump(item: Pumps) {
-    return fetch(webModule.baseUrl + `/pumps/${item.id}`, {
+    return fetch(environment.baseUrl + `/pumps/${item.id}`, {
       method: 'PUT',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify(item)
@@ -388,7 +388,7 @@ export class WebService {
   }
   public newPump(item): Promise<any> {
     console.debug(item)
-    return fetch(webModule.baseUrl + '/pumps/add/', {
+    return fetch(environment.baseUrl + '/pumps/add/', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify(item)
@@ -406,7 +406,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public editPumpType(item: PumpType) {
-    return fetch(webModule.baseUrl + `/pumps/type/${item.id}`, {
+    return fetch(environment.baseUrl + `/pumps/type/${item.id}`, {
       method: 'PUT',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify(item)
@@ -424,7 +424,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public removePumpType(id: number) {
-    return fetch(webModule.baseUrl + `/pumps/type/${id}`, {
+    return fetch(environment.baseUrl + `/pumps/type/${id}`, {
       method: 'DELETE',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -441,7 +441,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public addPumpType(item): Promise<any> {
-    return fetch(webModule.baseUrl + '/pumps/type/add', {
+    return fetch(environment.baseUrl + '/pumps/type/add', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify(item)
@@ -459,7 +459,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getDevices(): Promise<Array<any>> {
-    return fetch(webModule.baseUrl + '/device/', {
+    return fetch(environment.baseUrl + '/device/', {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -476,7 +476,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public setDeviceAlias(uuid: string, alias: string) {
-    return fetch(webModule.baseUrl + `/device/setAlias/${uuid}`, {
+    return fetch(environment.baseUrl + `/device/setAlias/${uuid}`, {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify({ alias })
@@ -494,7 +494,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public deleteDevice(uuid: string) {
-    return fetch(webModule.baseUrl + `/device/${uuid}`, {
+    return fetch(environment.baseUrl + `/device/${uuid}`, {
       method: 'DELETE',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -511,7 +511,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public generateAuthorization(): Promise<{ next: string, authToken: string }> {
-    return fetch(webModule.baseUrl + '/device/generateValidationToken', {
+    return fetch(environment.baseUrl + '/device/generateValidationToken', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -528,7 +528,7 @@ export class WebService {
       })
   }
   public getUsers(): Promise<Array<any>> {
-    return fetch(webModule.baseUrl + '/employees/all', {
+    return fetch(environment.baseUrl + '/employees/all', {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -545,7 +545,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public editEmployeeData(item: Employee) {
-    return fetch(webModule.baseUrl + `/employees/${item.uuid}`, {
+    return fetch(environment.baseUrl + `/employees/${item.uuid}`, {
       method: 'PUT',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify(item)
@@ -563,7 +563,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public newUser(item): Promise<any> {
-    return fetch(webModule.baseUrl + '/auth/employee/new', {
+    return fetch(environment.baseUrl + '/auth/employee/new', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify(item)
@@ -581,7 +581,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public changeEmployeePass(uuid: string, newPass: string) {
-    return fetch(webModule.baseUrl + `/employees/changePass/${uuid}`, {
+    return fetch(environment.baseUrl + `/employees/changePass/${uuid}`, {
       method: 'PUT',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify({ newPass })
@@ -599,7 +599,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getTurns(): Promise<Array<any>> {
-    return fetch(webModule.baseUrl + '/employees/turns', {
+    return fetch(environment.baseUrl + '/employees/turns', {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -616,7 +616,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getTurnsDev(): Promise<Array<any>> {
-    return fetch(webModule.baseUrl + '/employees/turns', {
+    return fetch(environment.baseUrl + '/employees/turns', {
       method: 'GET',
       headers: this.headersWithApiandDevAuth,
     }).then(
@@ -630,7 +630,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public newTurn(item: { name: string, schedule?: string }): Promise<any> {
-    return fetch(webModule.baseUrl + '/employees/turns/', {
+    return fetch(environment.baseUrl + '/employees/turns/', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify(item)
@@ -648,7 +648,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public editTurn(item: { name: string, newName?: string, newSchedule?: string }) {
-    return fetch(webModule.baseUrl + `/employees/turns/${item.name}`, {
+    return fetch(environment.baseUrl + `/employees/turns/${item.name}`, {
       method: 'PUT',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify(item)
@@ -666,7 +666,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public deleteTurn(name: string) {
-    return fetch(webModule.baseUrl + `/employees/turns/${name}`, {
+    return fetch(environment.baseUrl + `/employees/turns/${name}`, {
       method: 'DELETE',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -683,7 +683,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public shiftClosingDev(operation: object): Promise<any> {
-    return fetch(webModule.baseUrl + '/operations/close/', {
+    return fetch(environment.baseUrl + '/operations/close/', {
       method: 'POST',
       headers: this.headersWithApiandDevAuth,
       body: JSON.stringify(operation)
@@ -698,7 +698,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public shiftOpeningDev(operation: object): Promise<any> {
-    return fetch(webModule.baseUrl + '/operations/open', {
+    return fetch(environment.baseUrl + '/operations/open', {
       method: 'POST',
       headers: this.headersWithApiandDevAuth,
       body: JSON.stringify(operation)
@@ -713,7 +713,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getLastOperation(): Promise<OperationEmpDB> {
-    return fetch(webModule.baseUrl + '/operations/', {
+    return fetch(environment.baseUrl + '/operations/', {
       method: 'GET',
       headers: this.headersWithApiandDevAuth,
     }).then(
@@ -727,7 +727,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getLastOperationDash(): Promise<OperationEmpDB> {
-    return fetch(webModule.baseUrl + '/operations/', {
+    return fetch(environment.baseUrl + '/operations/', {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -741,7 +741,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getEmployeesDev(): Promise<Employee[]> {
-    return fetch(webModule.baseUrl + '/employees/all', {
+    return fetch(environment.baseUrl + '/employees/all', {
       method: 'GET',
       headers: this.headersWithApiandDevAuth,
     }).then(
@@ -755,7 +755,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getEmployeesbyUuidDev(uuid: string): Promise<Employee> {
-    return fetch(webModule.baseUrl + `/employees/uuid/${uuid}`, {
+    return fetch(environment.baseUrl + `/employees/uuid/${uuid}`, {
       method: 'GET',
       headers: this.headersWithApiandDevAuth,
     }).then(
@@ -769,7 +769,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getOperationReport(fromDate?: string, toDate?: string): Promise<OperationsReport[]> {
-    return fetch(webModule.baseUrl + `/operations/report/all`, {
+    return fetch(environment.baseUrl + `/operations/report/all`, {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify({ fromDate, toDate })
@@ -784,7 +784,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getDailybyTurnsReport(fromDate?: string, toDate?: string): Promise<{ turn: string, schedule: string, dailyOperations: OperationsReport[] }[]> {
-    return fetch(webModule.baseUrl + `/operations/report/byturns`, {
+    return fetch(environment.baseUrl + `/operations/report/byturns`, {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify({ fromDate, toDate })
@@ -799,7 +799,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getPumpsGasSold(fromDate?: string, toDate?: string): Promise<{ id: number, PUMPS_M3_SOLD: number, timestamp: string }[]> {
-    return fetch(webModule.baseUrl + `/operations/report/gassold`, {
+    return fetch(environment.baseUrl + `/operations/report/gassold`, {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify({ fromDate, toDate })
@@ -814,7 +814,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public authorizeDevice(authToken: string): Promise<any> {
-    return fetch(webModule.baseUrl + `/device/authorize/${authToken}`, {
+    return fetch(environment.baseUrl + `/device/authorize/${authToken}`, {
       method: 'GET',
       headers: this.headersWithApi,
     }).then(
@@ -828,7 +828,7 @@ export class WebService {
       })
   }
   public getOperationsSumarybyEmployee(fromDate?: string, toDate?: string): Promise<OperationsEmployeeSummary[]> {
-    return fetch(webModule.baseUrl + '/operations/report/byemployee', {
+    return fetch(environment.baseUrl + '/operations/report/byemployee', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body: JSON.stringify({ fromDate, toDate })
@@ -843,7 +843,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getOperationDetailbyId(id:number): Promise<{operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy}> {
-    return fetch(webModule.baseUrl + `/operations/${id}`, {
+    return fetch(environment.baseUrl + `/operations/${id}`, {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -857,7 +857,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getAllOperations(period?:"1M"|"1Y"|"5Y"):Promise<Array<Operation>>{
-    return fetch(webModule.baseUrl + `/operations/all/${period}`, {
+    return fetch(environment.baseUrl + `/operations/all/${period}`, {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
@@ -871,7 +871,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public registerNewAdmin(userData):Promise<void>{
-    return fetch(webModule.baseUrl + '/auth/admin/registration', {
+    return fetch(environment.baseUrl + '/auth/admin/registration', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
       body:JSON.stringify(userData)

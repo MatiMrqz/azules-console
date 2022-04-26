@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { WebService } from 'src/app/services/web.service';
-import { webModule } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-devices',
@@ -52,8 +52,8 @@ export class DevicesComponent implements OnInit {
   public async newDeviceModal(content) {
     this.webService.generateAuthorization()
     .then((res)=>{
-      console.log(`${webModule.fBaseUrl}#/auth/device/${res.authToken}`)
-      this.qrContent = encodeURIComponent(`${webModule.fBaseUrl}#/auth/device/${res.authToken}`) 
+      console.log(`${environment.fBaseUrl}#/auth/device/${res.authToken}`)
+      this.qrContent = encodeURIComponent(`${environment.fBaseUrl}#/auth/device/${res.authToken}`) 
       console.debug({next:this.qrContent})
     })
     .then(()=>{
