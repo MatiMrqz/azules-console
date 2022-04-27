@@ -60,7 +60,8 @@ export class DevicesComponent implements OnInit {
       this.modalService.open(content).result
       .then(()=>{
         this.updateDevices()
-      })
+      }),
+      ()=>{}
     })
     .catch((err)=>{
       this.showError(err);
