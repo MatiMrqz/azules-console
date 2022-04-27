@@ -1,17 +1,17 @@
 <div class=" content">
     <div class="row">
-        <div class="card bg-primary mb-3" style="max-width: 18rem;">
+        <div class="card bg-primary mb-3 col-6">
             <div class="card-header">
-                <div style="font-size: large;">Nuevo dispositivo</div>
+                <div class="display-2">Nuevo dispositivo</div>
             </div>
-            <div class="card-body pt-0 text-center">
+            <div class="card-body pt-3 text-center">
                 <button type="button" (click)="newDeviceModal(newModal)" class="btn btn-simple btn-neutral">Generar autorización</button>
                 <p class="card-text"> <small style="font-weight: 200;">Al autorizar un nuevo dispositivo, el mismo
                         tendrá acceso al sistema.</small></p>
             </div>
         </div>
     </div>
-    <h4>Dispositivos autorizados</h4>
+    <div class="display-3 text-light">Dispositivos autorizados</div>
     <div class=" row">
         <div [ngClass]="{'d-none':!isLoading}">
             <div class="sk-chase">
