@@ -57,6 +57,16 @@ interface Employee {
     dt_added: Date,
     dt_modified: Date
 }
+interface Helper {
+    uuid: string,
+    uname: string,
+    mail?: string,
+    phone?: string,
+    address?: string,
+    hidden: boolean,
+    dt_added: Date,
+    dt_modified: Date
+}
 interface OperationDB {
     id: number,
     operation_type: 'CLOSE' | 'OPEN' | 'CLAIM' | 'FIRST',

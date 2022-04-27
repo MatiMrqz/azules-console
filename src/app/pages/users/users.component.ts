@@ -19,9 +19,11 @@ export class UsersComponent implements OnInit {
   ) { }
 
   public users = []
+  public helpers = []
   public turns = []
   public isLoading: boolean = true
   public searchString: string = ''
+  public helpersSearch: string = ''
   public validated: boolean = false
   public user;
 
@@ -33,6 +35,7 @@ export class UsersComponent implements OnInit {
     this.isLoading = true
     Promise.all([
       this.updateUsers(),
+      this.updateHelpers(),
       this.updateTurns()
     ]).then(() => {
       this.isLoading = false
@@ -41,6 +44,9 @@ export class UsersComponent implements OnInit {
 
   private async updateUsers() {
     this.users = await this.webService.getUsers()
+  }
+  private async updateHelpers() {
+    this.helpers = await this.webService.getHelpers()
   }
   private async updateTurns() {
     const tempTurns = await this.webService.getTurns()
@@ -202,6 +208,60 @@ public newAdmin(content){
         this.showError(err)
       })
   }
+  public newHelperModal(content) {
+    this.user = {
+      uname: null,
+      mail: null,
+      phone: null,
+      address: null,
+      pass: null
+    };
+    const modalRef = this.modalService.open(content, {
+      container: 'app-users'
+    })
+    modalRef.result.then(
+      (closed: string) => {
+        this.webService.newHelper(this.user)
+          .then(() => {
+            this.showSuccess('Usuario añadido')
+            modalRef.close()
+            this.getAll()
+          })
+      },
+      ()=>{}
+    )
+  }
+  public editHelperModal(content, user: Helper) {
+    this.user = { ...user };
+    const modalRef = this.modalService.open(content)
+    modalRef.result.then(
+      (closed: string) => {
+        this.webService.editHelper(this.user)
+          .then(() => {
+            this.showSuccess('Usuario actualizado')
+            this.getAll()
+          })
+          .catch((err) => {
+            this.showError(err)
+          })
+      },
+      ()=>{}
+    )
+  }
+  public toggleHiddenPropertyHelper(user: Helper) {
+    const toggleUser = { uuid: user.uuid, hidden: !user.hidden }
+    this.webService.editHelper(toggleUser as Employee)
+      .then(() => {
+        this.showPrimary(toggleUser.hidden ? 'Usuario archivado' : 'Usuario desarchivado')
+        this.getAll()
+      })
+      .catch((err) => {
+        this.showError(err)
+      })
+      .finally(() => {
+        this.modalService.dismissAll('Hidden toggle')
+      })
+  }
   private showError(msg: string) {
     this.toastr.error('<span class="tim-icons icon-simple-remove" [data-notify]="icon"></span>' + msg, '', {
       timeOut: 5000,
@@ -210,7 +270,6 @@ public newAdmin(content){
       positionClass: 'toast-top-center'
     });
   }
-
   private showSuccess(msg: string) {
     this.toastr.success('<span class="tim-icons icon-check-2" [data-notify]="icon"></span>' + msg, '', {
       timeOut: 5000,
