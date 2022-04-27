@@ -106,17 +106,31 @@
 
     .table {
       border-collapse: collapse !important;
+      > tbody > tr > td {
+        color: $black !important;
 
-      td,
-      th {
-        background-color: $white !important;
-      }
+    }
+
+    > thead > tr > th,
+    > tbody > tr > th,
+    > tfoot > tr > th,
+    > thead > tr > td,
+    > tbody > tr > td,
+    > tfoot > tr > td{
+        border-color: $black;
+        padding: 12px 7px;
+        vertical-align: middle;
+    }
+
+    > thead > tr > th, button.btn-neutral.btn-link{
+      color: rgba($black, 0.7);
+    }
     }
 
     .table-bordered {
       th,
       td {
-        border: 1px solid $gray-300 !important;
+        border: 1px solid $gray-900 !important;
       }
     }
 
