@@ -45,11 +45,9 @@ export class OpenTurnComponent implements OnInit {
   private async updateProducts() {
     const tempProducts = await this.webService.getAllProductsDev()
     this.products = tempProducts.filter(p => !p.hidden)
-    console.log(this.products)
   }
   private async updateCategories() {
     this.categories = await this.webService.getAllCategoriesDev()
-    console.log(this.categories)
   }
   public getCategorybyId(id?: number) {
     if (!id) return null
@@ -58,23 +56,19 @@ export class OpenTurnComponent implements OnInit {
 
   public async updatePumps() {
     this.pumps = await this.webService.getAllPumpsDev()
-    console.log(this.pumps)
   }
 
   public async updateEmployeesList() {
     const tempEmployees = await this.webService.getEmployeesDev()
     this.employees = tempEmployees.filter(v=>!v.hidden)
-    console.log(this.employees)
   }
 
   public async updateGralMeter() {
     this.gralMeter = await this.webService.getGralMeterDev()
-    console.log(this.gralMeter)
   }
 
   public async getPumpTypes() {
     this.pump_types = await this.webService.getAllPumpTypesDev()
-    console.log(this.pump_types)
   }
   public getTypebyId(id: number) {
     return this.pump_types.find(c => c.id == id) ?? '-'

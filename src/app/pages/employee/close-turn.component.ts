@@ -29,6 +29,8 @@ export class CloseTurnComponent implements OnInit {
   public saving: boolean = false
   public products = []
   public categories = []
+  public helpers = []
+  public helperSelected = null
   public gralMeter
   public pumps = []
   public pump_types = []
@@ -84,6 +86,7 @@ export class CloseTurnComponent implements OnInit {
     Promise.all([
       this.updateCategories(),
       this.updateProducts(),
+      this.updateHelpers(),
       this.updatePumps(),
       this.getPumpTypes(),
       this.updateGralMeter()
@@ -99,6 +102,9 @@ export class CloseTurnComponent implements OnInit {
   }
   private async updateCategories() {
     this.categories = await this.webService.getAllCategoriesDev()
+  }
+  private async updateHelpers() {
+    this.helpers = await this.webService.getHelpersDev()
   }
   public getCategorybyId(id?: number) {
     if (!id) return null
@@ -203,8 +209,8 @@ export class CloseTurnComponent implements OnInit {
       expenses: this.acc.expenses,
       others: this.acc.others
     }
-    console.log({ pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, observations })
-    this.webService.shiftClosingDev({ employee: { uuid: this.employee.uuid, pass }, pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, observations })
+    console.log({ pump_operations, product_operations, gral_meter, accountancy, turn: this.turn,helper_id:this.helperSelected, observations })
+    this.webService.shiftClosingDev({ employee: { uuid: this.employee.uuid, pass }, helper_id:this.helperSelected, pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, observations })
       .then(res => {
         this.showSuccess(res.msg)
         setTimeout(() => {
@@ -241,7 +247,8 @@ export class CloseTurnComponent implements OnInit {
       () => {
         this.pumps[i].reset_meter = true
         this.calcMeterDiff(i)
-      }
+      },
+      ()=>{}
     )
   }
 }

@@ -385,6 +385,16 @@
                     <div class="input-group input-group-lg">
                         <div class="input-group-prepend">
                             <span style="position: relative !important;top: 0px !important;left: 0px !important;" [ngClass]="{'border-warning':saveButt.disabled}" class="input-group-text"
+                                id="helper">Ayudante</span>
+                        </div>
+                        <select [(ngModel)]="helperSelected" name="uuid" id="employeeUuid" class="form-control text-center">
+                            <option [ngValue]="null">-</option>
+                            <option [ngValue]="item.uuid" *ngFor="let item of helpers">{{item.uname}}</option>
+                        </select>
+                    </div>
+                    <div class="input-group input-group-lg">
+                        <div class="input-group-prepend">
+                            <span style="position: relative !important;top: 0px !important;left: 0px !important;" [ngClass]="{'border-warning':saveButt.disabled}" class="input-group-text"
                                 id="pininp">Pin de {{employee.uname}}</span>
                         </div>
                         <input [ngClass]="{'is-invalid':saveButt.disabled}" #employeePass type="password"

@@ -57,6 +57,7 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Tipo</th>
                                 <th scope="col">Encargado</th>
+                                <th scope="col">Ayudante</th>
                                 <th scope="col">Turno</th>
                                 <th scope="col">Venta Productos</th>
                                 <th scope="col">Venta Surtidores</th>
@@ -76,6 +77,9 @@
                                 <td>{{op.operation_type}}</td>
                                 <td>
                                     <ngb-highlight [result]="op.uname" [term]="searchTerm"></ngb-highlight>
+                                </td>
+                                <td>
+                                    <ngb-highlight [result]="op.helper_uname" [term]="searchTerm"></ngb-highlight>
                                 </td>
                                 <td>
                                     <ngb-highlight [result]="op.turn_name" [term]="searchTerm"></ngb-highlight>

@@ -901,6 +901,23 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
+  public getHelpersDev(): Promise<Array<any>> {
+    return fetch(environment.baseUrl + '/helpers/all', {
+      method: 'GET',
+      headers: this.headersWithApiandDevAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateDevToken(res.headers.get('authorization'))
+          return data as any[]
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
   public editHelper(item: Helper) {
     return fetch(environment.baseUrl + `/helpers/${item.uuid}`, {
       method: 'PUT',

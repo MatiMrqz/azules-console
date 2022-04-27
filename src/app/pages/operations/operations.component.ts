@@ -64,7 +64,7 @@ export class OperationsComponent implements OnInit {
   }
 
   private matches(operation: Operation, term: string, pipe: PipeTransform) {
-    return operation.id.toString().includes(term) || operation.uname.toLowerCase().includes(term.toLowerCase()) || operation.turn_name.toLowerCase().includes(term.toLowerCase()) || operation.observations!.toLowerCase().includes(term.toLowerCase())
+    return operation.id.toString().includes(term) || operation.uname.toLowerCase().includes(term.toLowerCase()) || operation.turn_name.toLowerCase().includes(term.toLowerCase()) || operation.observations!.toLowerCase().includes(term.toLowerCase())|| operation.helper_uname?.toLowerCase().includes(term.toLowerCase())
   }
 
   ngOnInit(): void {

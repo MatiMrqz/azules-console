@@ -78,13 +78,17 @@ interface OperationDB {
 interface Operation extends OperationDB{
     employee_id:string,
     uname:string,
+    helper_id:string,
+    helper_uname:string,
     REPORT:number,
     PRODUCT_AMOUNT_SOLD:number,
     PUMPS_AMOUNT_SOLD:number,
 }
 interface DetailOperationDB extends OperationDB {
     employee_uuid:string,
-    uname: string
+    uname: string,
+    helper_uuid?:string,
+    helper_uname?:string,
     mail?: string,
 }
 interface OperationEmpDB extends DetailOperationDB {
