@@ -1,6 +1,6 @@
-import { Pipe, Component, OnInit, PipeTransform, ChangeDetectorRef } from "@angular/core";
+import { Pipe, Component, OnInit, PipeTransform } from "@angular/core";
 import { Chart, ChartConfiguration, ChartOptions } from 'chart.js';
-import { NgbCalendar, NgbDate, NgbDateParserFormatter, NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
+import { NgbCalendar, NgbDate, NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { WebService } from "src/app/services/web.service";
 // import * as Chart from "chart.js";
 
@@ -86,7 +86,6 @@ export class DashboardComponent implements OnInit {
     private webService: WebService,
     private calendar: NgbCalendar,
     public formatter: NgbDateParserFormatter,
-    private changeDetectorRef: ChangeDetectorRef
   ) {
     this.fromDate = calendar.getPrev(calendar.getToday(), 'm', 1)
     this.toDate = calendar.getNext(calendar.getToday());
@@ -143,7 +142,7 @@ export class DashboardComponent implements OnInit {
     return this.webService.getTurns()
       .then((turns: Turns[]) => {
         this.turns = turns
-        this.lastTurn = turns[turns.length - 1].name
+        this.lastTurn = turns[turns.length - 1].name ?? ''
       })
   }
   private async getEmployeeSummary() {
