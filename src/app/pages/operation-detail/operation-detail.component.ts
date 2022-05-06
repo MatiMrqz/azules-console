@@ -41,7 +41,7 @@ export class OperationDetailComponent implements OnInit {
     return total
   }
   public accTotalAmount():number{
-    return +this.operationDetail.accountancy.MercadoPago + +this.operationDetail.accountancy.cards + +this.operationDetail.accountancy.cash + +this.operationDetail.accountancy.envelopes_cash + +this.operationDetail.accountancy.others - +this.operationDetail.accountancy.expenses - +this.operationDetail.accountancy.vouchers
+    return +this.operationDetail.accountancy.MercadoPago + +this.operationDetail.accountancy.cards + +this.operationDetail.accountancy.cash + +this.operationDetail.accountancy.envelopes_cash + +this.operationDetail.accountancy.others + +this.operationDetail.accountancy.expenses + +this.operationDetail.accountancy.vouchers
   }
   public print(template:HTMLTemplateElement){
     this.printerService.printAngular(template)

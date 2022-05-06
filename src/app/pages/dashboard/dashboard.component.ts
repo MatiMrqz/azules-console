@@ -146,7 +146,7 @@ export class DashboardComponent implements OnInit {
       })
   }
   private async getEmployeeSummary() {
-    return this.webService.getOperationsSumarybyEmployee()
+    return this.webService.getOperationsSumarybyEmployee(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
       .then((res: OperationsEmployeeSummary[]) => {
         this.employeeSummary = res
       })

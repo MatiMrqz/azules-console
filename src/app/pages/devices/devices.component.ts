@@ -51,21 +51,23 @@ export class DevicesComponent implements OnInit {
 
   public async newDeviceModal(content) {
     this.webService.generateAuthorization()
-    .then((res)=>{
-      console.log(`${environment.fBaseUrl}#/auth/device/${res.authToken}`)
-      this.qrContent = encodeURIComponent(`${environment.fBaseUrl}#/auth/device/${res.authToken}`) 
-      console.debug({next:this.qrContent})
-    })
-    .then(()=>{
-      this.modalService.open(content).result
-      .then(()=>{
-        this.updateDevices()
-      }),
-      ()=>{}
-    })
-    .catch((err)=>{
-      this.showError(err);
-    })
+      .then((res) => {
+        console.log(`${environment.fBaseUrl}#/auth/device/${res.authToken}`)
+        this.qrContent = encodeURIComponent(`${environment.fBaseUrl}#/auth/device/${res.authToken}`)
+        console.debug({ next: this.qrContent })
+      })
+      .then(() => {
+        this.modalService.open(content).result
+          .then(() => {
+            this.updateDevices()
+          })
+          .catch(
+            () => { }
+          )
+      })
+      .catch((err) => {
+        this.showError(err);
+      })
   }
 
   public eliminaModal(content, uuid) {

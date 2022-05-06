@@ -1,23 +1,24 @@
 <div class=" content">
     <div class=" row">
         <div class=" col">
-            <div class=" card card-tasks-table">
-                <div class=" card-header">
+            <div class=" card">
+                <div class=" card-header d-flex flex-sm-row flex-column justify-content-between">
                     <div class="display-2">Listado de Surtidores</div>
-                    <div ngbDropdown>
-                        <button class=" btn btn-link btn-icon" data-toggle="dropdown" ngbDropdownToggle type="button">
-                            <i class=" tim-icons icon-settings-gear-63"> </i>
+                    <div class="d-flex flex-row">
+                        <button class=" btn btn-link dropdown-toggle" (click)="newModal()" type="button" style="top: -0.3em;float:right">
+                            Nuevo
                         </button>
-                        <div aria-labelledby="dropdownMenuLink" class=" dropdown-menu-right" ngbDropdownMenu>
-                            <a href="javascript:void(0)" (click)="editCategoryModal()" ngbDropdownItem> Tipos </a>
-                            <a href="javascript:void(0)" (click)="editGralMeterMaxValue()" ngbDropdownItem> Maximo
-                                Medidor Gral </a>
+                        <div ngbDropdown>
+                            <button class=" btn btn-link btn-icon" data-toggle="dropdown" ngbDropdownToggle type="button">
+                                <i class=" tim-icons icon-settings-gear-63"> </i>
+                            </button>
+                            <div aria-labelledby="dropdownMenuLink" class=" dropdown-menu-right" ngbDropdownMenu>
+                                <a href="javascript:void(0)" (click)="editCategoryModal()" ngbDropdownItem> Tipos </a>
+                                <a href="javascript:void(0)" (click)="editGralMeterMaxValue()" ngbDropdownItem> Maximo
+                                    Medidor Gral </a>
+                            </div>
                         </div>
                     </div>
-                    <button class=" btn btn-link dropdown-toggle" (click)="newModal()" type="button"
-                        style="top: -0.3em;float:right">
-                        Nuevo
-                    </button>
                 </div>
                 <div class=" card-body">
                     <div class=" table-responsive">
@@ -60,8 +61,7 @@
                                     </td>
                                     <td class=" text-center">{{item.unit_price|currency:'ARS'}}</td>
                                     <td class=" td-actions text-primary">
-                                        <button class=" btn btn-link" type="button" placement="bottom"
-                                            [ngbTooltip]="tipContent" container="body" (click)="editModal(item)">
+                                        <button class=" btn btn-link" type="button" placement="bottom" [ngbTooltip]="tipContent" container="body" (click)="editModal(item)">
                                             <i class=" tim-icons icon-pencil text-danger"> </i>
                                         </button>
                                     </td>

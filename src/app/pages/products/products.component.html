@@ -1,35 +1,33 @@
 <div class=" content">
     <div class=" row">
         <div class=" col">
-            <div class=" card card-tasks-table">
-                <div class=" card-header">
+            <div class=" card">
+                <div class=" card-header flex-sm-row flex-column justify-content-between">
                     <div class=" display-2">Listado de productos</div>
-                    <input [(ngModel)]="searchString" type="search"
-                        class="form-control form-control-dark d-inline col-6" placeholder="Buscar..."
-                        aria-label="Buscar">
-                    <div ngbDropdown>
-                        <button class=" btn btn-link btn-icon" data-toggle="dropdown" ngbDropdownToggle type="button">
-                            <i class=" tim-icons icon-settings-gear-63"> </i>
-                        </button>
-                        <div aria-labelledby="dropdownMenuLink" class=" dropdown-menu-right" ngbDropdownMenu>
-                            <a (click)="showHidden.checked = !showHidden.checked" href="javascript:void(0)"
-                                ngbDropdownItem>
-                                <input #showHidden type="checkbox" value="" />
-                                Mostrar Archivados </a>
-                            <a href="javascript:void(0)" (click)="editCategoryModal()" ngbDropdownItem> Categorias </a>
+                    <div class="d-flex flex-row">
+                        <div ngbDropdown style="height:fit-content;">
+                            <button class=" btn btn-link" ngbDropdownToggle type="button" style="top: -0.3em;">
+                                Nuevo
+                            </button>
+                            <div aria-labelledby="dropdownMenuLink" class=" dropdown-menu-right" ngbDropdownMenu>
+                                <a href="javascript:void(0)" (click)="newModal()" ngbDropdownItem> Producto </a>
+                                <a href="javascript:void(0)" (click)="newCategoryModal()" ngbDropdownItem> Categoría </a>
+                            </div>
                         </div>
-                    </div>
-                    <div ngbDropdown>
-                        <button class=" btn btn-link" ngbDropdownToggle type="button" style="top: -0.3em;">
-                            Nuevo
-                        </button>
-                        <div aria-labelledby="dropdownMenuLink" class=" dropdown-menu-right" ngbDropdownMenu>
-                            <a href="javascript:void(0)" (click)="newModal()" ngbDropdownItem> Producto </a>
-                            <a href="javascript:void(0)" (click)="newCategoryModal()" ngbDropdownItem> Categoría </a>
+                        <div ngbDropdown style="height:fit-content;">
+                            <button class=" btn btn-link btn-icon" data-toggle="dropdown" ngbDropdownToggle type="button">
+                                <i class=" tim-icons icon-settings-gear-63"> </i>
+                            </button>
+                            <div aria-labelledby="dropdownMenuLink" class=" dropdown-menu-right" ngbDropdownMenu>
+                                <a (click)="showHidden.checked = !showHidden.checked" href="javascript:void(0)" ngbDropdownItem>
+                                    <input #showHidden type="checkbox" value="" /> Mostrar Archivados </a>
+                                <a href="javascript:void(0)" (click)="editCategoryModal()" ngbDropdownItem> Categorias </a>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class=" card-body">
+                    <input [(ngModel)]="searchString" type="search" class="form-control form-control-dark col-sm-6" placeholder="Buscar..." aria-label="Buscar">
                     <div class=" table-responsive">
                         <table class=" table tablesorter" id="">
                             <thead class=" text-primary">
@@ -66,16 +64,19 @@
                                     <ng-template #tipContent>Editar<br><small>Ultima modificacion:<br>{{item.last_change
                                             | date:'d/M/yy H:mm'}}</small></ng-template>
                                     <td>{{item.id}}</td>
-                                    <td> <ngb-highlight [result]="item.name" [term]="searchString"></ngb-highlight><span *ngIf="item.hidden"
-                                            class="badge bg-warning text-dark ml-2">Archivado</span>
+                                    <td>
+                                        <ngb-highlight [result]="item.name" [term]="searchString"></ngb-highlight><span *ngIf="item.hidden" class="badge bg-warning text-dark ml-2">Archivado</span>
                                     </td>
-                                    <td> <ngb-highlight [result]="item.description" [term]="searchString"></ngb-highlight></td>
+                                    <td>
+                                        <ngb-highlight [result]="item.description" [term]="searchString"></ngb-highlight>
+                                    </td>
                                     <td>{{!item.category_id?'-':getCategorybyId(item.category_id).name}}</td>
                                     <td class="text-center">{{item.stock}}</td>
-                                    <td class=" text-center"> <ngb-highlight [result]="item.unit_price|currency:'ARS'" [term]="searchString"></ngb-highlight></td>
+                                    <td class=" text-center">
+                                        <ngb-highlight [result]="item.unit_price|currency:'ARS'" [term]="searchString"></ngb-highlight>
+                                    </td>
                                     <td class=" td-actions text-primary">
-                                        <button class=" btn btn-link" type="button" placement="bottom"
-                                            [ngbTooltip]="tipContent" container="body" (click)="editModal(item)">
+                                        <button class=" btn btn-link" type="button" placement="bottom" [ngbTooltip]="tipContent" container="body" (click)="editModal(item)">
                                             <i class=" tim-icons icon-pencil text-danger"> </i>
                                         </button>
                                     </td>

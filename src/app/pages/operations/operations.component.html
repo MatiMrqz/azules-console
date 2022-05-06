@@ -9,8 +9,7 @@
                     <div class="mx-3 row justify-content-between">
                         <div class="d-inline-flex">
                             <div class="col-xs-3 col-sm-auto">
-                                <input id="table-complete-search" type="text" class="form-control" name="searchTerm"
-                                    (ngModelChange)="refreshTable()" placeholder="Buscar" [(ngModel)]="searchTerm">
+                                <input id="table-complete-search" type="text" class="form-control" name="searchTerm" (ngModelChange)="refreshTable()" placeholder="Buscar" [(ngModel)]="searchTerm">
                             </div>
                             <span class="col-auto col-form-label" *ngIf="_loading$ | async"><div class="sk-chase" style="font-size: 1em;">
                                 <div class="sk-chase-dot"></div>
@@ -33,8 +32,7 @@
                             </label>
                         </div>
 
-                        <div class="btn-group btn-group-sm align-self-start" role="group" ngbRadioGroup name="radioBasic"
-                            [(ngModel)]="radioDef">
+                        <div class="btn-group btn-group-sm align-self-start" role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="radioDef">
                             <label ngbButtonLabel class="btn-info btn-simple">
                                 <input ngbButton type="radio" class="btn-check" value="1M" (click)="getData('1M')"> 1
                                 Mes
@@ -51,58 +49,61 @@
 
 
                     </div>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Tipo</th>
-                                <th scope="col">Encargado</th>
-                                <th scope="col">Ayudante</th>
-                                <th scope="col">Turno</th>
-                                <th scope="col">Venta Productos</th>
-                                <th scope="col">Venta Surtidores</th>
-                                <th scope="col">Rendicion</th>
-                                <th scope="col">Diferencia</th>
-                                <th scope="col">Observaciones</th>
-                                <th scope="col">Fecha/Hora</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let op of _operations$ | async"
-                                [ngClass]="{'bg-dark':op.operation_type=='OPEN','bg-primary':op.operation_type=='CLOSE'}">
-                                <th scope="row">
-                                    <a *ngIf="op.operation_type=='CLOSE';else elseBlock" [routerLink]="['/operations/detail/'+op.id]" href="" target="_blank"><ngb-highlight [result]="op.id" [term]="searchTerm"></ngb-highlight></a>
-                                    <ng-template #elseBlock><ngb-highlight [result]="op.id" [term]="searchTerm"></ngb-highlight></ng-template>
-                                </th>
-                                <td>{{op.operation_type}}</td>
-                                <td>
-                                    <ngb-highlight [result]="op.uname" [term]="searchTerm"></ngb-highlight>
-                                </td>
-                                <td>
-                                    <ngb-highlight [result]="op.helper_uname" [term]="searchTerm"></ngb-highlight>
-                                </td>
-                                <td>
-                                    <ngb-highlight [result]="op.turn_name" [term]="searchTerm"></ngb-highlight>
-                                </td>
-                                <td>{{op.operation_type=='CLOSE'?(op.PRODUCT_AMOUNT_SOLD|currency:'ARS'):'-'}}</td>
-                                <td>{{op.operation_type=='CLOSE'?(op.PUMPS_AMOUNT_SOLD|currency:'ARS'):'-'}}</td>
-                                <td>{{op.operation_type=='CLOSE'?(op.REPORT|currency:'ARS'):'-'}}</td>
-                                <td>{{op.operation_type=='CLOSE'?((+op.REPORT - +op.PRODUCT_AMOUNT_SOLD +
-                                    +op.PUMPS_AMOUNT_SOLD)|currency:'ARS'):'-'}}</td>
-                                <td>
-                                    <ngb-highlight [result]="op.observations" [term]="searchTerm"></ngb-highlight>
-                                </td>
-                                <td>{{op.timestamp|date:'short'}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="col table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Tipo</th>
+                                    <th scope="col">Encargado</th>
+                                    <th scope="col">Ayudante</th>
+                                    <th scope="col">Turno</th>
+                                    <th scope="col">Venta Productos</th>
+                                    <th scope="col">Venta Surtidores</th>
+                                    <th scope="col">Rendicion</th>
+                                    <th scope="col">Diferencia</th>
+                                    <th scope="col">Observaciones</th>
+                                    <th scope="col">Fecha/Hora</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let op of _operations$ | async" [ngClass]="{'bg-dark':op.operation_type=='OPEN','bg-primary':op.operation_type=='CLOSE'}">
+                                    <th scope="row">
+                                        <a *ngIf="op.operation_type=='CLOSE';else elseBlock" [routerLink]="['/operations/detail/'+op.id]" href="" target="_blank">
+                                            <ngb-highlight [result]="op.id" [term]="searchTerm"></ngb-highlight>
+                                        </a>
+                                        <ng-template #elseBlock>
+                                            <ngb-highlight [result]="op.id" [term]="searchTerm"></ngb-highlight>
+                                        </ng-template>
+                                    </th>
+                                    <td>{{op.operation_type}}</td>
+                                    <td>
+                                        <ngb-highlight [result]="op.uname" [term]="searchTerm"></ngb-highlight>
+                                    </td>
+                                    <td>
+                                        <ngb-highlight [result]="op.helper_uname" [term]="searchTerm"></ngb-highlight>
+                                    </td>
+                                    <td>
+                                        <ngb-highlight [result]="op.turn_name" [term]="searchTerm"></ngb-highlight>
+                                    </td>
+                                    <td>{{op.operation_type=='CLOSE'?(op.PRODUCT_AMOUNT_SOLD|currency:'ARS'):'-'}}</td>
+                                    <td>{{op.operation_type=='CLOSE'?(op.PUMPS_AMOUNT_SOLD|currency:'ARS'):'-'}}</td>
+                                    <td>{{op.operation_type=='CLOSE'?(op.REPORT|currency:'ARS'):'-'}}</td>
+                                    <td>{{op.operation_type=='CLOSE'?((+op.REPORT - (+op.PRODUCT_AMOUNT_SOLD + +op.PUMPS_AMOUNT_SOLD))|currency:'ARS'):'-'}}
+                                    </td>
+                                    <td>
+                                        <ngb-highlight [result]="op.observations" [term]="searchTerm"></ngb-highlight>
+                                    </td>
+                                    <td>{{op.timestamp|date:'short'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <div class="d-flex justify-content-between p-3">
-                        <ngb-pagination [collectionSize]="(_collectionSize$|async)!" [(page)]="page"
-                            [pageSize]="pageSize" (pageChange)="refreshTable()">
+                        <ngb-pagination [collectionSize]="(_collectionSize$|async)!" [(page)]="page" [pageSize]="pageSize" (pageChange)="refreshTable()">
                         </ngb-pagination>
 
-                        <select class="form-control" style="width: auto" [(ngModel)]="pageSize"
-                            (ngModelChange)="refreshTable()">
+                        <select class="form-control" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshTable()">
                             <option [ngValue]="10">10 items</option>
                             <option [ngValue]="20">20 items</option>
                             <option [ngValue]="100">100 items</option>

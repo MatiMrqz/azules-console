@@ -170,8 +170,16 @@ export class CloseTurnComponent implements OnInit {
     })
     return amount
   }
+  public pumpm3Amount():number{
+    let amount: number = 0
+    if (!this.pumps) return 0
+    this.pumps.forEach(v => {
+      if (v.validated) amount += v.meter_diff
+    })
+    return amount
+  }
   public accTotalAmount(): number {
-    return this.acc.MercadoPago + this.acc.cards + this.acc.cash + this.acc.envelopes_cash + this.acc.others - this.acc.expenses - this.acc.vouchers;
+    return this.acc.MercadoPago + this.acc.cards + this.acc.cash + this.acc.envelopes_cash + this.acc.others + this.acc.expenses + this.acc.vouchers;
   }
   public saveDisabled(val?: string): boolean {
     const status = !!val && (this.refreshDonePumps() == this.pumps.length) && this.gralMeter.validated === true && (this.refreshDoneProducts() == this.products.filter(p => p.hidden == false).length) && (this.accDoneUpdate() == 8)

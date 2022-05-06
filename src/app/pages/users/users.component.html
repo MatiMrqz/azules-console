@@ -1,34 +1,30 @@
 <div class=" content">
     <div class=" row">
         <div class="border-bottom col">
-            <div class=" card card-tasks-table ">
-                <div class=" card-header">
+            <div class=" card">
+                <div class=" card-header d-flex flex-sm-row flex-column justify-content-between">
                     <div class="display-2">Encargados</div>
-                    <input [(ngModel)]="searchString" type="search"
-                        class="form-control form-control-dark d-inline col-6" placeholder="Buscar..."
-                        aria-label="Buscar">
-                    <div ngbDropdown>
-                        <button class=" btn btn-link btn-icon" data-toggle="dropdown" ngbDropdownToggle type="button">
-                            <i class=" tim-icons icon-settings-gear-63"> </i>
+                    <div class="d-flex flex-row">
+                        <button class=" btn btn-link dropdown-toggle mx-1" (click)="newModal(newEmployeeModal)" type="button" style="top: -0.3em;float:right">
+                            Nuevo
                         </button>
-                        <div aria-labelledby="dropdownMenuLink" class=" dropdown-menu-right" ngbDropdownMenu>
-                            <a (click)="showHidden.checked = !showHidden.checked" href="javascript:void(0)"
-                                ngbDropdownItem>
-                                <input #showHidden type="checkbox" value="" />
-                                Mostrar Archivados </a>
+                        <button class=" btn btn-link dropdown-toggle mx-1" (click)="turnModal(turnEditModal)" type="button" style="top: -0.3em;float:right">
+                            Turnos
+                        </button>
+                        <div ngbDropdown>
+                            <button class=" btn btn-link btn-icon" data-toggle="dropdown" ngbDropdownToggle type="button">
+                                <i class=" tim-icons icon-settings-gear-63"> </i>
+                            </button>
+                            <div aria-labelledby="dropdownMenuLink" class=" dropdown-menu-right" ngbDropdownMenu>
+                                <a (click)="showHidden.checked = !showHidden.checked" href="javascript:void(0)" ngbDropdownItem>
+                                    <input #showHidden type="checkbox" value="" /> Mostrar Archivados </a>
+                            </div>
                         </div>
                     </div>
-                    <button class=" btn btn-link dropdown-toggle mx-1" (click)="newModal(newEmployeeModal)"
-                        type="button" style="top: -0.3em;float:right">
-                        Nuevo
-                    </button>
-                    <button class=" btn btn-link dropdown-toggle mx-1" (click)="turnModal(turnEditModal)" type="button"
-                        style="top: -0.3em;float:right">
-                        Turnos
-                    </button>
 
                 </div>
                 <div class=" card-body">
+                    <input [(ngModel)]="searchString" type="search" class="form-control form-control-dark d-inline col-12 col-sm-6" placeholder="Buscar..." aria-label="Buscar">
                     <div class=" table-responsive">
                         <table class=" table tablesorter" id="">
                             <thead class=" text-primary">
@@ -64,16 +60,20 @@
                                     <ng-template #tipContent>Editar<br><small>Ultima modificacion:<br>{{item.dt_modified
                                             | date:'d/M/yy H:mm'}}</small></ng-template>
                                     <td>{{i+1}}</td>
-                                    <td> <ngb-highlight [result]="item.uname" [term]="searchString"></ngb-highlight><span *ngIf="item.hidden"
-                                            class="badge bg-warning text-dark ml-2">Archivado</span>
+                                    <td>
+                                        <ngb-highlight [result]="item.uname" [term]="searchString"></ngb-highlight><span *ngIf="item.hidden" class="badge bg-warning text-dark ml-2">Archivado</span>
                                     </td>
-                                    <td><ngb-highlight [result]="item.mail??'-'" [term]="searchString"></ngb-highlight></td>
-                                    <td><ngb-highlight [result]="item.phone??'-'" [term]="searchString"></ngb-highlight></td>
-                                    <td><ngb-highlight [result]="item.address??'-'" [term]="searchString"></ngb-highlight></td>
+                                    <td>
+                                        <ngb-highlight [result]="item.mail??'-'" [term]="searchString"></ngb-highlight>
+                                    </td>
+                                    <td>
+                                        <ngb-highlight [result]="item.phone??'-'" [term]="searchString"></ngb-highlight>
+                                    </td>
+                                    <td>
+                                        <ngb-highlight [result]="item.address??'-'" [term]="searchString"></ngb-highlight>
+                                    </td>
                                     <td class=" td-actions text-primary">
-                                        <button class=" btn btn-link" type="button" placement="bottom"
-                                            [ngbTooltip]="tipContent" container="body"
-                                            (click)="editModal(editEmployeeModal,item)">
+                                        <button class=" btn btn-link" type="button" placement="bottom" [ngbTooltip]="tipContent" container="body" (click)="editModal(editEmployeeModal,item)">
                                             <i class=" tim-icons icon-pencil text-danger"> </i>
                                         </button>
                                     </td>
@@ -88,30 +88,26 @@
 
     <div class=" row mt-4">
         <div class="border-bottom col">
-            <div class=" card card-tasks-table ">
-                <div class=" card-header">
+            <div class=" card">
+                <div class=" card-header  d-flex flex-sm-row flex-column justify-content-between">
                     <div class="display-2">Ayudantes</div>
-                    <input [(ngModel)]="helpersSearch" type="search"
-                        class="form-control form-control-dark d-inline col-6" placeholder="Buscar..."
-                        aria-label="Buscar">
-                    <div ngbDropdown>
-                        <button class=" btn btn-link btn-icon" data-toggle="dropdown" ngbDropdownToggle type="button">
+                    <div class="d-flex flex-row">
+                        <button class=" btn btn-link dropdown-toggle mx-1" (click)="newHelperModal(newHelperModalContent)" type="button" style="top: -0.3em;float:right">
+                            Nuevo
+                        </button>
+                        <div ngbDropdown>
+                            <button class=" btn btn-link btn-icon" data-toggle="dropdown" ngbDropdownToggle type="button">
                             <i class=" tim-icons icon-settings-gear-63"> </i>
                         </button>
-                        <div aria-labelledby="dropdownMenuLink" class=" dropdown-menu-right" ngbDropdownMenu>
-                            <a (click)="showHiddenHelpers.checked = !showHiddenHelpers.checked" href="javascript:void(0)"
-                                ngbDropdownItem>
-                                <input #showHiddenHelpers type="checkbox" value="" />
-                                Mostrar Archivados </a>
+                            <div aria-labelledby="dropdownMenuLink" class=" dropdown-menu-right" ngbDropdownMenu>
+                                <a (click)="showHiddenHelpers.checked = !showHiddenHelpers.checked" href="javascript:void(0)" ngbDropdownItem>
+                                    <input #showHiddenHelpers type="checkbox" value="" /> Mostrar Archivados </a>
+                            </div>
                         </div>
                     </div>
-                    <button class=" btn btn-link dropdown-toggle mx-1" (click)="newHelperModal(newHelperModalContent)"
-                        type="button" style="top: -0.3em;float:right">
-                        Nuevo
-                    </button>
-
                 </div>
                 <div class=" card-body">
+                    <input [(ngModel)]="helpersSearch" type="search" class="form-control form-control-dark d-inline col-12 col-sm-6" placeholder="Buscar..." aria-label="Buscar">
                     <div class=" table-responsive">
                         <table class=" table tablesorter" id="">
                             <thead class=" text-primary">
@@ -147,16 +143,20 @@
                                     <ng-template #tipContent>Editar<br><small>Ultima modificacion:<br>{{item.dt_modified
                                             | date:'d/M/yy H:mm'}}</small></ng-template>
                                     <td>{{i+1}}</td>
-                                    <td> <ngb-highlight [result]="item.uname" [term]="helpersSearch"></ngb-highlight><span *ngIf="item.hidden"
-                                        class="badge bg-warning text-dark ml-2">Archivado</span>
-                                </td>
-                                <td><ngb-highlight [result]="item.mail??'-'" [term]="helpersSearch"></ngb-highlight></td>
-                                <td><ngb-highlight [result]="item.phone??'-'" [term]="helpersSearch"></ngb-highlight></td>
-                                <td><ngb-highlight [result]="item.address??'-'" [term]="helpersSearch"></ngb-highlight></td>
+                                    <td>
+                                        <ngb-highlight [result]="item.uname" [term]="helpersSearch"></ngb-highlight><span *ngIf="item.hidden" class="badge bg-warning text-dark ml-2">Archivado</span>
+                                    </td>
+                                    <td>
+                                        <ngb-highlight [result]="item.mail??'-'" [term]="helpersSearch"></ngb-highlight>
+                                    </td>
+                                    <td>
+                                        <ngb-highlight [result]="item.phone??'-'" [term]="helpersSearch"></ngb-highlight>
+                                    </td>
+                                    <td>
+                                        <ngb-highlight [result]="item.address??'-'" [term]="helpersSearch"></ngb-highlight>
+                                    </td>
                                     <td class=" td-actions text-primary">
-                                        <button class=" btn btn-link" type="button" placement="bottom"
-                                            [ngbTooltip]="tipContent" container="body"
-                                            (click)="editHelperModal(editHelperModalContent,item)">
+                                        <button class=" btn btn-link" type="button" placement="bottom" [ngbTooltip]="tipContent" container="body" (click)="editHelperModal(editHelperModalContent,item)">
                                             <i class=" tim-icons icon-pencil text-danger"> </i>
                                         </button>
                                     </td>
@@ -170,10 +170,10 @@
     </div>
 
     <div class="row mt-4">
-        <div class="col-6">
+        <div class="col col-sm-6">
             <div class="card bg-dark mb-3">
                 <div class="card-header">
-                    <div class="display-2">Administradores</div>
+                    <div class="display-2" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Administradores</div>
                     <div style="font-size: large;">Registrar nuevo administrador</div>
                 </div>
                 <div class="card-body text-center pt-3">
@@ -190,74 +190,61 @@
 <ng-template #editEmployeeModal let-modal>
     <div class="modal-header">
         <h4 class="modal-title">Editando Usuario</h4>
-        <button type="button" class="btn-close btn btn-link" aria-label="Close"
-            (click)="modal.dismiss('Cross click')">X</button>
+        <button type="button" class="btn-close btn btn-link" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
     </div>
     <div class="modal-body">
         <div class="input-group mb-3 was-validated">
             <span class="input-group-text" id="inputGroup-sizing-default">Nombre</span>
-            <input [(ngModel)]="user.uname" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default" required>
+            <input [(ngModel)]="user.uname" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default" required>
             <div class="invalid-feedback">Requerido</div>
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text" id="inputGroup-sizing-default">Mail</span>
-            <input [(ngModel)]="user.mail" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default">
+            <input [(ngModel)]="user.mail" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default">
         </div>
         <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelect01">Teléfono</label>
-            <input [(ngModel)]="user.phone" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default">
+            <input [(ngModel)]="user.phone" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default">
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text">Dirección</span>
-            <input [(ngModel)]="user.address" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default">
+            <input [(ngModel)]="user.address" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default">
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-danger"
-            (click)="toggleHiddenProperty(user)">{{user.hidden?'Desarchivar':'Archivar'}}</button>
+        <button type="button" class="btn btn-danger" (click)="toggleHiddenProperty(user)">{{user.hidden?'Desarchivar':'Archivar'}}</button>
         <button type="button" class="btn btn-danger btn-simple" (click)="changePass(user.uuid)" [disabled]="user.hidden">Cambiar
             PIN</button>
-        <button type="button" class="btn btn-primary" (click)="modal.close()"
-            [disabled]="user.hidden||!user.uname">Guardar</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close()" [disabled]="user.hidden||!user.uname">Guardar</button>
     </div>
 </ng-template>
 
 <ng-template #newEmployeeModal let-modal>
     <div class="modal-header">
         <h4 class="modal-title">Nuevo Usuario</h4>
-        <button type="button" class="btn-close btn btn-link" aria-label="Close"
-            (click)="modal.dismiss('Cross click')">X</button>
+        <button type="button" class="btn-close btn btn-link" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
     </div>
     <div class="modal-body">
         <div class="input-group mb-3 was-validated">
             <span class="input-group-text" id="inputGroup-sizing-default">Nombre</span>
-            <input [(ngModel)]="user.uname" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default" ngbAutofocus required>
+            <input [(ngModel)]="user.uname" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default" ngbAutofocus required>
             <div class="invalid-feedback">Requerido</div>
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text" id="inputGroup-sizing-default">Mail</span>
-            <input [(ngModel)]="user.mail" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default">
+            <input [(ngModel)]="user.mail" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default">
         </div>
         <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelect01">Teléfono</label>
-            <input [(ngModel)]="user.phone" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default">
+            <input [(ngModel)]="user.phone" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default">
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text">Dirección</span>
-            <input [(ngModel)]="user.address" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default">
+            <input [(ngModel)]="user.address" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default">
         </div>
     </div>
     <div class="modal-footer" style="justify-content: flex-end !important;">
-        <button type="button" class="btn btn-primary" (click)="modal.close('Save')"
-            [disabled]="!user.uname">Guardar</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close('Save')" [disabled]="!user.uname">Guardar</button>
     </div>
 </ng-template>
 
@@ -268,22 +255,17 @@
     <div class="modal-body">
         <div class="row">
             <div class="justify-content-center d-flex" style="font-size: 1.8em;font-weight: bolder;">
-                <input style="color: white;" class="form-control form-control-lg text-center mx-1 col-2" type="text"
-                    value="{{hide?'*':pin.charAt(0)}}" [disabled]="true" [readonly]="true">
-                <input style="color: white;" class="form-control form-control-lg text-center mx-1 col-2" type="text"
-                    value="{{hide?'*':pin.charAt(1)}}" [disabled]="true" [readonly]="true">
-                <input style="color: white;" class="form-control form-control-lg text-center mx-1 col-2" type="text"
-                    value="{{hide?'*':pin.charAt(2)}}" [disabled]="true" [readonly]="true">
-                <input style="color: white;" class="form-control form-control-lg text-center mx-1 col-2" type="text"
-                    value="{{hide?'*':pin.charAt(3)}}" [disabled]="true" [readonly]="true">
+                <input style="color: white;" class="form-control form-control-lg text-center mx-1 col-2" type="text" value="{{hide?'*':pin.charAt(0)}}" [disabled]="true" [readonly]="true">
+                <input style="color: white;" class="form-control form-control-lg text-center mx-1 col-2" type="text" value="{{hide?'*':pin.charAt(1)}}" [disabled]="true" [readonly]="true">
+                <input style="color: white;" class="form-control form-control-lg text-center mx-1 col-2" type="text" value="{{hide?'*':pin.charAt(2)}}" [disabled]="true" [readonly]="true">
+                <input style="color: white;" class="form-control form-control-lg text-center mx-1 col-2" type="text" value="{{hide?'*':pin.charAt(3)}}" [disabled]="true" [readonly]="true">
                 <button class="btn btn-link btn-icon" type="button" (click)="hide=!hide" ngbAutofocus>
                     <i class="fa-solid" [ngClass]="{'fa-eye-slash':hide,'fa-eye':!hide}"> </i>
                 </button>
             </div>
         </div>
         <p class="bg-warning text-dark my-3 p-2"> <strong>PIN DE ACCESO</strong>
-            <br>Deberá entregar este pin al usuario ya que es requisito para operar en el sistema. Una vez cerrada esta
-            ventana no podrá verlo nuevamente.
+            <br>Deberá entregar este pin al usuario ya que es requisito para operar en el sistema. Una vez cerrada esta ventana no podrá verlo nuevamente.
         </p>
     </div>
     <div class="modal-footer">
@@ -301,8 +283,7 @@
             <input #adMail="ngModel" ngModel class="form-control" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" id="adminMail" placeholder="mail@ejemplo.com" ngbAutofocus required>
         </div>
         <p class="bg-warning text-dark my-3 p-2"> <strong>ADVERTENCIA</strong>
-            <br>Esta acción no puede deshacerse. Debe colocar el mail del administrador que desea registrar. Se le
-            enviará un link que permitira su registro.
+            <br>Esta acción no puede deshacerse. Debe colocar el mail del administrador que desea registrar. Se le enviará un link que permitira su registro.
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cancel')">Cancelar</button>
@@ -313,8 +294,7 @@
 <ng-template #turnEditModal let-modal>
     <div class="modal-header">
         <h4 class="modal-title">Turnos</h4>
-        <button type="button" class="btn-close btn btn-link" aria-label="Close"
-            (click)="modal.dismiss('Cross click')">X</button>
+        <button type="button" class="btn-close btn btn-link" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
     </div>
     <div class="modal-body">
         <div class="table-responsive">
@@ -332,34 +312,28 @@
                     <tr *ngFor="let c of turns;index as i">
                         <td>{{i+1}}</td>
                         <td class="was-validated">{{c.editing?'':c.newName}}
-                            <input *ngIf="c.editing" [(ngModel)]="c.newName" type="text" class="form-control"
-                                aria-describedby="inputGroup-sizing-default" required>
+                            <input *ngIf="c.editing" [(ngModel)]="c.newName" type="text" class="form-control" aria-describedby="inputGroup-sizing-default" required>
                             <div class="invalid-feedback">Requerido</div>
                         </td>
                         <td class="was-validated">{{c.editing?'':(c.schedule)}}
-                            <input *ngIf="c.editing" [(ngModel)]="c.schedule" type="text" class="form-control"
-                                aria-describedby="inputGroup-sizing-default">
+                            <input *ngIf="c.editing" [(ngModel)]="c.schedule" type="text" class="form-control" aria-describedby="inputGroup-sizing-default">
                         </td>
                         <td class=" td-actions text-primary">
-                            <button *ngIf="!c.editing;else cancelBut" class=" btn btn-link" type="button"
-                                placement="bottom" container="body" (click)="c.editing=!c.editing">
+                            <button *ngIf="!c.editing;else cancelBut" class=" btn btn-link" type="button" placement="bottom" container="body" (click)="c.editing=!c.editing">
                                 <i class=" tim-icons icon-pencil text-info"> </i>
                             </button>
                             <ng-template #cancelBut>
-                                <button class=" btn btn-link" type="button" placement="bottom" container="body"
-                                    (click)="c.editing=!c.editing;updateTurns()">
+                                <button class=" btn btn-link" type="button" placement="bottom" container="body" (click)="c.editing=!c.editing;updateTurns()">
                                     <i class=" tim-icons icon-simple-remove text-danger"> </i>
                                 </button>
                             </ng-template>
                         </td>
                         <td class=" td-actions text-danger">
-                            <button *ngIf="!c.editing;else saveBut" class=" btn btn-link" type="button"
-                                placement="bottom" container="body" (click)="deleteTurn(c.name)">
+                            <button *ngIf="!c.editing;else saveBut" class=" btn btn-link" type="button" placement="bottom" container="body" (click)="deleteTurn(c.name)">
                                 <i class=" tim-icons icon-trash-simple text-danger"> </i>
                             </button>
                             <ng-template #saveBut>
-                                <button class=" btn btn-link" type="button" placement="bottom" container="body"
-                                    (click)="editTurn(c.name,c.newName,c.schedule)" [disabled]="!c.newName">
+                                <button class=" btn btn-link" type="button" placement="bottom" container="body" (click)="editTurn(c.name,c.newName,c.schedule)" [disabled]="!c.newName">
                                     <i class=" tim-icons icon-check-2 text-success"> </i>
                                 </button>
                             </ng-template>
@@ -368,18 +342,15 @@
                     <tr>
                         <td>-</td>
                         <td [ngClass]="{'was-validated':validated}">
-                            <input #newTurnName type="text" class="form-control"
-                                aria-describedby="inputGroup-sizing-default" required>
+                            <input #newTurnName type="text" class="form-control" aria-describedby="inputGroup-sizing-default" required>
                             <div class="invalid-feedback">Requerido</div>
                         </td>
                         <td [ngClass]="{'was-validated':validated}">
-                            <input #newTurnSchedule type="text" class="form-control"
-                                aria-describedby="inputGroup-sizing-default">
+                            <input #newTurnSchedule type="text" class="form-control" aria-describedby="inputGroup-sizing-default">
                         </td>
                         <td></td>
                         <td>
-                            <button class=" btn btn-link" type="button" placement="bottom" container="body"
-                                (click)="newTurn(newTurnName,newTurnSchedule)">
+                            <button class=" btn btn-link" type="button" placement="bottom" container="body" (click)="newTurn(newTurnName,newTurnSchedule)">
                                 <i class=" tim-icons icon-simple-add text-success"> </i>
                             </button>
                         </td>
@@ -394,70 +365,57 @@
 <ng-template #newHelperModalContent let-modal>
     <div class="modal-header">
         <h4 class="modal-title">Nuevo Ayudante</h4>
-        <button type="button" class="btn-close btn btn-link" aria-label="Close"
-            (click)="modal.dismiss('Cross click')">X</button>
+        <button type="button" class="btn-close btn btn-link" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
     </div>
     <div class="modal-body">
         <div class="input-group mb-3 was-validated">
             <span class="input-group-text" id="inputGroup-sizing-default">Nombre</span>
-            <input [(ngModel)]="user.uname" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default" ngbAutofocus required>
+            <input [(ngModel)]="user.uname" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default" ngbAutofocus required>
             <div class="invalid-feedback">Requerido</div>
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text" id="inputGroup-sizing-default">Mail</span>
-            <input [(ngModel)]="user.mail" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default">
+            <input [(ngModel)]="user.mail" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default">
         </div>
         <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelect01">Teléfono</label>
-            <input [(ngModel)]="user.phone" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default">
+            <input [(ngModel)]="user.phone" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default">
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text">Dirección</span>
-            <input [(ngModel)]="user.address" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default">
+            <input [(ngModel)]="user.address" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default">
         </div>
     </div>
     <div class="modal-footer" style="justify-content: flex-end !important;">
-        <button type="button" class="btn btn-primary" (click)="modal.close('Save')"
-            [disabled]="!user.uname">Guardar</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close('Save')" [disabled]="!user.uname">Guardar</button>
     </div>
 </ng-template>
 <ng-template #editHelperModalContent let-modal>
     <div class="modal-header">
         <h4 class="modal-title">Editando Usuario</h4>
-        <button type="button" class="btn-close btn btn-link" aria-label="Close"
-            (click)="modal.dismiss('Cross click')">X</button>
+        <button type="button" class="btn-close btn btn-link" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
     </div>
     <div class="modal-body">
         <div class="input-group mb-3 was-validated">
             <span class="input-group-text" id="inputGroup-sizing-default">Nombre</span>
-            <input [(ngModel)]="user.uname" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default" required>
+            <input [(ngModel)]="user.uname" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default" required>
             <div class="invalid-feedback">Requerido</div>
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text" id="inputGroup-sizing-default">Mail</span>
-            <input [(ngModel)]="user.mail" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default">
+            <input [(ngModel)]="user.mail" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default">
         </div>
         <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelect01">Teléfono</label>
-            <input [(ngModel)]="user.phone" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default">
+            <input [(ngModel)]="user.phone" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default">
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text">Dirección</span>
-            <input [(ngModel)]="user.address" type="text" class="form-control" [disabled]="user.hidden"
-                aria-describedby="inputGroup-sizing-default">
+            <input [(ngModel)]="user.address" type="text" class="form-control" [disabled]="user.hidden" aria-describedby="inputGroup-sizing-default">
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-danger"
-            (click)="toggleHiddenPropertyHelper(user)">{{user.hidden?'Desarchivar':'Archivar'}}</button>
-        <button type="button" class="btn btn-primary" (click)="modal.close()"
-            [disabled]="user.hidden||!user.uname">Guardar</button>
+        <button type="button" class="btn btn-danger" (click)="toggleHiddenPropertyHelper(user)">{{user.hidden?'Desarchivar':'Archivar'}}</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close()" [disabled]="user.hidden||!user.uname">Guardar</button>
     </div>
 </ng-template>
