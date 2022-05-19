@@ -9,7 +9,7 @@ import { WebService } from "src/app/services/web.service";
 })
 export class OpByUname implements PipeTransform {
 
-  transform(value: OperationsReport[], userUuid: string): unknown {
+  transform(value: OperationsReport[], userUuid: string): OperationsReport[] {
 
     return value.filter(v => {
       return v.employee_id === userUuid
@@ -76,6 +76,7 @@ export class DashboardComponent implements OnInit {
     id_accountancy: 0,
     turn_name: '-',
     turn_schedule: '-',
+    passed: false,
     timestamp: new Date()
   }
   public lastOpDate: Date;
@@ -133,7 +134,6 @@ export class DashboardComponent implements OnInit {
       this.getTurns(),
       this.getDailyReportbyTurns(),
       this.getOperationsReport(),
-      this.getEmployeeSummary(),
       this.getGasSoldData()
     ])
   }
@@ -145,17 +145,34 @@ export class DashboardComponent implements OnInit {
         this.lastTurn = turns[turns.length - 1].name ?? ''
       })
   }
-  private async getEmployeeSummary() {
-    return this.webService.getOperationsSumarybyEmployee(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
-      .then((res: OperationsEmployeeSummary[]) => {
-        this.employeeSummary = res
-      })
-  }
   public async getOperationsReport() {
     return this.webService.getOperationReport(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
       .then(or => {
         this.operationsReport = or
+        this.operationsReportbyEmployee(or)
       })
+  }
+  private operationsReportbyEmployee(or: OperationsReport[]) {
+    const employees = or.reduce((acc:string[], item) => {
+      if (acc.includes(item.employee_id)) {
+        return acc
+      }
+      return acc = [item.employee_id, ...acc]
+    }, [])
+    this.employeeSummary = employees.map(i => {
+      return or.filter(or=>or.employee_id==i)
+        .reduce<OperationsEmployeeSummary>((acc:OperationsEmployeeSummary,item:OperationsReport)=>{
+          return acc = {
+            PRODUCTS_TOTAL: +acc.PRODUCTS_TOTAL + +item.PRODUCT_AMOUNT_SOLD,
+            PUMPS_TOTAL: +acc.PUMPS_TOTAL + +item.PUMPS_AMOUNT_SOLD,
+            REPORT: +acc.REPORT + +item.REPORT,
+            M3_SOLD: +acc.M3_SOLD + +item.M3_SOLD,
+            N_OP:acc.N_OP+1,
+            employee_id: item.employee_id,
+            uname: item.uname
+          }
+        },{PUMPS_TOTAL:0,PRODUCTS_TOTAL:0,REPORT:0,M3_SOLD:0,N_OP:0,employee_id:null,uname:null})
+    })
   }
   public async getLastOperationStatus() {
     return this.webService.getLastOperationDash()
@@ -362,7 +379,7 @@ export class DashboardComponent implements OnInit {
       }]
     };
     this.gasAverage = this.gasAverage / this.pumpsGasSold.length
-    this.gasAverage= Math.round(this.gasAverage*100)/100
+    this.gasAverage = Math.round(this.gasAverage * 100) / 100
     this.chartGasSold = new Chart(this.ctx, {
       type: 'line',
       data: data,

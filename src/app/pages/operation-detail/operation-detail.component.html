@@ -3,6 +3,10 @@
         <div class="col-md-11 col-xl-10">
             <div class=" card mt-5">
                 <div *ngIf="version=='ORIGINAL'" class="display-3 text-center bg-danger rounded-top text-secondary">ORIGINAL</div>
+                <div *ngIf="version!='ORIGINAL'&&operationDetail?.operation.passed" class="display-3 text-center bg-success rounded-top text-dark" [ngbPopover]="'Revisión por ' +operationDetail?.operation.admin_name+ ' el '+ operationDetail?.operation.updated_on" popoverTitle="Detalle"
+                    [openDelay]="300" [closeDelay]="500" triggers="mouseenter:mouseleave">
+                    REVISADA
+                </div>
                 <div *ngIf="!isLoading; else spinnerBlock" class="px-4 card-header d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
                         <i class="fa-solid fa-list-check fa-4x"></i>
@@ -321,6 +325,20 @@
                         <div class="col text-center">
                             <button class="btn btn-neutral " (click)="print(PrintTemplate)"><i
                                     class="fa-solid fa-print"></i> Imprimir</button>
+                        </div>
+                        <div *ngIf="!operationDetail?.operation.passed" class="col text-center">
+                            <button class="btn btn-success btn-simple " (click)="setPassed()" [disabled]="passedSaving"><i
+                                    class="fa-solid fa-check"></i> Marcar Revisada <span *ngIf="passedSaving">
+                                        <div class="sk-chase" style="font-size: 1em;margin-left: -1.2em;">
+                                            <div class="sk-chase-dot"></div>
+                                            <div class="sk-chase-dot"></div>
+                                            <div class="sk-chase-dot"></div>
+                                            <div class="sk-chase-dot"></div>
+                                            <div class="sk-chase-dot"></div>
+                                            <div class="sk-chase-dot"></div>
+                                        </div>
+                                    </span>
+                                </button>
                         </div>
                         <div *ngIf="operationDetail.operation.id_accountancy_bkp!=null&&version!='ORIGINAL'" class="col text-center">
                             <button class="btn btn-info " [routerLink]="['/operations/detail',operationDetail.operation.id]" [queryParams]="{version:'ORIGINAL'}"><i

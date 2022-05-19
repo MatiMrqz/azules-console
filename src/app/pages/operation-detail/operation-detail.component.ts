@@ -15,6 +15,7 @@ export class OperationDetailComponent implements OnInit {
   public version: 'ORIGINAL' | 'REVIEWED' | null
   public isLoading: boolean = true
   public saving: boolean = false
+  public passedSaving:boolean = false
   constructor(
     private route: ActivatedRoute,
     private webService: WebService,
@@ -37,6 +38,20 @@ export class OperationDetailComponent implements OnInit {
         console.log(res)
         this.isLoading = false
       })
+  }
+  public async setPassed(){
+    this.passedSaving = true
+    this.webService.setOperationPassed(this.operationDetail.operation.id)
+    .then(res =>{
+      this.showSuccess('Cambios guardados')
+      this.getOperation()
+    })
+    .catch((err)=>{
+      this.showError(err)
+    })
+    .finally(()=>{
+      this.passedSaving = false
+    })
   }
   public async editModal(content) {
     this.modalService.open(content, {

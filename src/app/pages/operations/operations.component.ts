@@ -20,10 +20,10 @@ export class OperationsComponent implements OnInit {
   public page = 1;
   public pageSize = 10;
 
-  public radioDef='1M';
+  public radioDef = '1M';
   public filter = {
-    close:true,
-    open:false
+    close: true,
+    open: false
   }
 
   constructor(
@@ -53,7 +53,7 @@ export class OperationsComponent implements OnInit {
   private _search(): Observable<{ operations: Operation[], size: number }> {
 
     let operations = this.operationsFetch
-    operations = operations.filter(op=> (op.operation_type=="CLOSE"&&this.filter.close)||(op.operation_type=="OPEN"&&this.filter.open))
+    operations = operations.filter(op => (op.operation_type == "CLOSE" && this.filter.close) || (op.operation_type == "OPEN" && this.filter.open))
     operations = operations.filter(op => this.matches(op, this.searchTerm, this.pipe))
 
     const size = operations.length
@@ -64,7 +64,7 @@ export class OperationsComponent implements OnInit {
   }
 
   private matches(operation: Operation, term: string, pipe: PipeTransform) {
-    return operation.id.toString().includes(term) || operation.uname.toLowerCase().includes(term.toLowerCase()) || operation.turn_name.toLowerCase().includes(term.toLowerCase()) || operation.observations!.toLowerCase().includes(term.toLowerCase())|| operation.helper_uname?.toLowerCase().includes(term.toLowerCase())
+    return operation.id.toString().includes(term) || operation.uname.toLowerCase().includes(term.toLowerCase()) || operation.turn_name.toLowerCase().includes(term.toLowerCase()) || operation.observations!.toLowerCase().includes(term.toLowerCase()) || operation.helper_uname?.toLowerCase().includes(term.toLowerCase())
   }
 
   ngOnInit(): void {

@@ -1,195 +1,186 @@
 <div class=" content">
-  <div class="row">
-    <div class="col-12">
-      <div class="card card-chart">
-        <div class="card-header">
-          <h5 class=" card-category" style="width: fit-content;">Estado actual <a href="javascript:void(0)"
-              (click)="getLastOperationStatus()"><i class="fa-solid fa-rotate-right text-light"></i></a></h5>
-        </div>
-        <div class="card-body mx-3">
-          <div class="row align-items-center justify-content-evenly">
-            <div class="col-lg-4">
-              <h3 class=" card-title">
-                <i [ngClass]="{'fa-door-open text-success':lastOperation.operation_type=='OPEN','fa-door-closed text-danger':lastOperation.operation_type=='CLOSE'}"
-                  class="fa-solid"> </i> {{lastOperation.operation_type=='CLOSE'?'Turno
-                Cerrado':'Turno Abierto'}}
-                <h5 class="font-italic text-muted">Sincronizado {{lastOpDate|dateAgo}}</h5>
-              </h3>
-            </div>
-            <div class="col-lg-4">
-              <h3 class=" card-title">
-                <i class=" fa-solid fa-calendar-check text-light"> </i> {{lastOperation.turn_name}}
-                <h5 class=" text-muted">{{lastOperation.timestamp|date:'E d, HH:mm'}}</h5>
-              </h3>
-            </div>
-            <div class="col-lg-4">
-              <h3 class=" card-title">
-                <i class=" fa-solid fa-user text-info"> </i> {{lastOperation.uname??'-'}}
-                <h5 class=" text-muted">Encargado</h5>
-              </h3>
-            </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-chart">
+                <div class="card-header">
+                    <h5 class=" card-category" style="width: fit-content;">Estado actual <a href="javascript:void(0)" (click)="getLastOperationStatus()"><i class="fa-solid fa-rotate-right text-light"></i></a></h5>
+                </div>
+                <div class="card-body mx-3">
+                    <div class="row align-items-center justify-content-evenly">
+                        <div class="col-lg-4">
+                            <h3 class=" card-title">
+                                <i [ngClass]="{'fa-door-open text-success':lastOperation.operation_type=='OPEN','fa-door-closed text-danger':lastOperation.operation_type=='CLOSE'}" class="fa-solid"> </i> {{lastOperation.operation_type=='CLOSE'?'Turno
+                                Cerrado':'Turno Abierto'}}
+                                <h5 class="font-italic text-muted">Sincronizado {{lastOpDate|dateAgo}}</h5>
+                            </h3>
+                        </div>
+                        <div class="col-lg-4">
+                            <h3 class=" card-title">
+                                <i class=" fa-solid fa-calendar-check text-light"> </i> {{lastOperation.turn_name}}
+                                <h5 class=" text-muted">{{lastOperation.timestamp|date:'E d, HH:mm'}}</h5>
+                            </h3>
+                        </div>
+                        <div class="col-lg-4">
+                            <h3 class=" card-title">
+                                <i class=" fa-solid fa-user text-info"> </i> {{lastOperation.uname??'-'}}
+                                <h5 class=" text-muted">Encargado</h5>
+                            </h3>
+                        </div>
 
-          </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-6">
-      <div class="card">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
 
-        <div class="card-body">
-          <div class="dp-hidden position-absolute">
-            <div class="input-group">
-              <input placeholder="" name="datepicker" class="form-control" ngbDatepicker #datepicker="ngbDatepicker"
-                [autoClose]="'outside'" [navigation]="'select'" (dateSelect)="onDateSelection($event)" [displayMonths]="2"
-                [dayTemplate]="t" outsideDays="hidden" [startDate]="fromDate!" tabindex="-1">
-            </div>
-          </div>
-          <div class="input-group">
-            <input #dpFromDate class="form-control" placeholder="dd-mm-yyyy" name="dpFromDate"
-              [value]="formatter.format(fromDate)" (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
-            <input #dpToDate class="form-control" placeholder="dd-mm-yyyy" name="dpToDate"
-              [value]="formatter.format(toDate)" (input)="toDate = validateInput(toDate, dpToDate.value)">
-            <div class="input-group-append">
-              <button class="btn btn-simple btn-neutral" (click)="datepicker.toggle()" type="button"><i
+                <div class="card-body">
+                    <div class="dp-hidden position-absolute">
+                        <div class="input-group">
+                            <input placeholder="" name="datepicker" class="form-control" ngbDatepicker #datepicker="ngbDatepicker" [autoClose]="'outside'" [navigation]="'select'" (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" outsideDays="hidden" [startDate]="fromDate!"
+                                tabindex="-1">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input #dpFromDate class="form-control" placeholder="dd-mm-yyyy" name="dpFromDate" [value]="formatter.format(fromDate)" (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
+                        <input #dpToDate class="form-control" placeholder="dd-mm-yyyy" name="dpToDate" [value]="formatter.format(toDate)" (input)="toDate = validateInput(toDate, dpToDate.value)">
+                        <div class="input-group-append">
+                            <button class="btn btn-simple btn-neutral" (click)="datepicker.toggle()" type="button"><i
                   class="fa-solid fa-calendar-days"></i></button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class=" row">
-    <div class=" col-12">
-      <div class=" card card-chart">
-        <div class=" card-header">
-          <h5 class=" card-category">Ventas</h5>
-          <h2 class=" card-title">Total Diario</h2>
+    <div class=" row">
+        <div class=" col-12">
+            <div class=" card card-chart">
+                <div class=" card-header">
+                    <h5 class=" card-category">Ventas</h5>
+                    <h2 class=" card-title">Total Diario</h2>
+                </div>
+                <div class=" card-body">
+                    <div class=" chart-area"><canvas id="chartBig1"> </canvas></div>
+                </div>
+            </div>
         </div>
-        <div class=" card-body">
-          <div class=" chart-area"><canvas id="chartBig1"> </canvas></div>
-        </div>
-      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class=" col-12">
-      <div class=" card card-chart">
-        <div class=" card-header">
-          <h5 class=" card-category">Rendiciones</h5>
-          <h3 class=" card-title">
-            <i class=" fa-solid fa-scale-balanced text-primary"> </i> Diferencias S/F
-          </h3>
+    <div class="row">
+        <div class=" col-12">
+            <div class=" card card-chart">
+                <div class=" card-header">
+                    <h5 class=" card-category">Rendiciones</h5>
+                    <h3 class=" card-title">
+                        <i class=" fa-solid fa-scale-balanced text-primary"> </i> Diferencias S/F
+                    </h3>
+                </div>
+                <div class=" card-body">
+                    <div class=" chart-area"><canvas id="CountryChart"> </canvas></div>
+                </div>
+            </div>
         </div>
-        <div class=" card-body">
-          <div class=" chart-area"><canvas id="CountryChart"> </canvas></div>
-        </div>
-      </div>
     </div>
-  </div>
-  <div class=" row">
-    <div class=" col-lg-6">
-      <div class=" card card-chart">
-        <div class=" card-header">
-          <h5 class=" card-category">m³ vendidos</h5>
-          <h3 class=" card-title">
-            <i class=" fa-solid fa-gauge-simple text-danger-states"> </i> Promedio:{{!gasAverage?'-':gasAverage}}[m³]
-          </h3>
+    <div class=" row">
+        <div class=" col-lg-6">
+            <div class=" card card-chart">
+                <div class=" card-header">
+                    <h5 class=" card-category">m³ vendidos</h5>
+                    <h3 class=" card-title">
+                        <i class=" fa-solid fa-gauge-simple text-danger-states"> </i> Promedio:{{!gasAverage?'-':gasAverage}}[m³]
+                    </h3>
+                </div>
+                <div class=" card-body">
+                    <div class=" chart-area"><canvas id="chartLineRed"> </canvas></div>
+                </div>
+            </div>
         </div>
-        <div class=" card-body">
-          <div class=" chart-area"><canvas id="chartLineRed"> </canvas></div>
+        <div class=" col-lg-6">
+            <div class=" card card-chart">
+                <div class=" card-header">
+                    <h5 class=" card-category">Ventas</h5>
+                    <h3 class=" card-title">
+                        <i class=" fa-solid fa-cash-register text-light"> </i> <span style="color: #00d6b4;">Productos</span>/<span style="color:#d600d6;">Surtidores</span>
+                    </h3>
+                </div>
+                <div class=" card-body">
+                    <div class=" chart-area"><canvas id="chartLineGreen"> </canvas></div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-    <div class=" col-lg-6">
-      <div class=" card card-chart">
-        <div class=" card-header">
-          <h5 class=" card-category">Ventas</h5>
-          <h3 class=" card-title">
-            <i class=" fa-solid fa-cash-register text-light"> </i> <span style="color: #00d6b4;">Productos</span>/<span style="color:#d600d6;">Surtidores</span> 
-          </h3>
-        </div>
-        <div class=" card-body">
-          <div class=" chart-area"><canvas id="chartLineGreen"> </canvas></div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class=" row">
-    <div class=" col-12">
-      <div class=" card">
-        <div class=" card-header">
-          <h4 class=" card-title">Por encargado</h4>
-        </div>
-        <div class=" card-body">
-          <div class="col-11 ml-4">
-            <table class=" table tablesorter text-center" id="">
-              <thead class=" text-primary">
-                <tr>
-                  <th class="col-1">Nº</th>
-                  <th class="col-2">Encargado</th>
-                  <th class="col-2">Productos</th>
-                  <th class="col-2">Surtidores</th>
-                  <th class="col-2">Rendido</th>
-                  <th class="col-2">Diferencia</th>
-                </tr>
-              </thead>
-            </table>
-          </div>
-          <ngb-accordion [closeOthers]="true" activeIds="" *ngFor="let e of employeeSummary">
-            <ngb-panel [id]="e.uname">
-              <ng-template ngbPanelTitle>
-                <table style="width: 100%;">
-                  <thead>
-                    <tr class="text-center">
-                      <th class="col-1">{{e.N_OP}}</th>
-                      <th class="col-2">{{e.uname}}</th>
-                      <th class="col-2 text-muted">{{e.PRODUCTS_TOTAL|currency:'ARS'}}</th>
-                      <th class="col-2 text-muted">{{e.PUMPS_TOTAL|currency:'ARS'}}</th>
-                      <th class="col-2 text-muted">{{e.REPORT|currency:'ARS'}}</th>
-                      <th class="col-2" [ngClass]="{'text-danger-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))<0,'text-success-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))>0}">{{(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))|currency:'ARS'}}</th>
-                    </tr>
-                  </thead>
-                </table>
-              </ng-template>
-              <ng-template ngbPanelContent>
-                <table class=" table tablesorter" id="">
-                  <thead class=" text-primary">
-                    <tr>
-                      <th>ID</th>
-                      <th>Fecha</th>
-                      <th>Venta Productos</th>
+    <div class=" row">
+        <div class=" col-12">
+            <div class=" card">
+                <div class=" card-header">
+                    <h4 class=" card-title">Por encargado</h4>
+                </div>
+                <div class=" card-body">
+                    <div class="col-11 ml-4">
+                        <table class=" table tablesorter text-center" id="">
+                            <thead class=" text-primary">
+                                <tr>
+                                    <th class="col-1">Nº Operaciones</th>
+                                    <th class="col-2">Encargado</th>
+                                    <th class="col-2">M³ Promedio</th>
+                                    <th class="col-2">Diferencia</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <ngb-accordion [closeOthers]="true" activeIds="" *ngFor="let e of employeeSummary">
+                        <ngb-panel [id]="e.uname">
+                            <ng-template ngbPanelTitle>
+                                <table style="width: 100%;">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th class="col-1">{{e.N_OP}}</th>
+                                            <th class="col-2">{{e.uname}}</th>
+                                            <th class="col-2">~{{(+e.M3_SOLD/+e.N_OP)|number:'1.2-2'}}<small>[m³]/Turno</small></th>
+                                            <th class="col-2" [ngClass]="{'text-danger-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))<0,'text-success-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))>0}">{{(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))|currency:'ARS'}}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </ng-template>
+                            <ng-template ngbPanelContent>
+                                <table class=" table tablesorter" id="">
+                                    <thead class=" text-primary">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Fecha</th>
+                                            <!-- <th>Venta Productos</th>
                       <th>Venta Surtidores</th>
-                      <th>Total Rendido</th>
-                      <th>Diferencia S/F</th>
-                    </tr>
-                  </thead>
-                  <tbody *ngFor="let item of operationsReport|byuname:e.employee_id">
-                    <tr>
-                      <td><a [routerLink]="['/operations/detail/'+item.id]" href="" target="_blank">{{item.id}}</a></td>
-                      <td>{{item.timestamp|date:'dd/MM/YY, HH:mm hs'}}</td>
-                      <td>{{item.PRODUCT_AMOUNT_SOLD??0|currency:'ARS'}}</td>
+                      <th>Total Rendido</th> -->
+                                            <th>M³ Vendidos</th>
+                                            <th>Diferencia S/F</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody *ngFor="let item of operationsReport|byuname:e.employee_id">
+                                        <tr>
+                                            <td><a [routerLink]="['/operations/detail/'+item.id]" href="" target="_blank">{{item.id}}</a></td>
+                                            <td>{{item.timestamp|date:'dd/MM/YY, HH:mm'}}hs</td>
+                                            <!-- <td>{{item.PRODUCT_AMOUNT_SOLD??0|currency:'ARS'}}</td>
                       <td>{{item.PUMPS_AMOUNT_SOLD??0|currency:'ARS'}}</td>
-                      <td>{{item.REPORT??0|currency:'ARS'}}</td>
-                      <td>{{(+item.REPORT-(+item.PUMPS_AMOUNT_SOLD+ +item.PRODUCT_AMOUNT_SOLD))|currency:'ARS'}}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </ng-template>
-            </ngb-panel>
-          </ngb-accordion>
+                      <td>{{item.REPORT??0|currency:'ARS'}}</td> -->
+                                            <td>{{item.M3_SOLD??0|number:'1.2-2'}}<small>[m³]</small></td>
+                                            <td>{{(+item.REPORT-(+item.PUMPS_AMOUNT_SOLD+ +item.PRODUCT_AMOUNT_SOLD))|currency:'ARS'}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </ng-template>
+                        </ngb-panel>
+                    </ngb-accordion>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <ng-template #t let-date let-focused="focused">
-  <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
-    [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date"
-    (mouseleave)="hoveredDate = null">
+    <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
     {{ date.day }}
   </span>
 </ng-template>

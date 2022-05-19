@@ -218,3 +218,11 @@ code {
 .popover-arrow {
     @extend .arrow;
 }
+
+.bs-popover-end {
+    @extend .bs-popover-right;
+}
+
+.bs-popover-start {
+    @extend .bs-popover-left;
+}

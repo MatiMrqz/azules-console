@@ -17,22 +17,22 @@
                         <ng-template ngbPanelTitle>
                             <div *ngIf="!isLoading" class="d-flex align-items-center">
                                 <div>
-                                    <i class="fa-2x" [ngClass]="{'fa-square fa-regular':refreshDonePumps()!=pumps.length,'fa-square-check fa-solid text-muted':refreshDonePumps()==pumps.length}"></i>
+                                    <i class="fa-2x" [ngClass]="{'fa-square fa-regular':tempData.pumps.done!=pumps.length,'fa-square-check fa-solid text-muted':tempData.pumps.done==pumps.length}"></i>
                                 </div>
                                 <div class="mx-3">
-                                    <p class="text-dark title" [ngClass]="{'text-through text-muted':refreshDonePumps()==pumps.length}">
+                                    <p class="text-dark title" [ngClass]="{'text-through text-muted':tempData.pumps.done==pumps.length}">
                                         Surtidores</p>
                                     <p class=" text-muted">
-                                        {{refreshDonePumps()}}/{{isLoading?'-':pumps.length}}
+                                        {{tempData.pumps.done}}/{{isLoading?'-':pumps.length}}
                                     </p>
                                 </div>
                                 <div class="mx-5">
                                     <p class="text-muted m-0" style="font-size: larger;">
-                                        {{pumpTotalAmount()|currency:'ARS'}}</p>
+                                        {{tempData.pumps.accumulated|currency:'ARS'}}</p>
                                 </div>
                                 <div class="mx-3">
                                     <p class="text-muted m-0" style="font-size: larger;">
-                                        {{pumpm3Amount()| number:'1.2-2'}} <small>[m3]</small> </p>
+                                        {{tempData.pumps.m3| number:'1.2-2'}} <small>[m3]</small> </p>
                                 </div>
                             </div>
                         </ng-template>
@@ -64,10 +64,10 @@
                                                 {{item.meter}}<small>[{{!item.type_id?'-':getTypebyId(item.type_id).unit}}]</small>
                                             </td>
                                             <td>
-                                                <input [(ngModel)]="item.meter_end" inputmode="numeric" type="number" min="0" class="form-control" (blur)="(item.meter_end<item.meter&&item.meter_end!=null)?showModal(confirmModal,i):''" (input)="calcMeterDiff(i)">
+                                                <input [(ngModel)]="item.meter_end" inputmode="numeric" type="number" min="0" class="form-control" (blur)="(item.meter_end<item.meter&&item.meter_end!=null)?showModal(confirmModal,i):''" (input)="calcMeterDiff(i);refreshDonePumps()">
                                             </td>
                                             <td>
-                                                <input [(ngModel)]="item.venting" inputmode="numeric" type="number" min="0" class="form-control" (input)="calcMeterDiff(i)">
+                                                <input [(ngModel)]="item.venting" inputmode="numeric" type="number" min="0" class="form-control" (input)="calcMeterDiff(i);refreshDonePumps()">
                                             </td>
                                             <td class="text-center d-none d-lg-table-cell">
                                                 <strong>{{item.meter_diff| number:'1.2-2'}}</strong><small>[{{!item.type_id?'-':getTypebyId(item.type_id).unit}}]</small>
@@ -117,7 +117,7 @@
                                             <td>GRAL</td>
                                             <td class="cell-ellipsis d-none d-lg-table-cell">Medidor General</td>
                                             <td class="text-center">{{gralMeter.accumulated}}</td>
-                                            <td><input [(ngModel)]="gralMeter.meter_end" inputmode="numeric" type="number" min="0" class="form-control" (input)="gralMeter.meter_diff= +gralMeter.meter_end > +gralMeter.accumulated ? (+gralMeter.meter_end - +gralMeter.accumulated): gralMeter.meter_end!=null? 'Contador Reiniciado' : '' ;gralMeter.validated=(gralMeter.meter_end!=null)">
+                                            <td><input [(ngModel)]="gralMeter.meter_end" inputmode="numeric" type="number" min="0" class="form-control" (input)="gralMeter.meter_diff= +gralMeter.meter_end > +gralMeter.accumulated ? (+gralMeter.meter_end - +gralMeter.accumulated): gralMeter.meter_end!=null? 'Contador Reiniciado' : '' ;gralMeter.validated=(gralMeter.meter_end!=null);storeTempGral()">
                                             </td>
                                             <td class="text-center"> <span *ngIf="+gralMeter.meter_end < +gralMeter.accumulated && gralMeter.meter_end!=null "><i class="fa-solid fa-triangle-exclamation text-warning"></i></span> {{gralMeter.meter_diff}}</td>
                                         </tr>
@@ -130,18 +130,18 @@
                         <ng-template ngbPanelTitle>
                             <div *ngIf="!isLoading" class="d-flex align-items-center">
                                 <div>
-                                    <i class="fa-2x" [ngClass]="{'fa-square fa-regular':refreshDoneProducts()!=(products|validProducts).length,'fa-square-check fa-solid text-muted':refreshDoneProducts()==(products|validProducts).length}"></i>
+                                    <i class="fa-2x" [ngClass]="{'fa-square fa-regular':tempData.products.done!=(products|validProducts).length,'fa-square-check fa-solid text-muted':tempData.products.done==(products|validProducts).length}"></i>
                                 </div>
                                 <div class="mx-3">
-                                    <p class="text-dark title" [ngClass]="{'text-through text-muted':refreshDoneProducts()==(products|validProducts).length}">
+                                    <p class="text-dark title" [ngClass]="{'text-through text-muted':tempData.products.done==(products|validProducts).length}">
                                         Productos</p>
                                     <p class=" text-muted">
-                                        {{refreshDoneProducts()}}/{{isLoading?'-':(products|validProducts).length}}
+                                        {{tempData.products.done}}/{{isLoading?'-':(products|validProducts).length}}
                                     </p>
                                 </div>
                                 <div class="mx-5">
                                     <p class="text-muted m-0" style="font-size: larger;">
-                                        {{productTotalAmount()|currency:'ARS'}}</p>
+                                        {{tempData.products.accumulated|currency:'ARS'}}</p>
                                 </div>
                             </div>
                         </ng-template>
@@ -165,13 +165,13 @@
                                             </td>
                                             <td class=" text-center">{{item.stock}}</td>
                                             <td>
-                                                <input [(ngModel)]="item.items_sold" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=item.stock-item.items_sold+item.items_replacement==item.end_stock">
+                                                <input [(ngModel)]="item.items_sold" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=item.stock-item.items_sold+item.items_replacement==item.end_stock && item.items_sold!=null;refreshDoneProducts()">
                                             </td>
                                             <td>
-                                                <input [(ngModel)]="item.items_replacement" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=item.stock-item.items_sold+item.items_replacement==item.end_stock">
+                                                <input [(ngModel)]="item.items_replacement" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=item.stock-item.items_sold+item.items_replacement==item.end_stock && item.items_replacement!=null;refreshDoneProducts()">
                                             </td>
                                             <td>
-                                                <input [(ngModel)]="item.end_stock" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=item.stock-item.items_sold+item.items_replacement==item.end_stock">
+                                                <input [(ngModel)]="item.end_stock" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=item.stock-item.items_sold+item.items_replacement==item.end_stock && item.end_stock!=null;refreshDoneProducts()">
                                             </td>
                                             <td class="d-none d-lg-table-cell text-center">
                                                 {{item.unit_price|currency:'ARS'}}
@@ -189,18 +189,18 @@
                         <ng-template ngbPanelTitle>
                             <div *ngIf="!isLoading" class="d-flex align-items-center">
                                 <div>
-                                    <i class="fa-2x" [ngClass]="{'fa-square fa-regular':accDoneUpdate()!=8,'fa-square-check fa-solid text-muted':accDoneUpdate()==8}"></i>
+                                    <i class="fa-2x" [ngClass]="{'fa-square fa-regular':tempData.acc.done!=8,'fa-square-check fa-solid text-muted':tempData.acc.done==8}"></i>
                                 </div>
                                 <div class="mx-3">
-                                    <p class="text-dark title" [ngClass]="{'text-through text-muted':accDoneUpdate()==8}">
+                                    <p class="text-dark title" [ngClass]="{'text-through text-muted':tempData.acc.done==8}">
                                         Rendición</p>
                                     <p class=" text-muted">
-                                        {{accDoneUpdate()}}/8
+                                        {{tempData.acc.done}}/8
                                     </p>
                                 </div>
                                 <div class="mx-5">
                                     <p class="text-muted m-0" style="font-size: larger;">
-                                        {{accTotalAmount()|currency:'ARS'}}</p>
+                                        {{tempData.acc.accumulated|currency:'ARS'}}</p>
                                 </div>
                             </div>
                         </ng-template>
@@ -220,8 +220,8 @@
                                             <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">Nº de sobres/Total entregado</td>
                                             <td>
                                                 <div class="row justify-content-center">
-                                                    <input [(ngModel)]="acc.n_envelopes" inputmode="numeric" type="number" min="0" class="form-control col-3" (input)="acc.n_envelopes_v=acc.n_envelopes>=0" placeholder="NºSobres">
-                                                    <input [(ngModel)]="acc.envelopes_cash" inputmode="numeric" type="number" min="0" class="form-control col-8" (input)="acc.envelopes_cash_v=acc.envelopes_cash>=0" placeholder="$">
+                                                    <input [(ngModel)]="acc.n_envelopes" inputmode="numeric" type="number" min="0" class="form-control col-3" (input)="acc.n_envelopes_v=acc.n_envelopes>=0 && acc.n_envelopes!=null;accDoneUpdate()" placeholder="NºSobres">
+                                                    <input [(ngModel)]="acc.envelopes_cash" inputmode="numeric" type="number" min="0" class="form-control col-8" (input)="acc.envelopes_cash_v=acc.envelopes_cash>=0 && acc.envelopes_cash!=null;accDoneUpdate()" placeholder="$">
                                                 </div>
                                             </td>
                                         </tr>
@@ -230,7 +230,7 @@
                                             <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                 Dinero en efectivo
                                             </td>
-                                            <td><input [(ngModel)]="acc.cash" inputmode="numeric" type="number" min="0" class="form-control" (input)="acc.cash_v=acc.cash>=0">
+                                            <td><input [(ngModel)]="acc.cash" inputmode="numeric" type="number" min="0" class="form-control" (input)="acc.cash_v=acc.cash>=0 && acc.cash!=null;accDoneUpdate()">
                                             </td>
                                         </tr>
                                         <tr [ngClass]="{'table-danger':acc.vouchers_v===false,'table-success':acc.vouchers_v===true}">
@@ -238,14 +238,14 @@
                                             <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                 Vales entregados
                                             </td>
-                                            <td><input [(ngModel)]="acc.vouchers" inputmode="numeric" type="number" min="0" class="form-control" (input)="acc.vouchers_v=acc.vouchers>=0">
+                                            <td><input [(ngModel)]="acc.vouchers" inputmode="numeric" type="number" min="0" class="form-control" (input)="acc.vouchers_v=acc.vouchers>=0 && acc.vouchers!=null;accDoneUpdate()">
                                             </td>
                                         </tr>
                                         <tr [ngClass]="{'table-danger':acc.cards_v===false,'table-success':acc.cards_v===true}">
                                             <td>Tarjetas</td>
                                             <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                 Crédito/Débito</td>
-                                            <td><input [(ngModel)]="acc.cards" inputmode="numeric" type="number" min="0" class="form-control" (input)="acc.cards_v=acc.cards>=0">
+                                            <td><input [(ngModel)]="acc.cards" inputmode="numeric" type="number" min="0" class="form-control" (input)="acc.cards_v=acc.cards>=0 && acc.cards!=null;accDoneUpdate()">
                                             </td>
                                         </tr>
                                         <tr [ngClass]="{'table-danger':acc.expenses_v===false,'table-success':acc.expenses_v===true}">
@@ -253,7 +253,7 @@
                                             <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                 Retiros
                                             </td>
-                                            <td><input [(ngModel)]="acc.expenses" inputmode="numeric" type="number" min="0" class="form-control" (input)="acc.expenses_v=acc.expenses>=0">
+                                            <td><input [(ngModel)]="acc.expenses" inputmode="numeric" type="number" min="0" class="form-control" (input)="acc.expenses_v=acc.expenses>=0 && acc.expenses!=null;accDoneUpdate()">
                                             </td>
                                         </tr>
                                         <tr [ngClass]="{'table-danger':acc.MercadoPago_v===false,'table-success':acc.MercadoPago_v===true}">
@@ -261,7 +261,7 @@
                                             <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                 MercadoPago
                                             </td>
-                                            <td><input [(ngModel)]="acc.MercadoPago" inputmode="numeric" type="number" min="0" class="form-control" (input)="acc.MercadoPago_v=acc.MercadoPago>=0">
+                                            <td><input [(ngModel)]="acc.MercadoPago" inputmode="numeric" type="number" min="0" class="form-control" (input)="acc.MercadoPago_v=acc.MercadoPago>=0 && acc.MercadoPago!=null;accDoneUpdate()">
                                             </td>
                                         </tr>
                                         <tr [ngClass]="{'table-danger':acc.others_v===false,'table-success':acc.others_v===true}">
@@ -269,7 +269,7 @@
                                             <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                 Ingreso
                                             </td>
-                                            <td><input [(ngModel)]="acc.others" inputmode="numeric" type="number" min="0" class="form-control" (input)="acc.others_v=acc.others>=0">
+                                            <td><input [(ngModel)]="acc.others" inputmode="numeric" type="number" min="0" class="form-control" (input)="acc.others_v=acc.others>=0 && acc.others!=null;accDoneUpdate()">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -282,7 +282,7 @@
             <div *ngIf="!isLoading; else spinnerBlock" class="py-3 px-4">
                 <p class="font-weight-light">Progreso:</p>
                 <p>
-                    <ngb-progressbar type="light" textType="dark" [value]="(refreshDoneProducts()+refreshDonePumps()+(gralMeter.validated?1:0)+accDoneUpdate())*100/((products|validProducts).length+pumps.length+1+8)" [showValue]="true" height="2em">
+                    <ngb-progressbar type="light" textType="dark" [value]="(tempData.products.done+tempData.pumps.done+(gralMeter.validated?1:0)+tempData.acc.done)*100/((products|validProducts).length+pumps.length+1+8)" [showValue]="true" height="2em">
                     </ngb-progressbar>
                 </p>
             </div>
@@ -292,7 +292,7 @@
                     <div class="col-xl-3 col-md-5 flex-column ">
                         <p class="font-weight-light text-muted mb-0">Rendición</p>
                         <p class="font-weight-light" style="font-size: 1.7em;">
-                            {{accTotalAmount()|currency:'ARS'}}</p>
+                            {{tempData.acc.accumulated|currency:'ARS'}}</p>
                     </div>
 
                     <div class="col-xl-1 col-md-2">
@@ -301,7 +301,7 @@
                     <div class="col-xl-3 col-md-5 flex-column">
                         <p class="font-weight-light text-muted mb-0">Ventas</p>
                         <p class="font-weight-light" style="font-size: 1.7em;">
-                            {{productTotalAmount()+pumpTotalAmount()|currency:'ARS'}}</p>
+                            {{tempData.products.accumulated+tempData.pumps.accumulated|currency:'ARS'}}</p>
                     </div>
 
                     <div class="col-md-1">
@@ -309,8 +309,8 @@
                     </div>
                     <div class="col-xl-3 col-md-5 flex-column">
                         <p class="font-weight-light text-muted mb-0">Diferencia <span class="text-success">S</span>/<span class="text-danger">F</span></p>
-                        <p class="font-weight-bold" [ngClass]="{'text-success':accTotalAmount()-(productTotalAmount()+pumpTotalAmount())>0,'text-danger':accTotalAmount()-(productTotalAmount()+pumpTotalAmount())<0}" style="font-size: 1.7em;">
-                            {{accTotalAmount()-(productTotalAmount()+pumpTotalAmount())|currency:'ARS'}}</p>
+                        <p class="font-weight-bold" [ngClass]="{'text-success':tempData.acc.accumulated-(tempData.pumps.accumulated+tempData.pumps.accumulated)>0,'text-danger':tempData.acc.accumulated-(tempData.pumps.accumulated+tempData.pumps.accumulated)<0}" style="font-size: 1.7em;">
+                            {{tempData.acc.accumulated-(tempData.products.accumulated+tempData.pumps.accumulated)|currency:'ARS'}}</p>
                     </div>
                 </div>
             </div>

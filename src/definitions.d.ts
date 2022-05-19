@@ -80,6 +80,8 @@ interface Operation extends OperationDB{
     uname:string,
     helper_id:string,
     helper_uname:string,
+    passed:boolean,
+    GRAL_METER_DIFF:number,
     REPORT:number,
     PRODUCT_AMOUNT_SOLD:number,
     PUMPS_AMOUNT_SOLD:number,
@@ -93,6 +95,7 @@ interface DetailOperationDB extends OperationDB {
     mail?: string,
     id_accountancy:number,
     id_accountancy_bkp?:number|null,
+    passed:boolean,
     admin_name?:string|null,
     updated_on?:Date
 }
@@ -105,6 +108,7 @@ interface OperationsReport {
     PRODUCT_AMOUNT_SOLD?: number,
     PUMPS_AMOUNT_SOLD?: number,
     REPORT: number,
+    M3_SOLD: number,
     id: number,
     timestamp: Date,
     turn_name?: string,
@@ -118,6 +122,7 @@ interface OperationsEmployeeSummary {
     REPORT: number,
     PRODUCTS_TOTAL: number,
     PUMPS_TOTAL: number,
+    M3_SOLD: number
 }
 interface Turns {
     id: number,

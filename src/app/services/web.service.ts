@@ -871,6 +871,20 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
+  public setOperationPassed(id:number): any {
+    return fetch(environment.baseUrl + `/operations/passed/${id}`, {
+      method: 'POST',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
   public getAllOperations(period?:"1M"|"1Y"|"5Y"):Promise<Array<Operation>>{
     return fetch(environment.baseUrl + `/operations/all/${period}`, {
       method: 'GET',

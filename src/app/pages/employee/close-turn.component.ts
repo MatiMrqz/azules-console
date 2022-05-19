@@ -4,6 +4,14 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { WebService } from 'src/app/services/web.service';
 
+interface TempData {
+  done: number,
+  accumulated: number
+}
+interface PumpTempData extends TempData {
+  m3: number
+}
+
 @Pipe({ name: 'validProducts' })
 export class ValidProductsPipe implements PipeTransform {
   transform(value: Products[]): unknown {
@@ -24,6 +32,7 @@ export class CloseTurnComponent implements OnInit {
     return false;
   }
   @HostListener('window:unload', ['$event'])
+  public tempData: { acc: TempData, pumps: PumpTempData, products: TempData }
   public turn: { name: string, schedule: string }
   public employee: { uuid: string, uname: string } = { uname: '-', uuid: '' }
   public saving: boolean = false
@@ -52,7 +61,17 @@ export class CloseTurnComponent implements OnInit {
     MercadoPago_v?: boolean,
     expenses_v?: boolean,
     others_v?: boolean
-  } = {
+  }
+  public accDoneCounter: number = 0
+
+  constructor(
+    private webService: WebService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private toastr: ToastrService,
+    private modalService: NgbModal
+  ) {
+    this.acc = this.getTemp('ACC') ?? {
       cash: null,
       envelopes_cash: null,
       n_envelopes: null,
@@ -62,15 +81,8 @@ export class CloseTurnComponent implements OnInit {
       expenses: null,
       others: null
     }
-  public accDoneCounter: number = 0
-
-  constructor(
-    private webService: WebService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private toastr: ToastrService,
-    private modalService: NgbModal
-  ) { }
+    this.tempData = this.getTemp('TEMP') ?? { acc: { done: 0, accumulated: 0 }, products: { done: 0, accumulated: 0 }, pumps: { m3: 0, done: 0, accumulated: 0 } }
+  }
 
   ngOnInit(): void {
     const subs = this.route.data.subscribe((data: OperationEmpDB) => {
@@ -96,7 +108,7 @@ export class CloseTurnComponent implements OnInit {
   }
   private async updateProducts() {
     const tempProducts = await this.webService.getAllProductsDev()
-    this.products = tempProducts.map(p => {
+    this.products = this.getTemp('PRODUCTS') ?? tempProducts.map(p => {
       return { items_sold: p.stock == 0 ? 0 : null, items_replacement: null, end_stock: null, validated: null, ...p }
     })
   }
@@ -110,100 +122,84 @@ export class CloseTurnComponent implements OnInit {
     if (!id) return null
     return this.categories.find(c => c.id == id) ?? '-'
   }
-
   public async updatePumps() {
     const tempPumps = await this.webService.getAllPumpsDev()
-    this.pumps = tempPumps.map(p => {
+    this.pumps = this.getTemp('PUMPS') ?? tempPumps.map(p => {
       return { venting: null, meter_end: null, meter_diff: null, validated: null, reset_meter: false, ...p }
     })
   }
-
   public async updateGralMeter() {
     const tempMeter = await this.webService.getGralMeterDev()
-    this.gralMeter = { validated: null, meter_diff: null, meter_end: null, ...tempMeter }
+    this.gralMeter = this.getTemp('GRAL') ?? { validated: null, meter_diff: null, meter_end: null, ...tempMeter }
   }
-
   public async getPumpTypes() {
     this.pump_types = await this.webService.getAllPumpTypesDev()
   }
   public getTypebyId(id: number) {
     return this.pump_types.find(c => c.id == id) ?? '-'
   }
-  public refreshDonePumps(): number {
-    var count = 0
-    if (!this.pumps) return 0
+  public refreshDonePumps(): void {
+    var done = 0
+    var m3 = 0
+    var accumulated = 0
+    if (!this.pumps) return
     this.pumps.forEach(p => {
-      if (p.validated) count++
+      if (p.validated) {
+        done++;
+        m3 += p.meter_diff
+        accumulated += (p.unit_price * p.meter_diff)
+      }
     })
-    return count
+    this.tempData.pumps = { m3, accumulated, done }
+    this.storeTemp('PUMPS', this.pumps)
+    this.storeTemp('TEMP', this.tempData)
   }
-
-  public refreshDoneProducts(): number {
-    var count = 0
-    if (!this.products) return 0
+  public refreshDoneProducts(): void {
+    var done = 0
+    var accumulated = 0
+    if (!this.products) return
     this.products.forEach(p => {
-      if (p.validated) count++
+      if (p.validated) {
+        done++
+        accumulated += p.unit_price * p.items_sold
+      }
     })
-    return count
+    this.tempData.products = { done, accumulated }
+    this.storeTemp('PRODUCTS', this.products)
+    this.storeTemp('TEMP', this.tempData)
   }
-  public accDoneUpdate(): number {
-    var count: number = 0
-    if (!this.acc) return 0
+  public accDoneUpdate(): void {
+    var done: number = 0
+    if (!this.acc) return
     Object.values(this.acc).forEach(v => {
-      if (typeof v == 'boolean' && v === true) count++
+      if (typeof v == 'boolean' && v === true) done++
     })
-    return count;
-  }
-  public productTotalAmount(): number {
-    let amount: number = 0
-    if (!this.products) return 0
-    this.products.forEach(v => {
-      if (v.validated) amount += v.unit_price * v.items_sold
-    })
-    return amount
-  }
-  public pumpTotalAmount(): number {
-    let amount: number = 0
-    if (!this.pumps) return 0
-    this.pumps.forEach(v => {
-      if (v.validated) amount += v.meter_diff * v.unit_price
-    })
-    return amount
-  }
-  public pumpm3Amount():number{
-    let amount: number = 0
-    if (!this.pumps) return 0
-    this.pumps.forEach(v => {
-      if (v.validated) amount += v.meter_diff
-    })
-    return amount
-  }
-  public accTotalAmount(): number {
-    return this.acc.MercadoPago + this.acc.cards + this.acc.cash + this.acc.envelopes_cash + this.acc.others + this.acc.expenses + this.acc.vouchers;
+    this.tempData.acc = { done, accumulated: (+ this.acc.MercadoPago + this.acc.cards + this.acc.cash + this.acc.envelopes_cash + this.acc.others + this.acc.expenses + this.acc.vouchers) }
+    this.storeTemp('ACC', this.acc)
+    this.storeTemp('TEMP', this.tempData)
+    return
   }
   public saveDisabled(val?: string): boolean {
-    const status = !!val && (this.refreshDonePumps() == this.pumps.length) && this.gralMeter.validated === true && (this.refreshDoneProducts() == this.products.filter(p => p.hidden == false).length) && (this.accDoneUpdate() == 8)
+    const status = !!val && (this.tempData.pumps.done == this.pumps.length) && this.gralMeter.validated === true && (this.tempData.products.done == this.products.filter(p => p.hidden == false).length) && (this.tempData.acc.done == 8)
     return !status
   }
-
   public calcMeterDiff(i: number) {
     const pumpItem = this.pumps[i]
-    if(+pumpItem.meter_end > +pumpItem.meter) pumpItem.reset_meter = false
+    if (+pumpItem.meter_end > +pumpItem.meter) pumpItem.reset_meter = false
     pumpItem.meter_diff = pumpItem.reset_meter ? (+pumpItem.max_meter_value - +pumpItem.meter) + pumpItem.meter_end - +pumpItem.venting : +pumpItem.meter_end - +pumpItem.meter - +pumpItem.venting
     pumpItem.validated = (pumpItem.meter_end != null && pumpItem.venting != null && (pumpItem.meter_diff >= 0 || pumpItem.reset_meter))
   }
-
   public storeClosingShift(observations: string, pass: string) {
     this.saving = true
     const pump_operations = this.pumps.map(p => {
       if (p.meter == p.meter_end) return
       else {
-        return { pump_id: p.id, meter_diff: p.meter_diff, venting: p.venting }
+        return { pump_id: p.id, meter_diff: p.meter_diff, venting: p.venting, unit_price: p.unit_price}
       }
     }).filter(p => p != undefined)
     const product_operations = this.products.map(p => {
       if (p.validated && (p.items_sold != 0 || p.items_replacement != 0)) {
-        return { product_id: p.id, items_sold: p.items_sold, items_replacement: p.items_replacement }
+        return { product_id: p.id, items_sold: p.items_sold, items_replacement: p.items_replacement, unit_price:p.unit_price, prev_stock:p.stock }
       }
     }).filter(p => p != undefined)
     const gral_meter = { meter_diff: this.gralMeter.meter_diff, accumulated: this.gralMeter.meter_end }
@@ -217,9 +213,10 @@ export class CloseTurnComponent implements OnInit {
       expenses: this.acc.expenses,
       others: this.acc.others
     }
-    console.log({ pump_operations, product_operations, gral_meter, accountancy, turn: this.turn,helper_id:this.helperSelected, observations })
-    this.webService.shiftClosingDev({ employee: { uuid: this.employee.uuid, pass }, helper_id:this.helperSelected, pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, observations })
+    // console.log({ pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, helper_id: this.helperSelected, observations })
+    this.webService.shiftClosingDev({ employee: { uuid: this.employee.uuid, pass }, helper_id: this.helperSelected, pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, observations })
       .then(res => {
+        this.cleanTemp()
         this.showSuccess(res.msg)
         setTimeout(() => {
           this.router.navigate(['employee'])
@@ -240,7 +237,6 @@ export class CloseTurnComponent implements OnInit {
       positionClass: 'toast-top-center'
     });
   }
-
   private showSuccess(msg: string) {
     this.toastr.success('<span class="tim-icons icon-check-2" [data-notify]="icon"></span>' + msg, '', {
       timeOut: 5000,
@@ -249,14 +245,30 @@ export class CloseTurnComponent implements OnInit {
       positionClass: 'toast-top-center'
     });
   }
-
   public async showModal(content, i: number) {
     this.modalService.open(content).result.then(
       () => {
         this.pumps[i].reset_meter = true
         this.calcMeterDiff(i)
       },
-      ()=>{}
+      () => { }
     )
+  }
+  public storeTempGral(){
+    this.storeTemp('GRAL',this.gralMeter)
+  }
+  private storeTemp(name: 'PUMPS' | 'PRODUCTS' | 'ACC' | 'TEMP' | 'GRAL', payload: any) {
+    console.log('Guardando temporal...')
+    sessionStorage.setItem(name, JSON.stringify(payload))
+  }
+  private getTemp(name: 'PUMPS' | 'PRODUCTS' | 'ACC' | 'TEMP' | 'GRAL'): any {
+    return JSON.parse(sessionStorage.getItem(name))
+  }
+  private cleanTemp() {
+    sessionStorage.removeItem('PUMPS')
+    sessionStorage.removeItem('PRODUCTS')
+    sessionStorage.removeItem('ACC')
+    sessionStorage.removeItem('TEMP')
+    sessionStorage.removeItem('GRAL')
   }
 }

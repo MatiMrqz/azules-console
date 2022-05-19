@@ -112,7 +112,16 @@ export class OpenTurnComponent implements OnInit {
     });
   }
 
+  private cleanTemp() {
+    sessionStorage.removeItem('PUMPS')
+    sessionStorage.removeItem('PRODUCTS')
+    sessionStorage.removeItem('ACC')
+    sessionStorage.removeItem('TEMP')
+    sessionStorage.removeItem('GRAL')
+  }
+
   ngOnInit(): void {
+    this.cleanTemp()
     this.getAll()
   }
 
