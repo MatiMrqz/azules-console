@@ -3,7 +3,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="display-2">Listado de turnos</div>
+                    <div class="display-2">Resumen</div>
                 </div>
                 <div class="card-body">
                     <div class="mx-3 row justify-content-between">
@@ -54,47 +54,41 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
+                                    <th scope="col"></th>
                                     <th scope="col">Tipo</th>
                                     <th scope="col">Encargado</th>
-                                    <th scope="col">Ayudante</th>
                                     <th scope="col">Turno</th>
-                                    <th scope="col">Venta Productos</th>
-                                    <th scope="col">Venta Surtidores</th>
-                                    <th scope="col">Rendicion</th>
-                                    <th scope="col">Diferencia</th>
-                                    <th scope="col">Observaciones</th>
-                                    <th scope="col">Fecha/Hora</th>
+                                    <th class="text-center" scope="col">m3</th>
+                                    <th class="text-right" scope="col">Venta Total</th>
+                                    <th class="text-right" scope="col">Rendicion</th>
+                                    <th class="text-right" scope="col">Diferencia</th>
+                                    <th class="text-right" scope="col">Fecha/Hora</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let op of _operations$ | async" [ngClass]="{'bg-dark':op.operation_type=='OPEN','bg-primary':op.operation_type=='CLOSE'}">
-                                    <th scope="row">
-                                        <a *ngIf="op.operation_type=='CLOSE';else elseBlock" [routerLink]="['/operations/detail/'+op.id]" href="" target="_blank">
-                                            <ngb-highlight [result]="op.id" [term]="searchTerm"></ngb-highlight>
-                                        </a>
-                                        <ng-template #elseBlock>
-                                            <ngb-highlight [result]="op.id" [term]="searchTerm"></ngb-highlight>
-                                        </ng-template>
+                                <tr scope="row" *ngFor="let op of _operations$ | async" [ngClass]="{'bg-primary text-light':op.operation_type=='OPEN','bg-dark text-secondary':op.operation_type=='CLOSE'}">
+                                    <th>
+                                        <ngb-highlight [result]="op.id" [term]="searchTerm"></ngb-highlight>
+                                    </th>
+                                    <th>
+                                        <span style="cursor: pointer;" class="p-1" *ngIf="op.operation_type=='CLOSE'"><a href="" [routerLink]="['/operations/detail/'+op.id]" target="_blank"><i class="fa-solid fa-folder-open text-light pl-1"></i></a></span>
+                                        <span style="cursor: pointer;" class="p-1" *ngIf="op.observations" [ngbPopover]=op.observations popoverTitle="Observación"><i class="fa-solid fa-message text-light pl-1"></i></span>
+                                        <span style="cursor: pointer;" class="p-1" *ngIf="op.helper_uname" [ngbPopover]=op.helper_uname popoverTitle="Ayudante"><i class="fa-solid fa-user-group text-light pl-1"></i></span>
+                                        <span style="cursor: pointer;" class="p-1" *ngIf="op.id_accountancy_bkp"><a href="" [routerLink]="['/operations/detail/'+op.id]" [queryParams]="{version:'ORIGINAL'}" target="_blank"><i class="fa-solid fa-clock-rotate-left text-light pl-1"></i></a></span>
                                     </th>
                                     <td>{{op.operation_type}}</td>
                                     <td>
                                         <ngb-highlight [result]="op.uname" [term]="searchTerm"></ngb-highlight>
                                     </td>
                                     <td>
-                                        <ngb-highlight [result]="op.helper_uname" [term]="searchTerm"></ngb-highlight>
-                                    </td>
-                                    <td>
                                         <ngb-highlight [result]="op.turn_name" [term]="searchTerm"></ngb-highlight>
                                     </td>
-                                    <td>{{op.operation_type=='CLOSE'?(op.PRODUCT_AMOUNT_SOLD|currency:'ARS'):'-'}}</td>
-                                    <td>{{op.operation_type=='CLOSE'?(op.PUMPS_AMOUNT_SOLD|currency:'ARS'):'-'}}</td>
-                                    <td>{{op.operation_type=='CLOSE'?(op.REPORT|currency:'ARS'):'-'}}</td>
-                                    <td>{{op.operation_type=='CLOSE'?((+op.REPORT - (+op.PRODUCT_AMOUNT_SOLD + +op.PUMPS_AMOUNT_SOLD))|currency:'ARS'):'-'}}
+                                    <td class="text-center">{{op.operation_type=='CLOSE'?(op.M3_SOLD|number:'1.2-2'):'-'}} <small *ngIf="op.operation_type=='CLOSE'">[m³]</small> </td>
+                                    <td class="text-right">{{op.operation_type=='CLOSE'?(+op.PRODUCT_AMOUNT_SOLD + +op.PUMPS_AMOUNT_SOLD|currency:'ARS'):'-'}}</td>
+                                    <td class="text-right">{{op.operation_type=='CLOSE'?(op.REPORT|currency:'ARS'):'-'}}</td>
+                                    <td class="text-right font-weight-bold" [ngClass]="{'text-danger':op.operation_type=='CLOSE'&&((+op.REPORT - (+op.PRODUCT_AMOUNT_SOLD + +op.PUMPS_AMOUNT_SOLD))<0),'text-success':op.operation_type=='CLOSE'&&((+op.REPORT - (+op.PRODUCT_AMOUNT_SOLD + +op.PUMPS_AMOUNT_SOLD))>0)}">{{op.operation_type=='CLOSE'?((+op.REPORT - (+op.PRODUCT_AMOUNT_SOLD + +op.PUMPS_AMOUNT_SOLD))|currency:'ARS'):'-'}}
                                     </td>
-                                    <td>
-                                        <ngb-highlight [result]="op.observations" [term]="searchTerm"></ngb-highlight>
-                                    </td>
-                                    <td>{{op.timestamp|date:'short'}}</td>
+                                    <td class="font-weight-light text-right">{{op.timestamp|date:'short'}}</td>
                                 </tr>
                             </tbody>
                         </table>

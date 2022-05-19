@@ -712,6 +712,21 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
+  public editAccountancybyAdmin(accountancy:object,adminPass:string): Promise<any> {
+    return fetch(environment.baseUrl + '/operations/editAcc', {
+      method: 'PUT',
+      headers: this.headersWithApiandAuth,
+      body: JSON.stringify({accountancy,adminPass})
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
   public getLastOperation(): Promise<OperationEmpDB> {
     return fetch(environment.baseUrl + '/operations/', {
       method: 'GET',
@@ -842,7 +857,7 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public getOperationDetailbyId(id:number): Promise<{operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy}> {
+  public getOperationDetailbyId(id:number): Promise<{operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy, accountancy_bkp:DetailAccountancy|null}> {
     return fetch(environment.baseUrl + `/operations/${id}`, {
       method: 'GET',
       headers: this.headersWithApiandAuth,
@@ -851,7 +866,7 @@ export class WebService {
         const data = await res.json()
         if (res.status == 200) {
           this.updateToken(res.headers.get('authorization'))
-          return data as {operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy}
+          return data as {operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy, accountancy_bkp:DetailAccountancy|null}
         }
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet

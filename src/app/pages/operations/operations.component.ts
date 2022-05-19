@@ -23,7 +23,7 @@ export class OperationsComponent implements OnInit {
   public radioDef='1M';
   public filter = {
     close:true,
-    open:true
+    open:false
   }
 
   constructor(

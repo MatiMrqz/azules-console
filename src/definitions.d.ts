@@ -83,6 +83,7 @@ interface Operation extends OperationDB{
     REPORT:number,
     PRODUCT_AMOUNT_SOLD:number,
     PUMPS_AMOUNT_SOLD:number,
+    M3_SOLD:number
 }
 interface DetailOperationDB extends OperationDB {
     employee_uuid:string,
@@ -90,6 +91,10 @@ interface DetailOperationDB extends OperationDB {
     helper_uuid?:string,
     helper_uname?:string,
     mail?: string,
+    id_accountancy:number,
+    id_accountancy_bkp?:number|null,
+    admin_name?:string|null,
+    updated_on?:Date
 }
 interface OperationEmpDB extends DetailOperationDB {
     phone: string,

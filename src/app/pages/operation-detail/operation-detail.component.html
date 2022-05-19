@@ -2,9 +2,10 @@
     <div class="row justify-content-center mx-0">
         <div class="col-md-11 col-xl-10">
             <div class=" card mt-5">
+                <div *ngIf="version=='ORIGINAL'" class="display-3 text-center bg-danger rounded-top text-secondary">ORIGINAL</div>
                 <div *ngIf="!isLoading; else spinnerBlock" class="px-4 card-header d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <i class="fa-solid fa-list-check fa-3x"></i>
+                        <i class="fa-solid fa-list-check fa-4x"></i>
                         <div class="ml-3">
                             <p *ngIf="operationDetail.operation.operation_type=='CLOSE'" class=" display-4 text-uppercase">Cierre de turno</p>
                             <p *ngIf="operationDetail.operation.operation_type=='OPEN'" class=" display-4 text-uppercase">Apertura de turno</p>
@@ -34,6 +35,10 @@
                                         <p class="text-muted m-0" style="font-size: larger;">
                                             {{pumpTotalAmount()|currency:'ARS'}}</p>
                                     </div>
+                                    <div class="mx-3">
+                                        <p class="text-muted m-0" style="font-size: larger;">
+                                            {{pumpm3Amount()| number:'1.2-2'}} <small>[m3]</small> </p>
+                                    </div>
                                 </div>
                             </ng-template>
                             <ng-template ngbPanelContent>
@@ -41,16 +46,15 @@
                                     <table class=" table table-fix-head" id="">
                                         <thead class="thead-dark text-primary">
                                             <tr>
-                                                <th class="text-center">#</th>
-                                                <th class="d-none d-lg-table-cell">Tipo</th>
-                                                <th class="d-none d-lg-table-cell">Descripcion</th>
-                                                <th class="text-center">Lectura Inicial</th>
-                                                <th class="text-center">Lectura Final</th>
-                                                <th class="text-center">Venteo</th>
-                                                <th class="text-center">Vendido</th>
-                                                <th class="d-none d-lg-table-cell text-center">Precio Unitario</th>
-                                                <th class=" text-center">Importe</th>
-                                                <th></th>
+                                                <th class="col-1 col-lg-1 text-center">#</th>
+                                                <th class="col-1 d-none d-lg-table-cell">Tipo</th>
+                                                <th class="col-2 d-none d-lg-table-cell">Descripción</th>
+                                                <th class="col-2 col-lg-3 text-center">Lectura Inicial</th>
+                                                <th class="col-2 col-lg-3 text-center">Lectura Final</th>
+                                                <th class="col-1 col-lg-1 text-center">Venteo</th>
+                                                <th class="col-1 text-center">Vendido</th>
+                                                <th class="col-1 d-none d-lg-table-cell text-center">Precio Unitario</th>
+                                                <th class="col-1 col-lg-4 text-center">Importe</th>
                                             </tr>
                                         </thead>
                                         <tbody *ngIf="!isLoading">
@@ -135,24 +139,24 @@
                             </ng-template>
                             <ng-template ngbPanelContent>
                                 <div class="table-responsive">
-                                    <table class=" table table-fix-head" id="">
+                                    <table class=" table table-fix-head nw-table" id="">
                                         <thead class="thead-dark text-primary">
                                             <tr>
-                                                <th>Nombre</th>
-                                                <th class="d-none d-lg-table-cell">Descripcion</th>
-                                                <th class="d-none d-lg-table-cell">Categoría</th>
-                                                <th class="text-center">Stock inicial</th>
-                                                <th class="text-center">Vendidos</th>
-                                                <th class="text-center">Repuestos</th>
-                                                <th class="text-center">Stock Final</th>
-                                                <th class="d-none d-lg-table-cell text-center">Precio Unitario</th>
-                                                <th class=" text-center">Importe</th>
+                                                <th class="col-2 col-lg-4">Nombre</th>
+                                                <th class="col-1 d-none d-lg-table-cell">Descripción</th>
+                                                <th class="col-1 d-none d-lg-table-cell">Categoría</th>
+                                                <th class="col-1 text-center">Stock inicial</th>
+                                                <th class="col-1 text-center">Vendidos</th>
+                                                <th class="col-1 text-center">Repuestos</th>
+                                                <th class="col-1 text-center">Stock Final</th>
+                                                <th class="col-2 d-none d-lg-table-cell text-center">Precio Unitario</th>
+                                                <th class="col-2 text-center">Importe</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody *ngIf="!isLoading">
                                             <tr *ngFor="let item of operationDetail.products" [ngClass]="{'bg-primary':!!item.items_sold||!!item.items_replacement}">
-                                                <td class="cell-ellipsis" style="--mw:90px;">{{item.name}}
+                                                <td [ngClass]="{'scrolling-text':innerItem.offsetWidth>outerItem.clientWidth}" class="set-max-width" style="--mw:90px" #outerItem> <span #innerItem>{{item.name}}</span>
                                                 </td>
                                                 <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                     {{!item.description?'-':item.description}}</td>
@@ -187,77 +191,81 @@
                                         <p class="text-dark title">
                                             Rendición</p>
                                     </div>
-                                    <div class="mx-5">
+                                    <div class="ml-5">
                                         <p class="text-muted m-0" style="font-size: larger;">
                                             {{accTotalAmount()|currency:'ARS'}}</p>
+                                    </div>
+                                    <div *ngIf="operationDetail.operation.id_accountancy_bkp!=null" class="mx-3">
+                                        <p class="m-0">
+                                            <span *ngIf="version!='ORIGINAL'" class="badge badge-warning">Editado por {{operationDetail.operation.admin_name}} el {{operationDetail.operation.updated_on|date:'short'}}</span></p>
                                     </div>
                                 </div>
                             </ng-template>
                             <ng-template ngbPanelContent>
                                 <div class="table-responsive">
-                                    <table class=" table table-fix-head" id="">
+                                    <table *ngIf="!isLoading" class=" table table-fix-head" id="">
                                         <thead class="thead-dark text-primary">
                                             <tr>
                                                 <th>Tipo</th>
-                                                <th class="d-none d-lg-table-cell">Descripcion</th>
+                                                <th class="d-none d-lg-table-cell">Descripción</th>
                                                 <th>Monto</th>
                                             </tr>
                                         </thead>
-                                        <tbody *ngIf="!isLoading">
-                                            <tr [ngClass]="{'table-success':+operationDetail.accountancy.envelopes_cash>0}">
+                                        <tbody *ngIf="accountValid();let acc">
+                                            <tr [ngClass]="{'table-success':+acc.envelopes_cash>0}">
                                                 <td>Sobres</td>
                                                 <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">Nº de sobres/Total entregado</td>
                                                 <td>
                                                     <div>
-                                                        {{operationDetail.accountancy.n_envelopes}}/{{operationDetail.accountancy.envelopes_cash|currency:'ARS'}}
+                                                        {{acc.n_envelopes}}/{{acc.envelopes_cash|currency:'ARS'}}
                                                     </div>
                                                 </td>
                                             </tr>
-                                            <tr [ngClass]="{'table-success':+operationDetail.accountancy.cash>0}">
+                                            <tr [ngClass]="{'table-success':+acc.cash>0}">
                                                 <td>Efectivo</td>
                                                 <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                     Dinero en efectivo
                                                 </td>
-                                                <td>{{operationDetail.accountancy.cash|currency:'ARS'}}
+                                                <td>{{acc.cash|currency:'ARS'}}
                                                 </td>
                                             </tr>
-                                            <tr [ngClass]="{'table-success':+operationDetail.accountancy.envelopes_cash>0}">
+                                            <tr [ngClass]="{'table-success':+acc.envelopes_cash>0}">
                                                 <td>Vales</td>
                                                 <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                     Vales entregados
                                                 </td>
-                                                <td>{{operationDetail.accountancy.vouchers|currency:'ARS'}}
+                                                <td>{{acc.vouchers|currency:'ARS'}}
                                                 </td>
                                             </tr>
-                                            <tr [ngClass]="{'table-success':+operationDetail.accountancy.cards>0}">
+                                            <tr [ngClass]="{'table-success':+acc.cards>0}">
                                                 <td>Tarjetas</td>
                                                 <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                     Crédito/Débito</td>
-                                                <td>{{operationDetail.accountancy.cards|currency:'ARS'}}
+                                                <td>{{acc.cards|currency:'ARS'}}
                                                 </td>
                                             </tr>
-                                            <tr [ngClass]="{'table-success':+operationDetail.accountancy.expenses>0}">
+                                            <tr [ngClass]="{'table-success':+acc.expenses>0}">
                                                 <td>Gastos</td>
                                                 <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                     Retiros
                                                 </td>
-                                                <td>{{operationDetail.accountancy.expenses|currency:'ARS'}}
+                                                <td>{{acc.expenses|currency:'ARS'}}
                                                 </td>
                                             </tr>
-                                            <tr [ngClass]="{'table-success':+operationDetail.accountancy.MercadoPago>0}">
+                                            <tr [ngClass]="{'table-success':+acc.MercadoPago>0}">
                                                 <td>MPago</td>
                                                 <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                     MercadoPago
                                                 </td>
-                                                <td>{{operationDetail.accountancy.MercadoPago|currency:'ARS'}}
+                                                <td>{{acc.MercadoPago|currency:'ARS'}}
                                                 </td>
                                             </tr>
-                                            <tr [ngClass]="{'table-success':+operationDetail.accountancy.others>0}">
+                                            <tr [ngClass]="{'table-success':+acc.others>0}">
                                                 <td>Otros</td>
                                                 <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                     Ingreso
                                                 </td>
-                                                <td>{{operationDetail.accountancy.others|currency:'ARS'}}
+                                                <td>{{acc.others|currency:'ARS'}}
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -305,10 +313,22 @@
                         </div>
                     </div>
 
-                    <div class="row justify-content-center">
+                    <div *ngIf="!isLoading" class="row justify-content-center">
+                        <div *ngIf="version!='ORIGINAL'" class="col text-center">
+                            <button class="btn btn-simple btn-warning " (click)="editModal(accEdit)"><i
+                                    class="fa-solid fa-pen-to-square"></i> Editar Rendición</button>
+                        </div>
                         <div class="col text-center">
-                            <button class="btn btn-simple btn-neutral " (click)="print(PrintTemplate)"><i
+                            <button class="btn btn-neutral " (click)="print(PrintTemplate)"><i
                                     class="fa-solid fa-print"></i> Imprimir</button>
+                        </div>
+                        <div *ngIf="operationDetail.operation.id_accountancy_bkp!=null&&version!='ORIGINAL'" class="col text-center">
+                            <button class="btn btn-info " [routerLink]="['/operations/detail',operationDetail.operation.id]" [queryParams]="{version:'ORIGINAL'}"><i
+                                    class="fa-solid fa-eye"></i> Ver original</button>
+                        </div>
+                        <div *ngIf="version=='ORIGINAL'" class="col text-center">
+                            <button class="btn btn-info " routerLink="." [queryParams]="{}"><i
+                                    class="fa-solid fa-chevron-left"></i> Volver</button>
                         </div>
                     </div>
                 </div>
@@ -334,6 +354,7 @@
     <ng-template #PrintTemplate>
         <div class="white-content" style="background: #fff !important;" *ngIf="!isLoading">
             <h1 class="text-center display-2">Planilla de Turno Nº {{operationDetail.operation.id}}</h1>
+            <p *ngIf="version=='ORIGINAL'" class=" display-2 text-center">ORIGINAL</p>
             <p *ngIf="operationDetail.operation.operation_type=='CLOSE'" class=" display-3">CIERRE DE TURNO
             </p>
             <p *ngIf="operationDetail.operation.operation_type=='OPEN'" class=" display-3">APERTURA DE TURNO
@@ -344,7 +365,7 @@
             <p><span class="font-weight-bold">Encargado:</span> {{operationDetail.operation.uname}}</p>
             <p><span class="font-weight-bold">Ayudante:</span> {{operationDetail.operation.helper_uname??'-'}}</p>
             <p><span class="font-weight-bold">Observaciones:</span> {{operationDetail.operation.observations}}</p>
-
+            <p *ngIf="operationDetail.operation.id_accountancy_bkp!=null&&version!='ORIGINAL'"><span class="font-weight-bold">Editado por:</span> {{operationDetail.operation.admin_name}} el {{operationDetail.operation.updated_on|date:'medium'}}</p>
             <p class="display-4 font-weight-bold pt-4">REGISTRO:</p>
             <p class="display-4">Surtidores</p>
             <table class=" table table-bordered">
@@ -352,7 +373,7 @@
                     <tr>
                         <th class="text-center">#</th>
                         <th class="d-none d-lg-table-cell">Tipo</th>
-                        <th class="d-none d-lg-table-cell">Descripcion</th>
+                        <th class="d-none d-lg-table-cell">Descripción</th>
                         <th class="text-center">Lectura Inicial</th>
                         <th class="text-center">Lectura Final</th>
                         <th class="text-center">Venteo</th>
@@ -416,7 +437,7 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th class="d-none d-lg-table-cell">Descripcion</th>
+                        <th class="d-none d-lg-table-cell">Descripción</th>
                         <th class="d-none d-lg-table-cell">Categoría</th>
                         <th class="text-center">Stock inicial</th>
                         <th class="text-center">Vendidos</th>
@@ -458,7 +479,7 @@
                 <thead>
                     <tr>
                         <th>Tipo</th>
-                        <th class="d-none d-lg-table-cell">Descripcion</th>
+                        <th class="d-none d-lg-table-cell">Descripción</th>
                         <th>Monto</th>
                     </tr>
                 </thead>
@@ -548,5 +569,89 @@
                 </div>
             </div>
 
+        </div>
+    </ng-template>
+
+    <ng-template #accEdit let-modal>
+        <div class="modal-header">
+            <h3 class="modal-title">Editando rendición #{{operationDetail.operation.id}}</h3>
+            <button type="button" class="btn-close btn btn-link" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
+        </div>
+        <div class="modal-body text-center">
+            <form #acc="ngForm">
+                <table class=" table table-fix-head" id="">
+                    <thead class="thead-dark text-primary">
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="!isLoading">
+                        <tr [ngClass]="{'table-danger':(n_envelopes.touched||envelopes$.touched)&&(n_envelopes.invalid||envelopes$.invalid),'table-success':(n_envelopes.valid&&envelopes$.valid)}">
+                            <td>Sobres</td>
+                            <td>
+                                <div class="row justify-content-center">
+                                    <input #n_envelopes="ngModel" name="n_envelopes" inputmode="numeric" type="number" min="0" class="form-control col-3" [ngModel]="operationDetail.accountancy.n_envelopes" placeholder="NºSobres" ngModel required>
+                                    <input #envelopes$="ngModel" name="envelopes_cash" inputmode="numeric" type="number" min="0" class="form-control col-8" [ngModel]="operationDetail.accountancy.envelopes_cash" placeholder="$" ngModel required>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr [ngClass]="{'table-danger':cash.touched&&cash.invalid,'table-success':cash.valid}">
+                            <td>Efectivo</td>
+                            <td><input #cash="ngModel" name="cash" inputmode="numeric" type="number" min="0" class="form-control" [ngModel]="operationDetail.accountancy.cash" ngModel required>
+                            </td>
+                        </tr>
+                        <tr [ngClass]="{'table-danger':vouchers.touched&&vouchers.invalid,'table-success':vouchers.valid}">
+                            <td>Vales</td>
+                            <td><input #vouchers="ngModel" name="vouchers" inputmode="numeric" type="number" min="0" class="form-control" [ngModel]="operationDetail.accountancy.vouchers" ngModel required>
+                            </td>
+                        </tr>
+                        <tr [ngClass]="{'table-danger':cards.touched&&cards.invalid,'table-success':cards.valid}">
+                            <td>Tarjetas</td>
+                            <td><input #cards="ngModel" name="cards" inputmode="numeric" type="number" min="0" class="form-control" [ngModel]="operationDetail.accountancy.cards" ngModel required>
+                            </td>
+                        </tr>
+                        <tr [ngClass]="{'table-danger':expenses.touched&&expenses.invalid,'table-success':expenses.valid}">
+                            <td>Gastos</td>
+                            <td><input #expenses="ngModel" name="expenses" inputmode="numeric" type="number" min="0" class="form-control" [ngModel]="operationDetail.accountancy.expenses" ngModel required>
+                            </td>
+                        </tr>
+                        <tr [ngClass]="{'table-danger':MPago.touched&&MPago.invalid,'table-success':MPago.valid}">
+                            <td>MPago</td>
+                            <td><input #MPago="ngModel" name="MercadoPago" inputmode="numeric" type="number" min="0" class="form-control" [ngModel]="operationDetail.accountancy.MercadoPago" ngModel required>
+                            </td>
+                        </tr>
+                        <tr [ngClass]="{'table-danger':others.touched&&others.invalid,'table-success':others.valid}">
+                            <td>Otros</td>
+                            <td><input #others="ngModel" name="others" inputmode="numeric" type="number" min="0" class="form-control" [ngModel]="operationDetail.accountancy.others" ngModel required>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <div class="row justify-content-center">
+            <div class="input-group input-group-lg col-10">
+                <div class="input-group-prepend">
+                    <span style="position: relative !important;top: 0px !important;left: 0px !important;" [ngClass]="{'border-warning':acc.invalid||adminPass.invalid}" class="input-group-text" id="pininp">Contraseña de Admin</span>
+                </div>
+                <input [ngClass]="{'is-invalid':acc.invalid||adminPass.invalid}" #adminPass="ngModel" type="password" class="form-control text-center" placeholder="--------" required ngModel>
+                <div class="invalid-tooltip">
+                    {{acc.invalid?'Planilla incompleta':'Ingrese pin'}}
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="modal.dismiss('Cerrar')">Cerrar</button>
+            <button type="button" class="btn btn-success btn-simple" (click)="submitAcc(acc.value,adminPass.value)" [disabled]="acc.invalid||adminPass.invalid||saving">{{saving?'':'Guardar'}}<span style="min-width: 4em;" [ngClass]="{'d-none':!saving}">
+                <div class="sk-chase" style="font-size: 1em;margin-left: -1.2em;">
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                </div>
+            </span></button>
         </div>
     </ng-template>
