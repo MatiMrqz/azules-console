@@ -1,0 +1,40 @@
+<div class="container-md">
+    <app-operation-detail *ngIf="operationDetail$ | async as opd; else spinnerBlock" [operationDetail]="opd"></app-operation-detail>
+    <div class="row justify-content-center mx-0">
+        <div class="col-md-11 col-xl-10">
+            <div class="card bg-primary m-0">
+                <div class="form-group m-3">
+                    <label class="font-weight-bold" for="revSelect">Histórico</label>
+                    <select id="revSelect" name="opSelected" *ngIf="!isLoading" class="custom-select" (change)="changeId($event.target.value)">
+                                <option *ngFor="let r of rev" [selected]="r.id==operationId" [value]="r.id" >{{r.name}}</option>
+                            </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!isLoading" class="row mx-0 mt-3 mb-5 justify-content-center">
+        <div class="col text-center">
+            <button class="btn btn-warning btn-simple" [disabled]="selectedId!=operationId" [routerLink]="['/operations/edit/'+operationId]"><i
+                        class="fa-solid fa-pen-to-square"></i> Editar</button>
+        </div>
+        <div *ngIf="!isPassed" class="col text-center">
+            <button class="btn btn-success btn-simple" (click)="setPassed()" [disabled]="selectedId!=operationId"><i
+                        class="fa-solid fa-check"></i> Marcar como revisada</button>
+        </div>
+    </div>
+</div>
+
+<ng-template #spinnerBlock>
+    <div class="row py-5">
+        <div class="col d-flex align-items-center justify-content-center">
+            <div class="sk-chase" style="font-size: 5em;">
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+            </div>
+        </div>
+    </div>
+</ng-template>

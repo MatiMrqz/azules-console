@@ -7,7 +7,8 @@ import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.compon
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { AuthGuard, AuthGuardDevice } from "./auth.guard";
 import { EmployeeLayoutComponent } from "./layouts/employee-layout/employee-layout.component";
-import { OperationDetailComponent } from "./pages/operation-detail/operation-detail.component";
+import { OperationSelectorComponent } from "./pages/operation-selector/operation-selector.component";
+import { OperationEditComponent } from "./pages/operation-edit/operation-edit.component";
 
 const routes: Routes = [
   {
@@ -27,7 +28,12 @@ const routes: Routes = [
   },
   {
     path: "operations/detail/:id",
-    component: OperationDetailComponent,
+    component: OperationSelectorComponent,
+    canActivate:[AuthGuard]
+  },
+  {
+    path: "operations/edit/:id",
+    component: OperationEditComponent,
     canActivate:[AuthGuard]
   },
   {

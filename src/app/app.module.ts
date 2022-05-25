@@ -20,6 +20,8 @@ import { EmployeeLayoutComponent } from "./layouts/employee-layout/employee-layo
 import { WebModule } from "./services/web.module";
 import { OperationDetailComponent } from "./pages/operation-detail/operation-detail.component";
 import { NgxPrinterModule } from "ngx-printer";
+import { OperationSelectorComponent } from "./pages/operation-selector/operation-selector.component";
+import { OperationEditComponent } from "./pages/operation-edit/operation-edit.component";
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -37,7 +39,7 @@ import { NgxPrinterModule } from "ngx-printer";
       printOpenWindow:false
     })
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, EmployeeLayoutComponent, OperationDetailComponent ],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, EmployeeLayoutComponent, OperationSelectorComponent, OperationDetailComponent, OperationEditComponent ],
   providers: [{provide: LOCALE_ID, useValue:'es-AR'}],
   bootstrap: [AppComponent]
 })

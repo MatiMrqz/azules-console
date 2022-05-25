@@ -712,21 +712,6 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public editAccountancybyAdmin(accountancy:object,adminPass:string): Promise<any> {
-    return fetch(environment.baseUrl + '/operations/editAcc', {
-      method: 'PUT',
-      headers: this.headersWithApiandAuth,
-      body: JSON.stringify({accountancy,adminPass})
-    }).then(
-      async res => {
-        const data = await res.json()
-        if (res.status == 200) {
-          this.updateToken(res.headers.get('authorization'))
-          return data as any
-        }
-        throw data.error;
-      })//Ver si agregar catch para cuando no hay conexion a internet
-  }
   public getLastOperation(): Promise<OperationEmpDB> {
     return fetch(environment.baseUrl + '/operations/', {
       method: 'GET',
@@ -857,7 +842,7 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public getOperationDetailbyId(id:number): Promise<{operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy, accountancy_bkp:DetailAccountancy|null}> {
+  public getOperationDetailbyId(id:number): Promise<{operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy, gralMeter:{meter_diff:number,accumulated:number}}> {
     return fetch(environment.baseUrl + `/operations/${id}`, {
       method: 'GET',
       headers: this.headersWithApiandAuth,
@@ -866,7 +851,21 @@ export class WebService {
         const data = await res.json()
         if (res.status == 200) {
           this.updateToken(res.headers.get('authorization'))
-          return data as {operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy, accountancy_bkp:DetailAccountancy|null}
+          return data as {operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy, gralMeter:{meter_diff:number,accumulated:number}}
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getRevisionsHistory(id:number): Promise<Array<OperationBackup>> {
+    return fetch(environment.baseUrl + `/operations/history/${id}`, {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data
         }
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
@@ -895,6 +894,21 @@ export class WebService {
         if (res.status == 200) {
           this.updateToken(res.headers.get('authorization'))
           return data as Array<Operation>
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public editOperation(idOperation:number,payload:any):Promise<any>{
+    return fetch(environment.baseUrl + `/operations/edit/${idOperation}`, {
+      method: 'PUT',
+      headers: this.headersWithApiandAuth,
+      body:JSON.stringify(payload)
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data
         }
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet

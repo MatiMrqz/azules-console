@@ -47,6 +47,12 @@ interface DetailPumps extends Pumps{
     venting?:number,
     amount_sold?:number
 }
+interface Admin{
+    uuid:string,
+    fname:string,
+    mail?:string,
+    role:'ADMIN'
+}
 interface Employee {
     uuid: string,
     uname: string,
@@ -94,8 +100,7 @@ interface DetailOperationDB extends OperationDB {
     helper_uname?:string,
     mail?: string,
     id_accountancy:number,
-    id_accountancy_bkp?:number|null,
-    passed:boolean,
+    passed:number|boolean,
     admin_name?:string|null,
     updated_on?:Date
 }
@@ -138,4 +143,8 @@ interface DetailAccountancy{
     vouchers:number,
     expenses:number,
     others:number
+}
+interface OperationBackup{
+    backup_operation_id:number,
+    revision:number,
 }

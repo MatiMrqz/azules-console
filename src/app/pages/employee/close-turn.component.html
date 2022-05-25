@@ -309,7 +309,7 @@
                     </div>
                     <div class="col-xl-3 col-md-5 flex-column">
                         <p class="font-weight-light text-muted mb-0">Diferencia <span class="text-success">S</span>/<span class="text-danger">F</span></p>
-                        <p class="font-weight-bold" [ngClass]="{'text-success':tempData.acc.accumulated-(tempData.pumps.accumulated+tempData.pumps.accumulated)>0,'text-danger':tempData.acc.accumulated-(tempData.pumps.accumulated+tempData.pumps.accumulated)<0}" style="font-size: 1.7em;">
+                        <p class="font-weight-bold" [ngClass]="{'text-success':tempData.acc.accumulated-(tempData.pumps.accumulated+tempData.products.accumulated)>0,'text-danger':tempData.acc.accumulated-(tempData.pumps.accumulated+tempData.products.accumulated)<0}" style="font-size: 1.7em;">
                             {{tempData.acc.accumulated-(tempData.products.accumulated+tempData.pumps.accumulated)|currency:'ARS'}}</p>
                     </div>
                 </div>
