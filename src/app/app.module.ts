@@ -37,7 +37,7 @@ import { OperationEditComponent } from "./pages/operation-edit/operation-edit.co
       printPreviewOnly:false,
       renderClass: "printClass",
       printOpenWindow:false
-    })
+    }),
   ],
   declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, EmployeeLayoutComponent, OperationSelectorComponent, OperationDetailComponent, OperationEditComponent ],
   providers: [{provide: LOCALE_ID, useValue:'es-AR'}],

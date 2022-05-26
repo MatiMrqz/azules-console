@@ -1,6 +1,6 @@
 <div class="row justify-content-center mx-0">
     <div class="col-md-11 col-xl-10">
-        <div class=" card mt-5">
+        <div class=" card mt-5 mb-0">
             <div *ngIf="operationDetail.rev.name=='ORIGINAL'" class="display-3 text-center bg-danger rounded-top text-secondary">ORIGINAL</div>
             <div *ngIf="operationDetail.rev.name!='ORIGINAL'&&operationDetail?.operation.passed" class="display-3 text-center bg-success rounded-top text-dark" [ngbPopover]="'Revisión por ' +operationDetail?.operation.admin_name+ ' el '+ operationDetail?.operation.updated_on"
                 popoverTitle="Detalle" [openDelay]="300" [closeDelay]="500" triggers="mouseenter:mouseleave">

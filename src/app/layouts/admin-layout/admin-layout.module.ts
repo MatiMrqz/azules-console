@@ -23,6 +23,7 @@ import { UserPipe } from "src/app/pipes/user.pipe";
 import { DateAgoPipe } from "src/app/pipes/date-ago.pipe";
 import { OperationsComponent } from "src/app/pages/operations/operations.component";
 import { EditGralMeterMax } from "src/app/modals/pumps/gral-meter/max-val-gral.component";
+import { ClipboardModule } from "ngx-clipboard";
 
 @NgModule({
   imports: [
@@ -31,6 +32,7 @@ import { EditGralMeterMax } from "src/app/modals/pumps/gral-meter/max-val-gral.c
     FormsModule,
     HttpClientModule,
     NgbModule,
+    ClipboardModule
   ],
   declarations: [
     DashboardComponent,

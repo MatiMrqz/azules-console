@@ -15,12 +15,14 @@ export class DevicesComponent implements OnInit {
   constructor(
     private webService: WebService,
     private modalService: NgbModal,
-    private toastr: ToastrService
+    private toastr: ToastrService,
   ) { }
 
   public devices: any[];
   public isLoading: boolean = true;
-  public qrContent: string = '';
+  public urlDevice: string = '';
+  public wspLink: string = '';
+  public qrSrc: string = null;
 
   public async updateDevices() {
     this.isLoading = true
@@ -52,9 +54,10 @@ export class DevicesComponent implements OnInit {
   public async newDeviceModal(content) {
     this.webService.generateAuthorization()
       .then((res) => {
-        console.log(`${environment.fBaseUrl}#/auth/device/${res.authToken}`)
-        this.qrContent = encodeURIComponent(`${environment.fBaseUrl}#/auth/device/${res.authToken}`)
-        console.debug({ next: this.qrContent })
+        this.urlDevice = `${environment.fBaseUrl}#/auth/device/${res.authToken}`
+        this.qrSrc = encodeURIComponent(`${environment.fBaseUrl}#/auth/device/${res.authToken}`)
+        this.wspLink = `https://wa.me/?text=${encodeURI('Link para autorizar nuevo dispositivo: ')+this.qrSrc}`
+        console.debug({ next: this.urlDevice })
       })
       .then(() => {
         this.modalService.open(content).result
