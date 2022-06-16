@@ -31,9 +31,9 @@ export class OperationSelectorComponent implements OnInit {
       .then(res => {
         if (res.length > 0) {
           this.rev = res.map(b => {
-            return { id: b.backup_operation_id, name: b.revision == 0 ? 'ORIGINAL' : `Revision Nº${b.revision}` }
+            return { id: b.backup_operation_id, name: b.revision == 0 ? 'ORIGINAL' : `Revisión Nº${b.revision}` }
           })
-          this.rev = [{ id, name: 'Ultima Revision' }, ...this.rev]
+          this.rev = [{ id, name: 'Ultima Revisión' }, ...this.rev]
         } else {
           this.rev = [{ id, name: 'ORIGINAL' }]
         }

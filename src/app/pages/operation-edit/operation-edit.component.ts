@@ -125,6 +125,7 @@ export class OperationEditComponent implements OnInit {
     }
     pI.reset_meter = +pI.meter_end < +pI.init_meter
     pI.meter_diff = pI.reset_meter ? (+pI.max_meter_value - +pI.init_meter) + pI.meter_end - +pI.venting : +pI.meter_end - +pI.init_meter - +pI.venting
+    pI.amount_sold = +pI.meter_diff * +pI.unit_price
     pI.validated = (pI.meter_end != null && pI.venting != null && (pI.meter_diff >= 0 || pI.reset_meter))
     this.refreshDonePumps()
   }

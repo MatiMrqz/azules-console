@@ -89,7 +89,7 @@
                                                     <!-- {{item.unit_price|currency:'ARS'}} -->
                                                 </td>
                                                 <td class=" text-center">
-                                                    {{(item.unit_price*item.meter_diff)|currency:'ARS'}}
+                                                    {{(item.amount_sold??0)|currency:'ARS'}}
                                                 </td>
                                             </tr>
                                         </tbody>
