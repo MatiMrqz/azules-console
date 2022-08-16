@@ -20,7 +20,6 @@ export class EditTypeComponent implements OnInit {
     this.types = this.inTypes.map(i => {
       return { editing: false, ...i }
     })
-    console.log(this.types)
   }
 
   public deleteItem(item: Categories) {
@@ -47,18 +46,21 @@ export class EditTypeComponent implements OnInit {
   public editItem(item) {
     item.editing = !item.editing
   }
-  public addItem(nameElement:HTMLInputElement, unitElement:HTMLInputElement) {
+  public addItem(nameElement:HTMLInputElement, unitElement:HTMLInputElement,itcElement:HTMLInputElement) {
     const name = nameElement.value
     const unit = unitElement.value
+    const itc = itcElement.value
     console.log(name+unit)
     this.validated=true
     if(!name) return
     if(!unit) return
-    this.webService.addPumpType({name,unit})
+    if(!itc) return
+    this.webService.addPumpType({name,unit,itc})
     .then(()=>{
       nameElement.value=''
       unitElement.value=''
-      this.types = [{editing:false,id:this.types.length+1,name,unit},...this.types]
+      itcElement.value=''
+      this.types = [{editing:false,id:this.types.length+1,name,unit,itc},...this.types]
       this.validated=false
     })
   }

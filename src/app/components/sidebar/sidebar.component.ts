@@ -1,57 +1,56 @@
 import { Component, OnInit } from "@angular/core";
+import { BehaviorSubject, Subject } from "rxjs";
+import { WebService } from "src/app/services/web.service";
 
 declare interface RouteInfo {
   path: string;
   title: string;
-  rtlTitle: string;
   icon: string;
-  class: string;
 }
 export const ROUTES: RouteInfo[] = [
   {
     path: "/dashboard",
     title: "Dashboard",
-    rtlTitle: "لوحة القيادة",
     icon: "fa-solid fa-house",
-    class: ""
   },
   {
     path: "/operations",
     title: "Registro",
-    rtlTitle: "طباعة",
     icon: "fa-solid fa-business-time",
-    class: ""
+  },
+  {
+    path: "/invoices",
+    title: "Facturación",
+    icon: "fa-solid fa-receipt",
   },
   {
     path: "/users",
     title: "Usuarios",
-    rtlTitle: "طباعة",
     icon: "fa-solid fa-users",
-    class: ""
   },
   {
     path: "/pumps",
     title: "Surtidores",
-    rtlTitle: "طباعة",
     icon: "fa-solid fa-gas-pump",
-    class: ""
   },
   {
     path: "/products",
     title: "Productos",
-    rtlTitle: "طباعة",
     icon: "fa-solid fa-store",
-    class: ""
   },
   {
     path: "/devices",
     title: "Dispositivos",
-    rtlTitle: "طباعة",
     icon: "fa-solid fa-mobile-screen-button",
-    class: ""
   },
-  
+  {
+    path: "/settings",
+    title: "Ajustes",
+    icon: "fa-solid fa-gear",
+  },
 ];
+
+const local= new BehaviorSubject<{name:string,address:string,email:string}>({name:'-',address:'-',email:'-'})
 
 @Component({
   selector: "app-sidebar",
@@ -60,11 +59,48 @@ export const ROUTES: RouteInfo[] = [
 })
 export class SidebarComponent implements OnInit {
   menuItems: any[];
-
-  constructor() {}
+  local = local
+  constructor(
+    private webService:WebService
+  ) {
+    var localName:string|null = localStorage.getItem('localName')
+    var localAddress:string|null = localStorage.getItem('localAddress')
+    var localEmail:string|null = localStorage.getItem('localEmail')
+    if(!localName){
+      this.webService.getCompanySettings().then(res=>{
+        localName= res.LOCAL_NAME
+        localAddress = res.LOCAL_ADDRESS
+        localEmail = res.COMPANY_MAIL
+        localStorage.setItem('localName',localName)
+        localStorage.setItem('localAddress',localAddress)
+        localStorage.setItem('localEmail',localEmail)
+        SidebarComponent.setLocal(localName,localAddress,localEmail)
+      })
+    }else{
+      local.next(
+        {
+          name:localName,
+          address:localAddress,
+          email:localEmail
+        }
+      )
+    }
+  }
 
   ngOnInit() {
+
     this.menuItems = ROUTES.filter(menuItem => menuItem);
+  }
+
+  static setLocal(name:string,address:string,email:string){
+    local.next({
+      name:name,
+      address:address,
+      email:email
+    })
+    localStorage.setItem('localName',name)
+    localStorage.setItem('localAddress',address)
+    localStorage.setItem('localEmail',email)
   }
   isMobileMenu() {
     if (window.innerWidth > 991) {

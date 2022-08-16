@@ -1,0 +1,165 @@
+<div class=" content">
+    <div class=" row">
+        <div class=" col-md-4 col-lg-4">
+            <div class="card">
+                <div class="card-header d-flex flex-sm-row flex-column justify-content-between">
+                    <div class="display-2">Nueva Factura</div>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-block btn-danger" (click)="newInvoice()">Nueva Factura</button>
+                </div>
+            </div>
+        </div>
+        <div class=" col-md-8 col-lg-8">
+            <div class="card">
+                <div class="card-header d-flex flex-sm-row flex-column justify-content-between">
+                    <div class="display-2">Estadísticas</div>
+                </div>
+                <div class="card-body">
+                    <div class="dp-hidden position-absolute">
+                        <div class="input-group">
+                            <input placeholder="" name="datepicker" class="form-control" ngbDatepicker #datepicker="ngbDatepicker" [autoClose]="'outside'" [navigation]="'select'" (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" outsideDays="hidden" [startDate]="fromDate!"
+                                tabindex="-1">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input #dpFromDate class="form-control" placeholder="dd-mm-yyyy" name="dpFromDate" [value]="formatter.format(fromDate)" (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
+                        <input #dpToDate class="form-control" placeholder="dd-mm-yyyy" name="dpToDate" [value]="formatter.format(toDate)" (input)="toDate = validateInput(toDate, dpToDate.value)">
+                        <div class="input-group-append">
+                            <button class="btn btn-simple btn-neutral" (click)="datepicker.toggle()" type="button"><i
+                  class="fa-solid fa-calendar-days"></i></button>
+                        </div>
+                    </div>
+                    <div class="col table-responsive">
+                        <table class="table table-striped nw-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Tipo Factura</th>
+                                    <th scope="col">Cantidad</th>
+                                    <th class="text-right" scope="col">Monto Facturado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr scope="row" *ngFor="let r of invoicesSumm" class="bg-dark text-secondary">
+                                    <td>{{getVTDesc(r.voucher_type)}}</td>
+                                    <td>{{r.N}}</td>
+                                    <td class="text-right">{{r.amount|currency:'ARS'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class=" card">
+                <div class=" card-header d-flex flex-sm-row flex-column justify-content-between">
+                    <div class=" display-2">Registro de Facturación</div>
+                </div>
+                <div class="card-body">
+                    <div class="mx-3 row justify-content-between">
+                        <div class="d-inline-flex">
+                            <div class="col-xs-3 col-sm-auto">
+                                <input id="table-complete-search" type="text" class="form-control" name="searchTerm" (ngModelChange)="refreshTable()" placeholder="Buscar" [(ngModel)]="searchTerm">
+                            </div>
+                            <span class="col-auto col-form-label" *ngIf="_loading$ | async"><div class="sk-chase" style="font-size: 1em;">
+                                <div class="sk-chase-dot"></div>
+                                <div class="sk-chase-dot"></div>
+                                <div class="sk-chase-dot"></div>
+                                <div class="sk-chase-dot"></div>
+                                <div class="sk-chase-dot"></div>
+                                <div class="sk-chase-dot"></div>
+                            </div></span>
+                        </div>
+
+                        <div class="btn-group btn-group-sm" role="group">
+                            <label class="btn-neutral btn-simple" ngbButtonLabel>
+                                <input type="checkbox" class="btn-check" ngbButton [(ngModel)]="filter.manual"
+                                    (ngModelChange)="refreshTable()"> Manual
+                            </label>
+                            <label class="btn-neutral btn-simple" ngbButtonLabel>
+                                <input type="checkbox" class="btn-check" ngbButton [(ngModel)]="filter.auto"
+                                    (ngModelChange)="refreshTable()"> Auto
+                            </label>
+                        </div>
+
+                        <div class="btn-group btn-group-sm align-self-start" role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="radioDef">
+                            <label ngbButtonLabel class="btn-info btn-simple">
+                                <input ngbButton type="radio" class="btn-check" value="1M" (click)="getData('1M')"> 1
+                                Mes
+                            </label>
+                            <label ngbButtonLabel class="btn-info btn-simple">
+                                <input ngbButton type="radio" class="btn-check" value="1Y" (click)="getData('1Y')"> 1
+                                Año
+                            </label>
+                            <label ngbButtonLabel class="btn-info btn-simple">
+                                <input ngbButton type="radio" class="btn-check" value="5Y" (click)="getData('5Y')"> 5
+                                Años
+                            </label>
+                        </div>
+
+
+                    </div>
+                    <div class="col table-responsive">
+                        <table class="table table-striped nw-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Cliente</th>
+                                    <th class="text-right" scope="col">CUIT/DNI</th>
+                                    <th class="text-right" scope="col">Monto</th>
+                                    <th class="text-center" scope="col">Tipo Factura</th>
+                                    <th class="text-center" scope="col">CAE</th>
+                                    <th class="text-center d-none d-lg-table-cell" scope="col">Realizado por</th>
+                                    <th class="text-right" scope="col">Fecha/Hora</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr scope="row" *ngFor="let inv of _invoices$ | async" class="bg-dark text-secondary">
+                                    <th>
+                                        <ngb-highlight [result]="inv.n" [term]="searchTerm"></ngb-highlight>
+                                    </th>
+                                    <td class="font-weight-bold">
+                                        <ngb-highlight [result]="inv.user_name||inv.business_name" [term]="searchTerm"></ngb-highlight>
+                                        <small><span *ngIf="inv.performed_by_mode=='AUTO'" class="badge badge-secondary mx-1">AUTO</span></small>
+                                    </td>
+                                    <td class="text-right">
+                                        <ngb-highlight [result]="inv.identifier" [term]="searchTerm"></ngb-highlight>
+                                    </td>
+                                    <td class="text-right">
+                                        <ngb-highlight result="{{inv.amount|currency:'ARS'}}" [term]="searchTerm"></ngb-highlight>
+                                    </td>
+                                    <td class="text-center">
+                                        {{getVTDesc(inv.voucher_type)}}
+                                    </td>
+                                    <td class="text-center">
+                                        <ngb-highlight [result]="inv.CAE" [term]="searchTerm"></ngb-highlight><button class="btn btn-link" ngbTooltip="Vto:{{inv.CAE_exp_date|date:'shortDate'}}" [openDelay]="300"><i class="fa-solid fa-calendar-day"></i></button>
+                                    </td>
+                                    <td class="text-center d-none d-lg-table-cell">
+                                        {{inv.performed_by}} <span *ngIf="inv.performed_by_role=='ADMIN'" class="badge badge-info">ADMIN</span>
+                                    </td>
+                                    <td class="font-weight-light text-right">{{inv.timestamp|date:'short'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-between p-3 flex-wrap">
+                        <ngb-pagination [collectionSize]="(_collectionSize$|async)!" [(page)]="page" [pageSize]="pageSize" (pageChange)="refreshTable()">
+                        </ngb-pagination>
+
+                        <select class="form-control" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshTable()">
+                            <option [ngValue]="10">10 items</option>
+                            <option [ngValue]="20">20 items</option>
+                            <option [ngValue]="100">100 items</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #t let-date let-focused="focused">
+    <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+    {{ date.day }}
+  </span>
+</ng-template>

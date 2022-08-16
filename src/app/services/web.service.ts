@@ -25,6 +25,32 @@ export class WebService {
     'Api-Key': environment.apiKey,
     'Authorization': this.authDevService.getToken()
   }
+  private headersWithApiandAutoAuth(){
+    return {
+    'Content-Type': 'application/json',
+    'Api-Key': environment.apiKey,
+    'Authorization': this.validToken()
+  }
+  } 
+
+  private validToken():string{
+    if(this.authDevService.loggedIn()==false){
+      return this.authService.getToken()
+    }
+    return this.authDevService.getToken()
+  }
+
+  private updateAutoToken(token?:string){
+    if (!token){
+      return
+    }
+    console.debug('Setting new token')
+    if(this.authDevService.getToken()==null){
+      this.authService.setToken(token)
+    }else{
+      this.authDevService.setToken(token)
+    }
+  }
 
   private updateToken(token?: string) {
     if (!token) {
@@ -90,6 +116,41 @@ export class WebService {
     return fetch(environment.baseUrl + '/products/', {
       method: 'GET',
       headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any[]
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+
+  public getAllProductsAutoHdr(): Promise<Array<Products>> {
+    return fetch(environment.baseUrl + '/products/', {
+      method: 'GET',
+      headers: this.headersWithApiandAutoAuth(),
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data as any[]
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getAllPumpsAutoHdr(): Promise<Array<Pumps>> {
+    return fetch(environment.baseUrl + '/pumps/', {
+      method: 'GET',
+      headers: this.headersWithApiandAutoAuth(),
     }).then(
       async res => {
         const data = await res.json()
@@ -322,11 +383,11 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public setGralMeterMax(value:number): Promise<{msg:string}> {
+  public setGralMeterMax(value: number): Promise<{ msg: string }> {
     return fetch(environment.baseUrl + '/pumps/set-gral-meter-max', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
-      body:JSON.stringify({maxValue:value})
+      body: JSON.stringify({ maxValue: value })
     }).then(
       async res => {
         const data = await res.json()
@@ -842,7 +903,7 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public getOperationDetailbyId(id:number): Promise<{operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy, gralMeter:{meter_diff:number,accumulated:number}}> {
+  public getOperationDetailbyId(id: number): Promise<{ operation: DetailOperationDB, products: Array<DetailProducts>, pumps: Array<DetailPumps>, accountancy: DetailAccountancy, gralMeter: { meter_diff: number, accumulated: number } }> {
     return fetch(environment.baseUrl + `/operations/${id}`, {
       method: 'GET',
       headers: this.headersWithApiandAuth,
@@ -851,12 +912,12 @@ export class WebService {
         const data = await res.json()
         if (res.status == 200) {
           this.updateToken(res.headers.get('authorization'))
-          return data as {operation:DetailOperationDB,products:Array<DetailProducts>,pumps:Array<DetailPumps>,accountancy:DetailAccountancy, gralMeter:{meter_diff:number,accumulated:number}}
+          return data as { operation: DetailOperationDB, products: Array<DetailProducts>, pumps: Array<DetailPumps>, accountancy: DetailAccountancy, gralMeter: { meter_diff: number, accumulated: number } }
         }
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public getRevisionsHistory(id:number): Promise<Array<OperationBackup>> {
+  public getRevisionsHistory(id: number): Promise<Array<OperationBackup>> {
     return fetch(environment.baseUrl + `/operations/history/${id}`, {
       method: 'GET',
       headers: this.headersWithApiandAuth,
@@ -870,7 +931,7 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public setOperationPassed(id:number): any {
+  public setOperationPassed(id: number): any {
     return fetch(environment.baseUrl + `/operations/passed/${id}`, {
       method: 'POST',
       headers: this.headersWithApiandAuth,
@@ -884,7 +945,7 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public getAllOperations(period?:"1M"|"1Y"|"5Y"):Promise<Array<Operation>>{
+  public getAllOperations(period?: "1M" | "1Y" | "5Y"): Promise<Array<Operation>> {
     return fetch(environment.baseUrl + `/operations/all/${period}`, {
       method: 'GET',
       headers: this.headersWithApiandAuth,
@@ -898,11 +959,11 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public editOperation(idOperation:number,payload:any):Promise<any>{
+  public editOperation(idOperation: number, payload: any): Promise<any> {
     return fetch(environment.baseUrl + `/operations/edit/${idOperation}`, {
       method: 'PUT',
       headers: this.headersWithApiandAuth,
-      body:JSON.stringify(payload)
+      body: JSON.stringify(payload)
     }).then(
       async res => {
         const data = await res.json()
@@ -913,11 +974,11 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public registerNewAdmin(userData):Promise<void>{
+  public registerNewAdmin(userData): Promise<void> {
     return fetch(environment.baseUrl + '/auth/admin/registration', {
       method: 'POST',
       headers: this.headersWithApiandAuth,
-      body:JSON.stringify(userData)
+      body: JSON.stringify(userData)
     }).then(
       async res => {
         const data = await res.json()
@@ -989,6 +1050,231 @@ export class WebService {
         const data = await res.json()
         if (res.status == 200) {
           this.updateToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getInvoicesRecord(interval?: "1M" | "1Y" | "5Y"): Promise<Array<InvoiceRecord>> {
+    return fetch(environment.baseUrl + `/invoices/all/${interval}`, {
+      method: 'GET',
+      headers: this.headersWithApiandAutoAuth(),
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getVoucherTypes(): Promise<Array<InvoiceVoucherTypes>> {
+    return fetch(environment.baseUrl + '/invoices/voucherTypes', {
+      method: 'GET',
+      headers: this.headersWithApiandAutoAuth(),
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public findClientByName(term:string): Promise<Array<InvoiceClient>> {
+    return fetch(environment.baseUrl + `/invoices/clients/byName/${term}`, {
+      method: 'GET',
+      headers: this.headersWithApiandAutoAuth(),
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data as Array<InvoiceClient>
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getClientById(id:number): Promise<InvoiceClient> {
+    return fetch(environment.baseUrl + `/invoices/clients/${id}`, {
+      method: 'GET',
+      headers: this.headersWithApiandAutoAuth(),
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data as InvoiceClient
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public invoiceInitPoint(): Promise<{DOCUMENTS:AfipTypes[],VOUCHERS:AfipTypes[],ALIQUOT:AfipTypes,DEFAULT_CLIENT:InvoiceClient}> {
+    return fetch(environment.baseUrl + '/invoices/new/initpoint', {
+      method: 'GET',
+      headers: this.headersWithApiandAutoAuth(),
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public submitInvoiceAdmin(payload:{payer:InvoiceClient,voucher:{type:number},items:ItemInvoice[]}): Promise<any> {
+    return fetch(environment.baseUrl + '/invoices/admin/new', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: this.headersWithApiandAutoAuth(),
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public submitInvoiceEmployee(payload:{payer:InvoiceClient,voucher:{type:number},items:ItemInvoice[],employee:Partial<Employee>}): Promise<any> {
+    return fetch(environment.baseUrl + '/invoices/new', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: this.headersWithApiandAutoAuth(),
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getInvoicesSummary(payload:{from:string,to?:string}): Promise<any> {
+    return fetch(environment.baseUrl + '/invoices/summary', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: this.headersWithApiandAutoAuth(),
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public afipTypes(): Promise<{ALIQUOTS:AfipTypes[],VOUCHERS:AfipTypes[]}> {
+    return fetch(environment.baseUrl + '/invoices/types', {
+      method: 'GET',
+      headers: this.headersWithApiandAutoAuth(),
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getCompanySettings(): Promise<CompanySettings> {
+    return fetch(environment.baseUrl + '/settings/company', {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getAfipSettings(): Promise<AfipSettings> {
+    return fetch(environment.baseUrl + '/settings/afip', {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getAutoInvoiceSettings(): Promise<AutoSettings> {
+    return fetch(environment.baseUrl + '/settings/auto', {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public settingSetter(payload:any){
+    return fetch(environment.baseUrl + '/settings/set', {
+      method: 'POST',
+      headers: this.headersWithApiandAuth,
+      body:JSON.stringify(payload)
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
           return data
         }
         else if (res.status == 401) {
