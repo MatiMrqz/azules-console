@@ -9,7 +9,7 @@ interface ProductItem {
   name: string,
   unit_price: string | number,
   unit: string,
-  type: "pump" | "product",
+  type: StockTypes,
   itc?: number
 }
 
@@ -40,6 +40,9 @@ export class NewInvoiceComponent implements OnInit {
     quantity: [null, Validators.required],
     subtotal: [null, Validators.required]
   })
+
+  ipEscPos: string = ""
+  nameEscPos: string = ""
 
   public items: ItemInvoice[] = []
   public products: ProductItem[] = []
@@ -84,13 +87,13 @@ export class NewInvoiceComponent implements OnInit {
     this.webService.getAllProductsAutoHdr().then(
       p => {
         this.products = p.filter(p => p.hidden == false).map(prod => {
-          return { name: prod.name, unit_price: prod.unit_price, unit: 'u.', type: 'product' }
+          return { name: prod.name, unit_price: prod.unit_price, unit: 'u.', type: 'PRODUCT' }
         })
       })
       .then(() => {
         this.webService.getAllPumpsAutoHdr().then(p => {
           var pumps = p.map<ProductItem>(pu => {
-            return { name: pu.description ?? ('Surtidor ' + pu.id), unit_price: pu.unit_price, unit: pu.unit, itc: +pu.itc, type: "pump" }
+            return { name: pu.description ?? ('Surtidor ' + pu.id), unit_price: pu.unit_price, unit: pu.unit, itc: +pu.itc, type: "PUMP" }
           })
           this.products = [...pumps, ...this.products]
         })
@@ -185,7 +188,7 @@ export class NewInvoiceComponent implements OnInit {
 
   addItem() {
     if (!this.newItemForm.valid) return
-    const itc = this.pSelected.itc ? [{ aliquotType: 999, aliquotUnitAmount: this.pSelected.itc, aliquotPercent: '0%' }] : []
+    const itc = this.pSelected.itc ? [{ aliquotType: 9999, aliquotUnitAmount: this.pSelected.itc, aliquotPercent: '0%' }] : []
     this.items.push({
       description: this.pSelected.name,
       quantity: this.newItemForm.get('quantity').value,
@@ -197,6 +200,7 @@ export class NewInvoiceComponent implements OnInit {
         aliquotType: this.aliquot.Id,
         aliquotPercent: this.aliquot.Desc,
       }, ...itc],
+      type: this.pSelected.type,
       subtotal: this.newItemForm.get('subtotal').value
     })
     this.totals = { amount: (this.totals.amount + this.newItemForm.get('subtotal').value), n: this.totals.n + 1 }
@@ -212,14 +216,14 @@ export class NewInvoiceComponent implements OnInit {
   }
 
   pInputEvent(itemSelected: ProductItem) {
-    if (itemSelected.type == "product") {
+    if (itemSelected.type == "PRODUCT") {
       this.subChanges(itemSelected)
       this.newItemForm.enable()
       this.newItemForm.get('quantity').setValue(1)
       this.newItemForm.get('subtotal').disable()
       const quantity = this.el.nativeElement.querySelector('[formcontrolname="quantity"]');
       quantity.focus();
-    } else if (itemSelected.type == "pump") {
+    } else if (itemSelected.type == "PUMP") {
       this.subChanges(itemSelected)
       this.newItemForm.enable()
       this.newItemForm.get('quantity').disable()
@@ -279,14 +283,22 @@ export class NewInvoiceComponent implements OnInit {
       .then(qrContent => {
         this.messages[this.messages.length - 1].status = true
         this.messages.push({ status: null, p: 'Imprimiendo...' })
-        this.printer.printInvoice(data, payload.items, payload.payer, voucher, qrContent).then(() => {
-          this.messages[this.messages.length - 1].status = true
-          this.activeModal.close(data)
-          this.submitting = false
+        this.printer.printInvoice(data, payload.items, payload.payer, voucher, qrContent).then((res) => {
+          if(res.success){
+            this.messages[this.messages.length - 1].status = true
+            this.activeModal.close(data)
+            this.submitting = false
+          }else{
+            this.messages.pop()
+            this.messages.push({ status: false, p: res.data, extra: 'PRINT' })
+            this.preventStorage = { data, payload, voucher, qrContent }
+            console.error(res.data)
+          }
         }).catch(err => {
           this.messages.pop()
           this.messages.push({ status: false, p: err, extra: 'PRINT' })
           this.preventStorage = { data, payload, voucher, qrContent }
+          console.error(err)
         })
       })
       .catch(err2 => {
@@ -299,7 +311,7 @@ export class NewInvoiceComponent implements OnInit {
   private subChanges(itemSelected: ProductItem) {
     if (this.subscriptions != undefined || this.subscriptions != null) this.subscriptions.unsubscribe()
     const unit_price = +itemSelected.unit_price
-    if (itemSelected.type == 'product') {
+    if (itemSelected.type == "PRODUCT") {
       this.subscriptions = this.newItemForm.controls['quantity'].valueChanges.subscribe(
         v => {
           this.newItemForm.controls['subtotal'].setValue(v * unit_price)
@@ -330,7 +342,13 @@ export class NewInvoiceComponent implements OnInit {
     }
   }
 
+  editSettings(data: any) {
+    this.printer.setNewPrinterIp(data.printerAddress, data.printerName)
+  }
+
   ngOnInit(): void {
+    this.ipEscPos = localStorage.getItem('EscPosPrinterIP') ?? ''
+    this.nameEscPos = localStorage.getItem('EscPosPrinterName') ?? ''
     this.instance.selectItem.subscribe(event$ => {
       this.pInputEvent(event$.item)
     })

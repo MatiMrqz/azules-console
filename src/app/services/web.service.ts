@@ -9,7 +9,9 @@ export class WebService {
   constructor(
     private authService: AuthService,
     private authDevService: AuthDevService
-  ) { }
+  ) {
+    console.debug('Web service loading...')
+  }
 
   private headersWithApi = {
     'Content-Type': 'application/json',
@@ -165,7 +167,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
 
-  public getAllProductsDev(): Promise<Array<any>> {
+  public getAllProductsDev(): Promise<Array<Products>> {
     return fetch(environment.baseUrl + '/products/', {
       method: 'GET',
       headers: this.headersWithApiandDevAuth,
@@ -327,7 +329,7 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public getAllPumpsDev(): Promise<Array<any>> {
+  public getAllPumpsDev(): Promise<Array<Pumps>> {
     return fetch(environment.baseUrl + '/pumps/', {
       method: 'GET',
       headers: this.headersWithApiandDevAuth,
@@ -743,7 +745,7 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public shiftClosingDev(operation: object): Promise<any> {
+  public shiftClosingDev(operation: object): Promise<{msg:string,id:number,nInvoicesDone:string,emitter:VoucherEmitterData}> {
     return fetch(environment.baseUrl + '/operations/close/', {
       method: 'POST',
       headers: this.headersWithApiandDevAuth,
@@ -1061,7 +1063,7 @@ export class WebService {
   public getInvoicesRecord(interval?: "1M" | "1Y" | "5Y"): Promise<Array<InvoiceRecord>> {
     return fetch(environment.baseUrl + `/invoices/all/${interval}`, {
       method: 'GET',
-      headers: this.headersWithApiandAutoAuth(),
+      headers: this.headersWithApiandAuth,
     }).then(
       async res => {
         const data = await res.json()

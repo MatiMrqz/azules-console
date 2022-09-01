@@ -2,31 +2,185 @@ import { Injectable } from '@angular/core';
 import EscPosEncoder from 'esc-pos-encoder';
 import { fromByteArray } from 'base64-js';
 
+interface EditedProducts extends Products { items_sold: number, items_replacement: number, end_stock: number, validated: boolean }
+interface EditedPumps extends Pumps { venting: number, meter_end: number, meter_diff: string, validated: boolean, reset_meter: boolean, }
+
 @Injectable({
   providedIn: 'root'
 })
 export class EscposPrintService {
-  private printerBaseUrl: string = 'http://localhost:3001/'
+  private printerBaseUrl: string
+  private printerName:string
 
-  constructor() { }
+  constructor() {
+    console.debug('Esc/Pos printer service loading...')
+    this.printerBaseUrl=localStorage.getItem('EscPosPrinterIP')
+    this.printerName=localStorage.getItem('EscPosPrinterName')
+
+  }
 
   private async getPrinterStatus() {
-    return fetch(this.printerBaseUrl + 'printer/status', {
+    return fetch(this.printerBaseUrl + '/', {
       method: 'GET'
     }).then(res => res.text())
   }
-  private async sendToPrinter(data: string) {
-    return fetch(this.printerBaseUrl + 'printer/print', {
+  private async sendToPrinter(data: string,id:string):Promise<{success:boolean,data:string}>{
+    return fetch(this.printerBaseUrl + '/', {
       method: 'POST',
       headers: {
-        'Content-Type': 'text/plain'
+        'Content-Type': 'application/json'
       },
-      body: data
+      body: JSON.stringify({
+        printer:this.printerName,
+        id,
+        data
+      })
     }).then(res => {
-      return res.text()
+      return res.json()
     })
   }
-  public async printInvoice(invoiceData: { CAE: { N: number, CAE: string, CAEFchVto: string }[], afipVoucherData: { detail: VoucherAfipData[] }, emitterData: VoucherEmitterData }, items: ItemInvoice[], payer: InvoiceClient, voucherType: AfipTypes, qrContent:string) {
+  public async printShiftSummary(opId: number, turn: { name: string, schedule: string }, employee: { uname: string, uuid: string }, helper: { uname: string, uuid: string } | null, emitter: VoucherEmitterData, products: Array<EditedProducts>, pumps: Array<EditedPumps>,accountancy:{cash: number,envelopes_cash:number,n_envelopes: number,cards: number,vouchers: number,MercadoPago: number,expenses: number,others: number},acc:{accountancy:number,products:number,pumps:number},invoices:string,obs?:string) {
+    console.log({ pumps, products, acc })
+    const d = new Date()
+    var enc = new EscPosEncoder({ codepageMapping: 'star' })
+      .initialize()
+      .align('center')
+      .bold(true)
+      .width(2)
+      .height(2)
+      .line('Cierre de Turno')
+      .bold(false)
+      .width(1)
+      .height(1)
+      .newline()
+      .align('left')
+      .table([
+        { width: 24, align: 'left' },
+        { width: 24, align: 'right' }
+      ], [
+        [d.toLocaleString(), (enc) => { return enc.text('N:').bold(true).text(opId.toString()).bold(false) }],
+      ])
+      .line('Turno:' + turn.name)
+      .line('Enc:' + employee.uname.substring(0, 24))
+      .size('small')
+      .line('EncId:' + employee.uuid)
+      .size('normal')
+      .line('Ayud:' + (helper ? (helper.uname.substring(0, 24)) : '-'))
+      .line('------------------------------------------------')
+      .align('center')
+      .bold(true)
+      .line('SUCURSAL')
+      .bold(false)
+      .align('left')
+      .line(emitter.local.name)
+      .line(emitter.local.address)
+      .line('CUIT:' + emitter.legals.cuit)
+      .line('------------------------------------------------')
+      .align('center')
+      .bold(true)
+      .line('CONTROL DE STOCK - Aforadores')
+      .bold(false)
+      .align('left')
+      .table([
+        { width: 12, align: 'left' },
+        { width: 18, align: 'right' },
+        { width: 18, align: 'right' }
+      ], [
+        ['Descripcion', 'Valor inicial', 'Valor final'],
+        ...pumps.map(p => [(p.description?.substring(0, 12) ?? p.id), `${p.meter}[${p.unit ?? '-'}]`, `${p.meter_end}[${p.unit ?? '-'}]`])
+      ])
+      .align('center')
+      .bold(true)
+      .line('CONTROL DE STOCK - Productos')
+      .bold(false)
+      .table([
+        { width: 24, align: 'left' },
+        { width: 8, align: 'right' },
+        { width: 8, align: 'right' },
+        { width: 8, align: 'right' }
+      ], [
+        ['Nombre', 'Inicial', 'Recarga', 'Final'],
+        ...products.filter(p => p.hidden == false).map(pr => [pr.name.substring(0, 24), `${pr.stock}[u.]`, `${pr.items_replacement}[u.]`, `${pr.end_stock}[u.]`])
+      ])
+      .line('------------------------------------------------')
+      .align('center')
+      .bold(true)
+      .line('VENTAS REALIZADAS')
+      .bold(false)
+      .align('left')
+      .table([
+        { width: 15, align: 'left' },
+        { width: 11, align: 'right' },
+        { width: 11, align: 'right' },
+        { width: 11, align: 'right' }
+      ], [
+        ['Item', 'U.Vend.', 'P.Unit.', 'Subtotal'],
+        ...pumps.filter(p => (p.meter != p.meter_end && +p.meter_diff > p.venting)).map(p => [(p.description ?? `Surtidor ${p.id}`), `${(+p.meter_diff).toFixed(2)}${p.unit ?? '-'}`,`$${p.unit_price}`, `$${(p.unit_price * +p.meter_diff).toFixed(2)}`]),
+        ...products.filter(p => (p.hidden == false && p.items_sold > 0 && p.validated)).map(p=>{return [p.name.substring(0, 15), `${p.items_sold}[u.]`, '$' + p.unit_price, `$${(p.unit_price * p.items_sold).toFixed(2)}`]})
+      ])
+      .table([
+        {width:24,align:'left'},
+        {width:24,align:'right'}
+      ],
+        [
+          [(enc)=>{return enc.bold(true).text('TOTAL')},(enc)=>{return enc.bold(true).text(`$${Math.round((acc.products+acc.pumps)*100)/100}`).bold(false)}]
+        ]
+      )
+      .line('------------------------------------------------')
+      .align('center')
+      .bold(true)
+      .line('RENDICION')
+      .bold(false)
+      .align('left')
+      .table([
+        { width: 24, align: 'left' },
+        { width: 24, align: 'left' }
+      ], [
+        [`Sobres:${accountancy.n_envelopes}/$${accountancy.envelopes_cash}`,`Efectivo:$${accountancy.MercadoPago}`],
+        [`Tarjetas:$${accountancy.cards}`,`Mer.Pago:$${accountancy.MercadoPago}`],
+        [`Vales:$${accountancy.vouchers}`,`Gastos:$${accountancy.expenses}`],
+        [`Otros:$${accountancy.others}`,''],
+      ])
+      .table([
+        {width:10,align:'right'},
+        {width:38,align:'right'}
+      ],
+        [
+          [(enc)=>{return enc.bold(true).text('TOTAL')},(enc)=>{return enc.bold(true).text(`$${acc.accountancy}`).bold(false)}]
+        ]
+      )
+      .line('------------------------------------------------')
+      .align('center')
+      .bold(true)
+      .line('RESULTADO DEL TURNO')
+      .line(`$${Math.round((acc.accountancy-(acc.products+acc.pumps))*100)/100}`)
+      .bold(false)
+      .size('small')
+      .line(acc.accountancy-(acc.products+acc.pumps)<0?'Deuda':'A favor')
+      .size('normal')
+      .align('left')
+      .line('------------------------------------------------')
+      .align('center')
+      .bold(true)
+      .line('FACTURACION')
+      .bold(false)
+      .align('left')
+      .line('Nros de facturas efectuadas durante el turno: '+invoices,48)
+      .line('------------------------------------------------')
+      .line('Observaciones:'+obs??'-')
+      .newline()
+      .newline()
+      .newline()
+      .newline()
+      .newline()
+      .newline()
+      .cut('full')
+      .encode()
+
+    const b64Data = fromByteArray(enc)
+    return await this.sendToPrinter(b64Data,'CIERRE_'+opId)
+  }
+  public async printInvoice(invoiceData: { CAE: { N: number, CAE: string, CAEFchVto: string }[], afipVoucherData: { detail: VoucherAfipData[] }, emitterData: VoucherEmitterData }, items: ItemInvoice[], payer: InvoiceClient, voucherType: AfipTypes, qrContent: string) {
     const d = new Date()
     var res = new EscPosEncoder({ codepageMapping: 'star' })
       .initialize()
@@ -76,24 +230,24 @@ export class EscposPrintService {
         { width: 36, align: 'left' },
         { width: 11, align: 'right' }
       ],
-      items.reduce(
-        (acc,i)=>acc.concat(
-          [
-            [(enc:EscPosEncoder)=>{return enc.bold(true).text(i.description.substring(0,31)+`(${i.aliquot[0].aliquotPercent})`).bold(false)},'$'+i.subtotal.toFixed(2)],
-            [(Math.round((i.quantity + Number.EPSILON) * 100) / 100).toString()+`[${i.unit}]`+' x '+'$'+i.unit_price.toString(),''],['','']
-          ])
-          ,[])
+        items.reduce(
+          (acc, i) => acc.concat(
+            [
+              [(enc: EscPosEncoder) => { return enc.bold(true).text(i.description.substring(0, 31) + `(${i.aliquot[0].aliquotPercent})`).bold(false) }, '$' + i.subtotal.toFixed(2)],
+              [(Math.round((i.quantity + Number.EPSILON) * 100) / 100).toString() + `[${i.unit}]` + ' x ' + '$' + i.unit_price.toString(), ''], ['', '']
+            ])
+          , [])
       )
-      if(voucherType.Id==1){
-        res=this.extraVoucherData(res,invoiceData.afipVoucherData.detail)
-      }
-      const encoded = res.line('------------------------------------------------')
+    if (voucherType.Id == 1) {
+      res = this.extraVoucherData(res, invoiceData.afipVoucherData.detail)
+    }
+    const encoded = res.line('------------------------------------------------')
       .bold(true)
       .table([
         { width: 8, align: 'right' },
         { width: 40, align: 'right' }
       ], [
-        ['TOTAL', '$'+invoiceData.afipVoucherData.detail[0].ImpTotal.toString()]
+        ['TOTAL', '$' + invoiceData.afipVoucherData.detail[0].ImpTotal.toString()]
       ])
       .bold(false)
       .align('center')
@@ -105,7 +259,7 @@ export class EscposPrintService {
       ], [
         ['CAE:' + invoiceData.CAE[0].CAE, 'F.Vto:' + invoiceData.CAE[0].CAEFchVto],
       ])
-      .qrcode(qrContent,2,7,'m')
+      .qrcode(qrContent, 2, 7, 'm')
       .newline()
       .newline()
       .newline()
@@ -115,22 +269,20 @@ export class EscposPrintService {
       .cut('full')
       .encode()//Añadir mas
     const b64Data = fromByteArray(encoded)
-    const printerReady = await this.getPrinterStatus()
-    if (printerReady != 'open') throw 'Printer connection closed'
-    return await this.sendToPrinter(b64Data)
+    return await this.sendToPrinter(b64Data,'FACTURA_'+invoiceData.CAE[0].N.toString())
   }
 
-  private extraVoucherData(encoder:EscPosEncoder,vData:VoucherAfipData[]):EscPosEncoder{
+  private extraVoucherData(encoder: EscPosEncoder, vData: VoucherAfipData[]): EscPosEncoder {
     return encoder
-    .line('------------------------------------------------').table([
-      { width: 32, align: 'left' },
-      { width: 15, align: 'right' }
-    ], [
-      ['Total Neto', '$'+ vData[0].ImpNeto.toString()],
-      ['IVA','$'+vData[0].ImpIVA.toString()],
-      ['Impuestos No Gravados','$'+vData[0].ImpTotConc.toString()],
-      ['Exento','$'+vData[0].ImpOpEx.toString()]
-    ])
+      .line('------------------------------------------------').table([
+        { width: 32, align: 'left' },
+        { width: 15, align: 'right' }
+      ], [
+        ['Total Neto', '$' + vData[0].ImpNeto.toString()],
+        ['IVA', '$' + vData[0].ImpIVA.toString()],
+        ['Impuestos No Gravados', '$' + vData[0].ImpTotConc.toString()],
+        ['Exento', '$' + vData[0].ImpOpEx.toString()]
+      ])
   }
 
   public afipQRDataFormatter(invoiceData: { CAE: { N: number, CAE: string, CAEFchVto: string }[], afipVoucherData: { detail: VoucherAfipData[] }, emitterData: VoucherEmitterData }, voucher: AfipTypes) {
@@ -140,7 +292,7 @@ export class EscposPrintService {
       {
         ver: 1,
         fecha: d.toISOString().slice(0, 10),
-        cuit: +invoiceData.emitterData.legals.cuit.replace(/\-|\./g,''),
+        cuit: +invoiceData.emitterData.legals.cuit.replace(/\-|\./g, ''),
         ptoVta: +invoiceData.emitterData.legals.salesPoint,
         tipoCmp: voucher.Id,
         nroCmp: +invoiceData.CAE[0].N,
@@ -153,22 +305,28 @@ export class EscposPrintService {
         codAut: +invoiceData.CAE[0].CAE
       }
     ))
-    const b64qr=window.btoa(decodeURIComponent(encodeURIComponent(data))) 
-    return 'https://www.afip.gob.ar/fe/qr/?p='+b64qr
+    const b64qr = window.btoa(decodeURIComponent(encodeURIComponent(data)))
+    return 'https://www.afip.gob.ar/fe/qr/?p=' + b64qr
   }
-  public async urlShortener(url: string):Promise<string> {
+  public async urlShortener(url: string): Promise<string> {
     return fetch('https://azulessa.com/yourls/yourls-api.php', {
       method: 'POST',
-      mode:'cors',
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
       },
-      body:`username=admin&password=frulov3.0&action=shorturl&url=${url}&format=json`
+      body: `username=admin&password=frulov3.0&action=shorturl&url=${url}&format=json`
     })
-    .then((res:Response)=>{return res.json()})
-    .then((res:any)=>{
-      if(res.status!='success') throw 'Shortener Error'
-      return res.shorturl
-    })
+      .then((res: Response) => { return res.json() })
+      .then((res: any) => {
+        if (res.status != 'success') throw 'Shortener Error'
+        return res.shorturl
+      })
+  }
+  public setNewPrinterIp(ip:string,name:string){
+    localStorage.setItem('EscPosPrinterIP',ip)
+    this.printerBaseUrl=ip
+    localStorage.setItem('EscPosPrinterName',name)
+    this.printerName = name
   }
 }

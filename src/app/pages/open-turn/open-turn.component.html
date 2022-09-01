@@ -54,13 +54,12 @@
                                         <thead class="thead-dark text-primary">
                                             <tr>
                                                 <th class="text-center">#</th>
-                                                <th >Descripcion</th>
+                                                <th>Descripcion</th>
                                                 <th class="text-center">Consumido</th>
                                             </tr>
                                         </thead>
                                         <tbody *ngIf="!isLoading">
-                                            <tr
-                                                [ngClass]="{'table-danger':gralMeter.validated===false,'table-success':gralMeter.validated===true}">
+                                            <tr [ngClass]="{'table-danger':gralMeter.validated===false,'table-success':gralMeter.validated===true}">
                                                 <td>GRAL</td>
                                                 <td class="cell-ellipsis">Medidor General</td>
                                                 <td class="text-center">{{gralMeter.accumulated}}</td>
@@ -110,12 +109,10 @@
                     <div *ngIf="!isLoading" class="align-items-center px-4">
                         <div class="form-group col col-md-8 col-xl-6 px-3">
                             <label class="font-weight-light" style="font-size: 1em;" for="obs">Observaciones:</label>
-                            <textarea name="observations" ngModel id="obs" style="min-height: 7.8em;"
-                                class="form-control"
-                                placeholder="**Opcional&#10;Ej:Error en stock de producto, diferencias de precio mal actualizado, error de sistema, etc"></textarea>
+                            <textarea name="observations" ngModel id="obs" style="min-height: 7.8em;" class="form-control" placeholder="**Opcional&#10;Ej:Error en stock de producto, diferencias de precio mal actualizado, error de sistema, etc"></textarea>
                         </div>
-                    <p class="h4">Datos de encargado:</p>
-                    <div class="form-group px-3 col-8 col-md-6 col-xl-4">
+                        <p class="h4">Datos de encargado:</p>
+                        <div class="form-group px-3 col-8 col-md-6 col-xl-4">
                             <label class="font-weight-light" style="font-size: 1em;" for="turn">Seleccione
                                 turno:</label>
                             <select name="turn" id="turn" class="form-control mb-0" required ngModel>
@@ -128,10 +125,9 @@
 
                         </div>
                         <fieldset ngModelGroup="employee">
-                        <div class="form-row px-3">
+                            <div class="form-row px-3">
                                 <div class="form-group col-8 col-md-6 col-xl-4">
-                                    <label class="font-weight-light" style="font-size: 1em;"
-                                        for="emp">Encargado:</label>
+                                    <label class="font-weight-light" style="font-size: 1em;" for="emp">Encargado:</label>
                                     <select name="uuid" id="employeeUuid" class="form-control mb-0" ngModel required>
                                         <option value="" disabled>-</option>
                                         <option [ngValue]="item.uuid" *ngFor="let item of employees">{{item.uname}}</option>
@@ -142,13 +138,12 @@
                                 </div>
                                 <div class="form-group col-4 col-md-2 col-xl-1">
                                     <label class="font-weight-light" style="font-size: 1em;" for="pass">PIN:</label>
-                                    <input name="pass" ngModel id="pass" type="password"
-                                        class="form-control text-center mb-0" minlength="4" placeholder="****" required>
+                                    <input name="pass" ngModel id="pass" type="password" class="form-control text-center mb-0" minlength="4" placeholder="****" required>
                                     <div class="invalid-tooltip">
-                                       {{ !f.value.employee.pass?'Ingrese pin':'4 dígitos'}}
+                                        {{ !f.value.employee?.pass?'Ingrese pin':'4 dígitos'}}
                                     </div>
                                 </div>
-                                
+
                             </div>
                         </fieldset>
                         <div class="form-group col-12">
@@ -163,8 +158,8 @@
                                         <div class="sk-chase-dot"></div>
                                     </div>
                                 </span>{{saving?null:'Abrir turno'}}</button>
-                            </div>
                         </div>
+                    </div>
                 </form>
             </div>
         </div>

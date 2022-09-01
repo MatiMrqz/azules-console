@@ -22,6 +22,7 @@ import { OperationDetailComponent } from "./pages/operation-detail/operation-det
 import { NgxPrinterModule } from "ngx-printer";
 import { OperationSelectorComponent } from "./pages/operation-selector/operation-selector.component";
 import { OperationEditComponent } from "./pages/operation-edit/operation-edit.component";
+import { InvoiceSharedModule } from "./modules/invoice-shared/invoice-shared.module";
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -31,6 +32,7 @@ import { OperationEditComponent } from "./pages/operation-edit/operation-edit.co
     NgbModule,
     RouterModule,
     AppRoutingModule,
+    InvoiceSharedModule,
     ToastrModule.forRoot(),
     WebModule.forRoot(),
     NgxPrinterModule.forRoot({

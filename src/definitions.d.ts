@@ -191,6 +191,7 @@ interface AfipTypes {
     FchDesde: string,
     FchHasta: string
 }
+type StockTypes = 'PRODUCT' | 'PUMP'
 interface ItemInvoice {
     description: string,
     quantity: number,
@@ -198,6 +199,7 @@ interface ItemInvoice {
     unit_price: number,
     discountPercent?: string,
     unit?: string,
+    type: StockTypes,
     aliquot: {
         aliquotType: number,
         aliquotPercent: string
@@ -226,7 +228,7 @@ interface VoucherEmitterData {
     company: { name: string, mail: string }
     legals: { salesPoint: string, condition: string, cuit: string, iibb: string }
     local: { name: string, address: string }
-    seller: { name: string, mail: string }
+    seller: { name: string, mail?: string }
 }
 interface CompanySettings {
     COMPANY_NAME: string,
@@ -243,7 +245,12 @@ interface AfipSettings {
     EMP_ALLOWED_VTYPES: string,
     ALIQUOT_TYPE_SELECTED: string,
 }
-interface AutoSettings{
-    CF_MAX_AMOUNT:number
-    CF_AUTO_PROCESSED:number
+interface AutoSettings {
+    AI_MAX_AMOUNT: number,
+    AI_PUMPS_INV_RATIO: number,
+    AI_PUMPS_ALIQUOT_TYPE: number,
+    AI_PUMPS_INV_MIN_THRESHOLD: number,
+    AI_PROD_INV_RATIO: number,
+    AI_PROD_ALIQUOT_TYPE: number,
+    AI_PROD_INV_MIN_THRESHOLD: number,
 }

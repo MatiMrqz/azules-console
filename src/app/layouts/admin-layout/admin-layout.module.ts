@@ -1,8 +1,7 @@
 import { NgModule } from "@angular/core";
-import { HttpClientModule } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormsModule } from "@angular/forms";
 
 import { AdminLayoutRoutes } from "./admin-layout.routing";
 import { DashboardComponent, OpByUname } from "../../pages/dashboard/dashboard.component";
@@ -25,7 +24,6 @@ import { OperationsComponent } from "src/app/pages/operations/operations.compone
 import { EditGralMeterMax } from "src/app/modals/pumps/gral-meter/max-val-gral.component";
 import { ClipboardModule } from "ngx-clipboard";
 import { InvoicesComponent } from "src/app/pages/invoices/invoices.component";
-import { NewInvoiceComponent } from "src/app/modals/new-invoice/new-invoice.component";
 import { SettingsComponent } from "src/app/pages/settings/settings.component";
 
 @NgModule({
@@ -33,10 +31,8 @@ import { SettingsComponent } from "src/app/pages/settings/settings.component";
     CommonModule,
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
     NgbModule,
-    ClipboardModule
+    ClipboardModule,
   ],
   declarations: [
     DashboardComponent,
@@ -58,7 +54,6 @@ import { SettingsComponent } from "src/app/pages/settings/settings.component";
     OperationsComponent,
     EditGralMeterMax,
     InvoicesComponent,
-    NewInvoiceComponent,
     SettingsComponent
   ],
   providers:[]

@@ -1,6 +1,17 @@
 <div class="row justify-content-center mx-0">
-    <div class="col">
-        <div class=" card mt-5">
+    <div class="col-12 col-lg-6">
+        <div class="card mt-5">
+            <div class="card-header d-flex align-items-center">
+                <i class="fa-solid fa-file-invoice-dollar fa-3x"></i>
+                <p class="display-4 ml-3">FACTURACIÓN</p>
+            </div>
+            <div class="card-body">
+                <button class="btn btn-lg btn-block btn-info mb-2" (click)="newInvoice()">Nueva Factura</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class=" card">
             <div class="px-4 card-header d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
                     <i class="fa-solid fa-list-check fa-3x"></i>
@@ -117,7 +128,7 @@
                                             <td>GRAL</td>
                                             <td class="cell-ellipsis d-none d-lg-table-cell">Medidor General</td>
                                             <td class="text-center">{{gralMeter.accumulated}}</td>
-                                            <td><input [(ngModel)]="gralMeter.meter_end" inputmode="numeric" type="number" min="0" class="form-control" (input)="gralMeter.meter_diff= +gralMeter.meter_end > +gralMeter.accumulated ? (+gralMeter.meter_end - +gralMeter.accumulated): gralMeter.meter_end!=null? 'Contador Reiniciado' : '' ;gralMeter.validated=(gralMeter.meter_end!=null);storeTempGral()">
+                                            <td><input [(ngModel)]="gralMeter.meter_end" inputmode="numeric" type="number" min="0" class="form-control" (input)="gralMeter.meter_diff= +gralMeter.meter_end >= +gralMeter.accumulated ? (+gralMeter.meter_end - +gralMeter.accumulated): gralMeter.meter_end!=null? 'Contador Reiniciado' : '' ;gralMeter.validated=(gralMeter.meter_end!=null);storeTempGral()">
                                             </td>
                                             <td class="text-center"> <span *ngIf="+gralMeter.meter_end < +gralMeter.accumulated && gralMeter.meter_end!=null "><i class="fa-solid fa-triangle-exclamation text-warning"></i></span> {{gralMeter.meter_diff}}</td>
                                         </tr>
@@ -165,13 +176,13 @@
                                             </td>
                                             <td class=" text-center">{{item.stock}}</td>
                                             <td>
-                                                <input [(ngModel)]="item.items_sold" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=item.stock-item.items_sold+item.items_replacement==item.end_stock && item.items_sold!=null;refreshDoneProducts()">
+                                                <input [(ngModel)]="item.items_sold" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=item.stock-item.items_sold+item.items_replacement==item.end_stock && item.items_sold!=null && item.items_replacement!=null && item.end_stock!=null;refreshDoneProducts()">
                                             </td>
                                             <td>
-                                                <input [(ngModel)]="item.items_replacement" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=item.stock-item.items_sold+item.items_replacement==item.end_stock && item.items_replacement!=null;refreshDoneProducts()">
+                                                <input [(ngModel)]="item.items_replacement" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=item.stock-item.items_sold+item.items_replacement==item.end_stock && item.items_sold!=null && item.items_replacement!=null && item.end_stock!=null;refreshDoneProducts()">
                                             </td>
                                             <td>
-                                                <input [(ngModel)]="item.end_stock" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=item.stock-item.items_sold+item.items_replacement==item.end_stock && item.end_stock!=null;refreshDoneProducts()">
+                                                <input [(ngModel)]="item.end_stock" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=item.stock-item.items_sold+item.items_replacement==item.end_stock && item.items_sold!=null && item.items_replacement!=null && item.end_stock!=null;refreshDoneProducts()">
                                             </td>
                                             <td class="d-none d-lg-table-cell text-center">
                                                 {{item.unit_price|currency:'ARS'}}
@@ -328,7 +339,7 @@
                         </div>
                         <select [(ngModel)]="helperSelected" [ngClass]="{'is-invalid':saveButt.disabled}" name="uuid" id="employeeUuid" class="form-control text-center">
                             <option [ngValue]="null">-</option>
-                            <option [ngValue]="item.uuid" *ngFor="let item of helpers">{{item.uname}}</option>
+                            <option [ngValue]="item" *ngFor="let item of helpers">{{item.uname}}</option>
                         </select>
                     </div>
                     <div class="input-group input-group-lg">
@@ -340,7 +351,7 @@
                             {{saveDisabled('asdf')?'Planilla incompleta':'Ingrese pin'}}
                         </div>
                     </div>
-                    <button #saveButt type="button" class="btn btn-lg btn-block text-dark btn-warning mb-2" (click)="storeClosingShift(observation.value,employeePass.value)" [disabled]="saveDisabled(employeePass.value)&&!saving">
+                    <button #saveButt type="button" class="btn btn-lg btn-block text-dark btn-warning mb-2" (click)="storeClosingShift(observation.value,employeePass.value,closingProgressModal)" [disabled]="saveDisabled(employeePass.value)&&!saving">
                         <span [ngClass]="{'d-none':!saving}">
                             <div class="sk-chase" style="font-size: 1.5em;margin-left: -1.5em;">
                                 <div class="sk-chase-dot"></div>
@@ -369,6 +380,52 @@
                 <div class="sk-chase-dot"></div>
             </div>
         </div>
+    </div>
+</ng-template>
+
+<ng-template #elseBlock>
+
+</ng-template>
+
+<ng-template #closingProgressModal let-modal>
+    <div class="modal-header justify-content-center pb-2">
+        <h3 class="modal-title">Cierre de turno</h3>
+    </div>
+    <div [ngSwitch]="serverResponse.error" class="modal-body text-center">
+        <div *ngSwitchCase="true" class="d-flex flex-row">
+            <i class="fa-solid fa-xmark text-danger fa-3x mr-3"></i>
+            <div>
+                <p class="text-light">
+                    Ocurrió un error: {{serverResponse.msg}}
+                </p><a class="font-weight-bold" href="javascript:void(0)" (click)="modal.dismiss()">Volver a planilla</a>
+            </div>
+        </div>
+        <div *ngSwitchCase="false" class="d-flex flex-row">
+            <i class="fa-solid fa-check text-success fa-3x mr-3"></i>
+
+            <p class="text-light">
+                Turno finalizado correctamente. Puede imprimir comprobante de turno o continuar al turno siguiente.
+            </p>
+        </div>
+        <div *ngSwitchDefault class="d-flex flex-row">
+            <div class="mr-4 my-2">
+                <div class="sk-chase" style="font-size: 2em;">
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                    <div class="sk-chase-dot"></div>
+                </div>
+            </div>
+            <p class="text-light">
+                Se esta realizando el cierre de turno y facturación automática. Por favor <strong>espere</strong>...
+            </p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-neutral btn-simple" (click)="print()" [disabled]="serverResponse.error!==false">Imprimir comprobante</button>
+        <button type="button" class="btn btn-success text-dark" (click)="continueButton()" [disabled]="serverResponse.error!==false">Continuar</button>
     </div>
 </ng-template>
 

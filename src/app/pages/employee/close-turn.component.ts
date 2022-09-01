@@ -2,6 +2,8 @@ import { Component, HostListener, OnInit, Pipe, PipeTransform } from '@angular/c
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { NewInvoiceComponent } from 'src/app/modals/new-invoice/new-invoice.component';
+import { EscposPrintService } from 'src/app/services/escpos-print.service';
 import { WebService } from 'src/app/services/web.service';
 
 interface TempData {
@@ -63,13 +65,14 @@ export class CloseTurnComponent implements OnInit {
     others_v?: boolean
   }
   public accDoneCounter: number = 0
+  public serverResponse: any = { error: null }
 
   constructor(
     private webService: WebService,
     private route: ActivatedRoute,
     private router: Router,
-    private toastr: ToastrService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private escposService: EscposPrintService
   ) {
     this.acc = this.getTemp('ACC') ?? {
       cash: null,
@@ -189,17 +192,25 @@ export class CloseTurnComponent implements OnInit {
     pumpItem.meter_diff = pumpItem.reset_meter ? (+pumpItem.max_meter_value - +pumpItem.meter) + pumpItem.meter_end - +pumpItem.venting : +pumpItem.meter_end - +pumpItem.meter - +pumpItem.venting
     pumpItem.validated = (pumpItem.meter_end != null && pumpItem.venting != null && (pumpItem.meter_diff >= 0 || pumpItem.reset_meter))
   }
-  public storeClosingShift(observations: string, pass: string) {
+  public storeClosingShift(observations: string, pass: string, content) {
     this.saving = true
+    this.modalService.open(content, {
+      keyboard: false,
+      backdrop: 'static'
+    }).result.then(
+      () => { }
+    ).finally(() => {
+      this.serverResponse = { error: null }
+    })
     const pump_operations = this.pumps.map(p => {
       if (p.meter == p.meter_end) return
       else {
-        return { pump_id: p.id, meter_diff: p.meter_diff, venting: p.venting, unit_price: p.unit_price}
+        return { pump_id: p.id, meter_diff: p.meter_diff, venting: p.venting, unit_price: p.unit_price }
       }
     }).filter(p => p != undefined)
     const product_operations = this.products.map(p => {
       if (p.validated && (p.items_sold != 0 || p.items_replacement != 0)) {
-        return { product_id: p.id, items_sold: p.items_sold, items_replacement: p.items_replacement, unit_price:p.unit_price, prev_stock:p.stock }
+        return { product_id: p.id, items_sold: p.items_sold, items_replacement: p.items_replacement, unit_price: p.unit_price, prev_stock: p.stock }
       }
     }).filter(p => p != undefined)
     const gral_meter = { meter_diff: this.gralMeter.meter_diff, accumulated: this.gralMeter.meter_end }
@@ -214,37 +225,23 @@ export class CloseTurnComponent implements OnInit {
       others: this.acc.others
     }
     // console.log({ pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, helper_id: this.helperSelected, observations })
-    this.webService.shiftClosingDev({ employee: { uuid: this.employee.uuid, pass }, helper_id: this.helperSelected, pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, observations })
+    this.webService.shiftClosingDev({ employee: { uuid: this.employee.uuid, pass }, helper_id: (this.helperSelected ? this.helperSelected.uuid : null), pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, observations })
       .then(res => {
         this.cleanTemp()
-        this.showSuccess(res.msg)
-        setTimeout(() => {
-          this.router.navigate(['employee'])
-        }, 500
-        )
+        this.serverResponse = { ...res, observations, accountancy, error: false }
+        this.saving = false
       })
       .catch((err: string) => {
         this.saving = false
-        if (err.includes('password')) err = 'Contraseña errónea. Intente nuevamente.'
-        this.showError(err)
+        if(typeof(err)=='string'){
+          if (err.includes('password')) err = 'Contraseña errónea. Intente nuevamente.'
+          this.serverResponse = { error: true, msg: err } 
+        }else{
+          console.log(err)
+        }
       })
   }
-  private showError(msg: string) {
-    this.toastr.error('<span class="tim-icons icon-simple-remove" [data-notify]="icon"></span>' + msg, '', {
-      timeOut: 5000,
-      enableHtml: true,
-      toastClass: "alert alert-danger alert-with-icon",
-      positionClass: 'toast-top-center'
-    });
-  }
-  private showSuccess(msg: string) {
-    this.toastr.success('<span class="tim-icons icon-check-2" [data-notify]="icon"></span>' + msg, '', {
-      timeOut: 5000,
-      enableHtml: true,
-      toastClass: "alert alert-success alert-with-icon",
-      positionClass: 'toast-top-center'
-    });
-  }
+
   public async showModal(content, i: number) {
     this.modalService.open(content).result.then(
       () => {
@@ -254,11 +251,10 @@ export class CloseTurnComponent implements OnInit {
       () => { }
     )
   }
-  public storeTempGral(){
-    this.storeTemp('GRAL',this.gralMeter)
+  public storeTempGral() {
+    this.storeTemp('GRAL', this.gralMeter)
   }
   private storeTemp(name: 'PUMPS' | 'PRODUCTS' | 'ACC' | 'TEMP' | 'GRAL', payload: any) {
-    console.log('Guardando temporal...')
     sessionStorage.setItem(name, JSON.stringify(payload))
   }
   private getTemp(name: 'PUMPS' | 'PRODUCTS' | 'ACC' | 'TEMP' | 'GRAL'): any {
@@ -271,4 +267,41 @@ export class CloseTurnComponent implements OnInit {
     sessionStorage.removeItem('TEMP')
     sessionStorage.removeItem('GRAL')
   }
+
+  public print() {
+    console.log(this.serverResponse)
+    this.escposService.printShiftSummary(this.serverResponse.id, this.turn, this.employee, (this.helperSelected ?? null), this.serverResponse.emitter, this.products, this.pumps, this.serverResponse.accountancy, { accountancy: this.tempData.acc.accumulated, products: this.tempData.products.accumulated, pumps: this.tempData.pumps.accumulated }, this.serverResponse.nInvoicesDone, this.serverResponse.observations)
+    .then(res=>{
+      if(res.success){
+        console.info(res.data+': Succeed')
+      }else{
+        console.error('EscPos Printer Error:'+res.data)
+      }
+    })
+  }
+
+  public continueButton() {
+    setTimeout(() => {
+      this.modalService.dismissAll()
+      this.router.navigate(['employee'])
+    }, 100)
+  }
+
+  public newInvoice() {
+    const modalRef = this.modalService.open(NewInvoiceComponent,
+      {
+        container: 'app-close-turn',
+        keyboard: false,
+        backdrop: 'static',
+        size: 'xl'
+      })
+    modalRef.componentInstance.employee = this.employee
+    modalRef.result.then(
+      (closed: string) => {
+        console.debug(`Closed reason: ${closed}`)
+      },
+      () => { }
+    )
+  }
+
 }

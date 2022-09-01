@@ -13,7 +13,6 @@ export class DynamicRouteGuard implements CanActivate {
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         this.webService.getLastOperation()
             .then((operation: OperationEmpDB) => {
-                console.log(operation)
                 let routes = this.router.config;
                 let newRoutes = routes.slice(0, routes.length - 1)
                 let path: string

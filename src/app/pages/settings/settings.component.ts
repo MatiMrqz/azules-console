@@ -83,7 +83,6 @@ export class SettingsComponent implements OnInit {
       this.vouchersAllowed.delete(id)
     }
     this.vaTouched = true
-    console.log({ touched: this.vaTouched })
   }
 
   private showError(msg: string) {
