@@ -392,7 +392,7 @@
         <h3 class="modal-title">Cierre de turno</h3>
     </div>
     <div [ngSwitch]="serverResponse.error" class="modal-body text-center">
-        <div *ngSwitchCase="true" class="d-flex flex-row">
+        <div *ngSwitchCase="1" class="d-flex flex-row">
             <i class="fa-solid fa-xmark text-danger fa-3x mr-3"></i>
             <div>
                 <p class="text-light">
@@ -400,12 +400,26 @@
                 </p><a class="font-weight-bold" href="javascript:void(0)" (click)="modal.dismiss()">Volver a planilla</a>
             </div>
         </div>
-        <div *ngSwitchCase="false" class="d-flex flex-row">
+        <div *ngSwitchCase="0" class="d-flex flex-row">
             <i class="fa-solid fa-check text-success fa-3x mr-3"></i>
 
             <p class="text-light">
-                Turno finalizado correctamente. Puede imprimir comprobante de turno o continuar al turno siguiente.
+                {{serverResponse.msg}}
             </p>
+        </div>
+        <div *ngSwitchCase="2" class="d-flex flex-row">
+            <i class="fa-solid fa-check text-success fa-3x mr-3"></i>
+
+            <p class="text-light">
+                {{serverResponse.msg}} <small>Ocurrió un error? Revise conexión de su impresora térmica e intente <a class="font-weight-bold" href="javascript:void(0)" (click)="print()">reimprimir comprobante</a></small>
+            </p>
+        </div>
+        <div *ngSwitchCase="3" class="d-flex flex-row">
+            <i class="fa-solid fa-xmark text-danger fa-3x mr-3"></i>
+            <div>
+                <p class="text-light">{{serverResponse.msg}}
+                </p><a class="font-weight-bold" href="javascript:void(0)" (click)="print()">Reintentar impresión de comprobante</a>
+            </div>
         </div>
         <div *ngSwitchDefault class="d-flex flex-row">
             <div class="mr-4 my-2">
@@ -419,13 +433,12 @@
                 </div>
             </div>
             <p class="text-light">
-                Se esta realizando el cierre de turno y facturación automática. Por favor <strong>espere</strong>...
+                {{serverResponse.msg}} Por favor <strong>espere</strong>...
             </p>
         </div>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-neutral btn-simple" (click)="print()" [disabled]="serverResponse.error!==false">Imprimir comprobante</button>
-        <button type="button" class="btn btn-success text-dark" (click)="continueButton()" [disabled]="serverResponse.error!==false">Continuar</button>
+    <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-success text-dark" (click)="continueButton()" [disabled]="serverResponse.error!==2">Continuar</button>
     </div>
 </ng-template>
 

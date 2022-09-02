@@ -10,28 +10,24 @@ interface EditedPumps extends Pumps { venting: number, meter_end: number, meter_
 })
 export class EscposPrintService {
   private printerBaseUrl: string
-  private printerName:string
+  private printerName: string
 
   constructor() {
     console.debug('Esc/Pos printer service loading...')
-    this.printerBaseUrl=localStorage.getItem('EscPosPrinterIP')
-    this.printerName=localStorage.getItem('EscPosPrinterName')
+    this.printerBaseUrl = localStorage.getItem('EscPosPrinterIP')
+    this.printerName = localStorage.getItem('EscPosPrinterName')
 
   }
 
-  private async getPrinterStatus() {
-    return fetch(this.printerBaseUrl + '/', {
-      method: 'GET'
-    }).then(res => res.text())
-  }
-  private async sendToPrinter(data: string,id:string):Promise<{success:boolean,data:string}>{
+  private async sendToPrinter(data: string, id: string): Promise<{ success: boolean, data: string }> {
+    if(!this.printerName||!this.printerBaseUrl) throw 'Configuración de impresora incorrecta. Revise IP y Nombre de impresora en configuración.'
     return fetch(this.printerBaseUrl + '/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        printer:this.printerName,
+        printer: this.printerName,
         id,
         data
       })
@@ -39,8 +35,7 @@ export class EscposPrintService {
       return res.json()
     })
   }
-  public async printShiftSummary(opId: number, turn: { name: string, schedule: string }, employee: { uname: string, uuid: string }, helper: { uname: string, uuid: string } | null, emitter: VoucherEmitterData, products: Array<EditedProducts>, pumps: Array<EditedPumps>,accountancy:{cash: number,envelopes_cash:number,n_envelopes: number,cards: number,vouchers: number,MercadoPago: number,expenses: number,others: number},acc:{accountancy:number,products:number,pumps:number},invoices:string,obs?:string) {
-    console.log({ pumps, products, acc })
+  public async printShiftSummary(opId: number, turn: { name: string, schedule: string }, employee: { uname: string, uuid: string }, helper: { uname: string, uuid: string } | null, emitter: VoucherEmitterData, products: Array<EditedProducts>, pumps: Array<EditedPumps>, accountancy: { cash: number, envelopes_cash: number, n_envelopes: number, cards: number, vouchers: number, MercadoPago: number, expenses: number, others: number }, acc: { accountancy: number, products: number, pumps: number }, invoices: string, obs?: string) {
     const d = new Date()
     var enc = new EscPosEncoder({ codepageMapping: 'star' })
       .initialize()
@@ -115,15 +110,15 @@ export class EscposPrintService {
         { width: 11, align: 'right' }
       ], [
         ['Item', 'U.Vend.', 'P.Unit.', 'Subtotal'],
-        ...pumps.filter(p => (p.meter != p.meter_end && +p.meter_diff > p.venting)).map(p => [(p.description ?? `Surtidor ${p.id}`), `${(+p.meter_diff).toFixed(2)}${p.unit ?? '-'}`,`$${p.unit_price}`, `$${(p.unit_price * +p.meter_diff).toFixed(2)}`]),
-        ...products.filter(p => (p.hidden == false && p.items_sold > 0 && p.validated)).map(p=>{return [p.name.substring(0, 15), `${p.items_sold}[u.]`, '$' + p.unit_price, `$${(p.unit_price * p.items_sold).toFixed(2)}`]})
+        ...pumps.filter(p => (p.meter != p.meter_end && +p.meter_diff > p.venting)).map(p => [(p.description ?? `Surtidor ${p.id}`), `${(+p.meter_diff).toFixed(2)}${p.unit ?? '-'}`, `$${p.unit_price}`, `$${(p.unit_price * +p.meter_diff).toFixed(2)}`]),
+        ...products.filter(p => (p.hidden == false && p.items_sold > 0 && p.validated)).map(p => { return [p.name.substring(0, 15), `${p.items_sold}[u.]`, '$' + p.unit_price, `$${(p.unit_price * p.items_sold).toFixed(2)}`] })
       ])
       .table([
-        {width:24,align:'left'},
-        {width:24,align:'right'}
+        { width: 24, align: 'left' },
+        { width: 24, align: 'right' }
       ],
         [
-          [(enc)=>{return enc.bold(true).text('TOTAL')},(enc)=>{return enc.bold(true).text(`$${Math.round((acc.products+acc.pumps)*100)/100}`).bold(false)}]
+          [(enc) => { return enc.bold(true).text('TOTAL') }, (enc) => { return enc.bold(true).text(`$${Math.round((acc.products + acc.pumps) * 100) / 100}`).bold(false) }]
         ]
       )
       .line('------------------------------------------------')
@@ -136,27 +131,27 @@ export class EscposPrintService {
         { width: 24, align: 'left' },
         { width: 24, align: 'left' }
       ], [
-        [`Sobres:${accountancy.n_envelopes}/$${accountancy.envelopes_cash}`,`Efectivo:$${accountancy.MercadoPago}`],
-        [`Tarjetas:$${accountancy.cards}`,`Mer.Pago:$${accountancy.MercadoPago}`],
-        [`Vales:$${accountancy.vouchers}`,`Gastos:$${accountancy.expenses}`],
-        [`Otros:$${accountancy.others}`,''],
+        [`Sobres:${accountancy.n_envelopes}/$${accountancy.envelopes_cash}`, `Efectivo:$${accountancy.MercadoPago}`],
+        [`Tarjetas:$${accountancy.cards}`, `Mer.Pago:$${accountancy.MercadoPago}`],
+        [`Vales:$${accountancy.vouchers}`, `Gastos:$${accountancy.expenses}`],
+        [`Otros:$${accountancy.others}`, ''],
       ])
       .table([
-        {width:10,align:'right'},
-        {width:38,align:'right'}
+        { width: 10, align: 'right' },
+        { width: 38, align: 'right' }
       ],
         [
-          [(enc)=>{return enc.bold(true).text('TOTAL')},(enc)=>{return enc.bold(true).text(`$${acc.accountancy}`).bold(false)}]
+          [(enc) => { return enc.bold(true).text('TOTAL') }, (enc) => { return enc.bold(true).text(`$${acc.accountancy}`).bold(false) }]
         ]
       )
       .line('------------------------------------------------')
       .align('center')
       .bold(true)
       .line('RESULTADO DEL TURNO')
-      .line(`$${Math.round((acc.accountancy-(acc.products+acc.pumps))*100)/100}`)
+      .line(`$${Math.round((acc.accountancy - (acc.products + acc.pumps)) * 100) / 100}`)
       .bold(false)
       .size('small')
-      .line(acc.accountancy-(acc.products+acc.pumps)<0?'Deuda':'A favor')
+      .line(acc.accountancy - (acc.products + acc.pumps) < 0 ? 'Deuda' : 'A favor')
       .size('normal')
       .align('left')
       .line('------------------------------------------------')
@@ -165,20 +160,29 @@ export class EscposPrintService {
       .line('FACTURACION')
       .bold(false)
       .align('left')
-      .line('Nros de facturas efectuadas durante el turno: '+invoices,48)
+      .line('Nros de facturas efectuadas durante el turno: ' + invoices, 48)
       .line('------------------------------------------------')
-      .line('Observaciones:'+obs??'-')
+      .line('Observaciones:' + obs ?? '-')
       .newline()
       .newline()
+      .newline()
+      .newline()
+      .newline()
+      .newline()
+      .align('center')
+      .line('----------------------------')
+      .size('small')
+      .line('Firma de encargado')
+      .size('normal')
+      .align('left')
       .newline()
       .newline()
       .newline()
       .newline()
       .cut('full')
       .encode()
-
     const b64Data = fromByteArray(enc)
-    return await this.sendToPrinter(b64Data,'CIERRE_'+opId)
+    return await this.sendToPrinter(b64Data, 'TURNO_' + opId)
   }
   public async printInvoice(invoiceData: { CAE: { N: number, CAE: string, CAEFchVto: string }[], afipVoucherData: { detail: VoucherAfipData[] }, emitterData: VoucherEmitterData }, items: ItemInvoice[], payer: InvoiceClient, voucherType: AfipTypes, qrContent: string) {
     const d = new Date()
@@ -269,7 +273,7 @@ export class EscposPrintService {
       .cut('full')
       .encode()//Añadir mas
     const b64Data = fromByteArray(encoded)
-    return await this.sendToPrinter(b64Data,'FACTURA_'+invoiceData.CAE[0].N.toString())
+    return await this.sendToPrinter(b64Data, 'FACTURA_' + invoiceData.CAE[0].N.toString())
   }
 
   private extraVoucherData(encoder: EscPosEncoder, vData: VoucherAfipData[]): EscPosEncoder {
@@ -323,10 +327,10 @@ export class EscposPrintService {
         return res.shorturl
       })
   }
-  public setNewPrinterIp(ip:string,name:string){
-    localStorage.setItem('EscPosPrinterIP',ip)
-    this.printerBaseUrl=ip
-    localStorage.setItem('EscPosPrinterName',name)
+  public setNewPrinterIp(ip: string, name: string) {
+    localStorage.setItem('EscPosPrinterIP', ip)
+    this.printerBaseUrl = ip
+    localStorage.setItem('EscPosPrinterName', name)
     this.printerName = name
   }
 }

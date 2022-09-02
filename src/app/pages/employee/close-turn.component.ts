@@ -65,7 +65,7 @@ export class CloseTurnComponent implements OnInit {
     others_v?: boolean
   }
   public accDoneCounter: number = 0
-  public serverResponse: any = { error: null }
+  public serverResponse: any = { error: null, msg:'Realizando cierre de turno.' }
 
   constructor(
     private webService: WebService,
@@ -225,19 +225,21 @@ export class CloseTurnComponent implements OnInit {
       others: this.acc.others
     }
     // console.log({ pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, helper_id: this.helperSelected, observations })
+    this.serverResponse={ error: null, msg:'Realizando cierre de turno...' }
     this.webService.shiftClosingDev({ employee: { uuid: this.employee.uuid, pass }, helper_id: (this.helperSelected ? this.helperSelected.uuid : null), pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, observations })
       .then(res => {
         this.cleanTemp()
-        this.serverResponse = { ...res, observations, accountancy, error: false }
+        this.serverResponse = { ...res, observations, accountancy }
         this.saving = false
+        this.print()
       })
-      .catch((err: string) => {
+      .catch((err) => {
         this.saving = false
-        if(typeof(err)=='string'){
-          if (err.includes('password')) err = 'Contraseña errónea. Intente nuevamente.'
-          this.serverResponse = { error: true, msg: err } 
-        }else{
-          console.log(err)
+        if (err instanceof(Error)) {
+          this.serverResponse = { error: 1, msg: err.message }
+        } else {
+          if (err.includes('password')) this.serverResponse = { error: 1, msg: 'Contraseña incorrecta. Intente nuevamente.' }
+          else this.serverResponse = { error: 1, msg: err }
         }
       })
   }
@@ -269,13 +271,21 @@ export class CloseTurnComponent implements OnInit {
   }
 
   public print() {
+    this.serverResponse = { ...this.serverResponse,...{ msg: 'Imprimiendo comprobante...', error: null } }
     console.log(this.serverResponse)
     this.escposService.printShiftSummary(this.serverResponse.id, this.turn, this.employee, (this.helperSelected ?? null), this.serverResponse.emitter, this.products, this.pumps, this.serverResponse.accountancy, { accountancy: this.tempData.acc.accumulated, products: this.tempData.products.accumulated, pumps: this.tempData.pumps.accumulated }, this.serverResponse.nInvoicesDone, this.serverResponse.observations)
-    .then(res=>{
-      if(res.success){
-        console.info(res.data+': Succeed')
-      }else{
-        console.error('EscPos Printer Error:'+res.data)
+    .then(res => {
+      if (res.success) {
+        this.serverResponse = { ...this.serverResponse,...{ msg: 'Impresion finalizada', error: 2 } }
+      } else {
+        this.serverResponse = { ...this.serverResponse,...{ msg: 'Error al imprimir: ' + res.data, error: 3 } }
+      }
+    })
+    .catch((err) => {
+      if (err instanceof (Error)) {
+        this.serverResponse = { ...this.serverResponse,...{ msg: 'Error de comunicación con impresora:' + err.message, error:3 } }
+      } else {
+        this.serverResponse = { ...this.serverResponse,...{ msg: 'Error de comunicación con impresora:' + err, error:3 } }
       }
     })
   }
