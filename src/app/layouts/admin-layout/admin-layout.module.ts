@@ -25,6 +25,8 @@ import { EditGralMeterMax } from "src/app/modals/pumps/gral-meter/max-val-gral.c
 import { ClipboardModule } from "ngx-clipboard";
 import { InvoicesComponent } from "src/app/pages/invoices/invoices.component";
 import { SettingsComponent } from "src/app/pages/settings/settings.component";
+import { NewCreditNoteComponent } from "src/app/modals/new-credit-note/new-credit-note.component";
+import { InvoiceDetailComponent } from "src/app/modals/invoice-detail/invoice-detail";
 
 @NgModule({
   imports: [
@@ -54,7 +56,9 @@ import { SettingsComponent } from "src/app/pages/settings/settings.component";
     OperationsComponent,
     EditGralMeterMax,
     InvoicesComponent,
-    SettingsComponent
+    SettingsComponent,
+    NewCreditNoteComponent,
+    InvoiceDetailComponent
   ],
   providers:[]
 })

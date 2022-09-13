@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbCalendar, NgbDate, NgbDateParserFormatter, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, debounceTime, Observable, of, Subject, switchMap, tap } from 'rxjs';
+import { InvoiceDetailComponent } from 'src/app/modals/invoice-detail/invoice-detail';
+import { NewCreditNoteComponent } from 'src/app/modals/new-credit-note/new-credit-note.component';
 import { NewInvoiceComponent } from 'src/app/modals/new-invoice/new-invoice.component';
 import { WebService } from 'src/app/services/web.service';
 
@@ -41,7 +43,8 @@ export class InvoicesComponent implements OnInit {
   public _collectionSize$ = new BehaviorSubject<number>(0);
   private invoicesFetch: InvoiceRecord[]
   public searchTerm: string = ''
-  public invoicesSumm: any = []
+  public invoicesSummbyVoucher: any = []
+  public invoicesSummbyType: any = []
 
   public page = 1;
   public pageSize = 10;
@@ -64,7 +67,8 @@ export class InvoicesComponent implements OnInit {
   ) {
     this.fromDate = calendar.getPrev(calendar.getToday(), 'm', 1)
     this.toDate = calendar.getNext(calendar.getToday());
-    this.getSummary(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
+    this.getSummarybyVoucher(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
+    this.getSummarybyType(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
 
     this._search$.pipe(
       tap(() => this._loading$.next(true)),
@@ -82,8 +86,15 @@ export class InvoicesComponent implements OnInit {
     this.refreshTable()
   }
 
-  public async getSummary(from: string, to?: string) {
-    this.invoicesSumm = await this.webService.getInvoicesSummary({ from, to })
+  public async getSummarybyVoucher(from: string, to?: string) {
+    this.invoicesSummbyVoucher = await this.webService.getInvoicesSummarybyVoucher({ from, to })
+    this.invoicesSummbyVoucher.push(this.invoicesSummbyVoucher.reduce((acc, i) => acc = { amount: +acc.amount + +i.amount, N: +acc.N + +i.N, taxes: +acc.taxes + +i.taxes, voucher_type: 0 }, { amount: 0, N: 0, taxes: 0, voucher_type: 0 }))
+    console.log(this.invoicesSummbyVoucher)
+  }
+  public async getSummarybyType(from: string, to?: string) {
+    this.invoicesSummbyType = await this.webService.getInvoicesSummarybyType({ from, to })
+    this.invoicesSummbyType.push(this.invoicesSummbyType.reduce((acc, i) => acc = { ...acc, net: +acc.net + +i.net, taxes: +acc.taxes + +i.taxes, exent: +acc.exent + +i.exent, untaxed: +acc.untaxed + +i.untaxed, itc: +acc.itc + +i.itc, total: +acc.total + +i.total }, { type: 'TOTAL', net: 0, taxes: 0, exent: 0, untaxed: 0, itc: 0, total: 0 }))
+    console.log(this.invoicesSummbyType)
   }
 
   public refreshTable() {
@@ -145,7 +156,8 @@ export class InvoicesComponent implements OnInit {
       this.fromDate = date;
     } else if (this.fromDate && !this.toDate && date.after(this.fromDate)) {
       this.toDate = date;
-      this.getSummary(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
+      this.getSummarybyVoucher(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
+      this.getSummarybyType(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
     } else {
       this.toDate = null;
       this.fromDate = date;
@@ -172,6 +184,38 @@ export class InvoicesComponent implements OnInit {
       .finally(() => {
         this.getData()
       })
+  }
+
+  public newCreditNote(n:number,type:number) {
+    const modalRef = this.modalService.open(NewCreditNoteComponent,
+      {
+        container: 'app-invoices',
+        backdrop: 'static',
+        size: 'xl'
+      })
+    modalRef.componentInstance.invoice_ref={
+      n,type
+    }
+    modalRef.result.then(
+      (closed: string) => {
+        console.debug(`Closed reason: ${closed}`)
+      },
+      () => { }
+    )
+      .finally(() => {
+        this.getData()
+      })
+  }
+
+  public invoiceDetail(n:number,type:number) {
+    const modalRef = this.modalService.open(InvoiceDetailComponent,
+      {
+        container: 'app-invoices',
+        size: 'xl'
+      })
+    modalRef.componentInstance.invoice_ref={
+      n,type
+    }
   }
 
 }

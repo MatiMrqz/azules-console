@@ -1,0 +1,101 @@
+<div class="modal-header">
+    <button type="button" class="btn-close btn btn-link p-0" aria-label="Close" (click)="activeModal.dismiss('Cross click')">X</button>
+    <div class="modal-title">
+        <h4>Nueva Nota de Crédito</h4>
+    </div>
+</div>
+<div *ngIf="inv" class="modal-body">
+    <div class="card mb-3">
+        <div class="card-header">
+            Cliente
+        </div>
+        <div class="card-body pt-0">
+            <h4 class="m-0 font-weight-bold d-inline-block">{{inv.business_name??inv.user_name}}</h4><span><button class="btn btn-link" (click)="showClient=!showClient"><i class="fa-solid" [ngClass]="{'fa-circle-chevron-down':showClient,'fa-circle-chevron-up':!showClient}"></i></button></span>
+            <div #collapse="ngbCollapse" [(ngbCollapse)]="showClient">
+                <strong>{{getDocumentDesc(inv.id_type)}}:</strong>{{inv.identifier}} <br>
+                <strong>Direccion:</strong>{{inv.tax_address}} <br>
+                <strong>Tel:</strong>{{inv.phone??'-'}} <br>
+                <strong>Email:</strong>{{inv.email??'-'}} <br>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-3">
+        <div class="card-header">Detalle</div>
+        <div class="card-body">
+            <form #cn="ngForm" [ngClass]="{'was-validated':cn.invalid&&cn.dirty}" (submit)="submit(cn.value)">
+                <table class="table table-fix-head">
+                    <thead>
+                        <tr>
+                            <th>Concepto</th>
+                            <th class="text-right">{{getVoucherDesc(inv.voucher_type)}} Nº{{inv.n}}</th>
+                            <th class="text-right">Nota de crédito</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-2 font-weight-light">Neto</td>
+                            <td class="col-5 text-right">{{inv.amount_net|currency:'ARS'}}</td>
+                            <td class="col-5 text-right"><input type="number" inputmode="numeric" name="amount_net" id="" class="form-control text-right font-weight-bold" (input)="taxes=cn.value.amount_net*types.aliquot;totalCalc(cn.value)" required step=".01" min="0" [max]="+inv.amount_net"
+                                    ngModel>
+                                <div class="invalid-tooltip" style="position: relative; width:fit-content;">
+                                    {{cn.value.amount_net
+                                    < 0 ? 'No puede ser negativo': 'No puede ser mayor a valor facturado' }} </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-2 font-weight-light">IVA
+                            </td>
+                            <td class="col-5 text-right">{{inv.amount_taxes|currency:'ARS'}}</td>
+                            <td class="col-5 text-right"><input type="number" inputmode="numeric" name="amount_taxes" id="" class="form-control-plaintext text-right font-weight-bold" readonly [(ngModel)]="taxes"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-2 font-weight-light">Imp.No Gravados</td>
+                            <td class="col-5 text-right">{{inv.amount_untaxed|currency:'ARS'}}</td>
+                            <td class="col-5 text-right"><input type="number" inputmode="numeric" name="amount_untaxed" id="" class="form-control text-right font-weight-bold" (input)="totalCalc(cn.value)" step=".01" min="0" required ngModel>
+                                <div class="invalid-tooltip" style="position: relative; width:fit-content;">
+                                    {{cn.amount_untaxed
+                                    < 0? 'No puede ser negativo': 'Requerido'}} </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-2 font-weight-light">Exento</td>
+                            <td class="col-5 text-right">{{inv.amount_exent|currency:'ARS'}}</td>
+                            <td class="col-5 text-right"><input type="number" inputmode="numeric" name="amount_exent" id="" class="form-control text-right font-weight-bold" (input)="totalCalc(cn.value)" step=".01" min="0" required ngModel>
+                                <div class="invalid-tooltip" style="position: relative; width:fit-content;">
+                                    {{cn.amount_exent
+                                    < 0? 'No puede ser negativo': 'Requerido'}} </div>
+                            </td>
+                        </tr>
+                        <tr class="table-success">
+                            <td class="col-2 font-weight-light">Total</td>
+                            <td class="col-5 text-right font-weight-bold">{{(+inv.amount_net + +inv.amount_taxes + +inv.amount_untaxed + +inv.amount_exent)|currency:'ARS'}}
+
+                            </td>
+                            <td class="col-5 text-right"><input style="color: #fff;" type="number" inputmode="numeric" name="total" id="" class="form-control-plaintext text-right font-weight-bold" [ngClass]="{'text-danger-dark':cn.value.total>(+inv.amount_net + +inv.amount_taxes + +inv.amount_untaxed + +inv.amount_exent)}"
+                                    [max]="(+inv.amount_net + +inv.amount_taxes + +inv.amount_untaxed + +inv.amount_exent)" readonly [(ngModel)]="total">
+                                <div class="invalid-tooltip" style="position: relative; width:fit-content;">
+                                    Monto total mayor a monto facturado
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-danger btn-block mt-3" [disabled]="cn.invalid||cn.pristine||saving">Generar Nota de crédito<span [ngClass]="{'d-none':!saving}">
+                    <div class="sk-chase" style="font-size: 1.5em;margin-left: -1.5em;">
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                    </div>
+                </span></button>
+            </form>
+            <div *ngIf="errorMsg" class="alert alert-warning-dark font-italic" role="alert">
+                <p>
+                    {{errorMsg}}
+                </p>
+            </div>
+            </div>
+            </div>
+            </div>

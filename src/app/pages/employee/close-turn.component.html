@@ -438,7 +438,7 @@
         </div>
     </div>
     <div class="modal-footer justify-content-center">
-        <button type="button" class="btn btn-success text-dark" (click)="continueButton()" [disabled]="serverResponse.error!==2">Continuar</button>
+        <button type="button" class="btn btn-success text-dark" (click)="continueButton()" [disabled]="serverResponse.error<2">Continuar</button>
     </div>
 </ng-template>
 

@@ -1,6 +1,6 @@
 <div class=" content">
     <div class=" row">
-        <div class=" col-md-4 col-lg-4">
+        <!-- <div class=" col-md-4 col-lg-4">
             <div class="card">
                 <div class="card-header d-flex flex-sm-row flex-column justify-content-between">
                     <div class="display-2">Nueva Factura</div>
@@ -9,8 +9,8 @@
                     <button class="btn btn-block btn-danger" (click)="newInvoice()">Nueva Factura</button>
                 </div>
             </div>
-        </div>
-        <div class=" col-md-8 col-lg-8">
+        </div> -->
+        <div class=" col">
             <div class="card">
                 <div class="card-header d-flex flex-sm-row flex-column justify-content-between">
                     <div class="display-2">Estadísticas</div>
@@ -36,14 +36,38 @@
                                 <tr>
                                     <th scope="col">Tipo Factura</th>
                                     <th scope="col">Cantidad</th>
+                                    <th scope="col" class="text-right">IVA</th>
                                     <th class="text-right" scope="col">Monto Facturado</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr scope="row" *ngFor="let r of invoicesSumm" class="bg-dark text-secondary">
-                                    <td>{{getVTDesc(r.voucher_type)}}</td>
+                                <tr scope="row" *ngFor="let r of invoicesSummbyVoucher; last as isLast" class="text-secondary" [ngClass]="{'bg-primary font-weight-bold':isLast,'bg-dark':!isLast}">
+                                    <td>{{isLast?'TOTAL':getVTDesc(r.voucher_type)}}</td>
                                     <td>{{r.N}}</td>
+                                    <td class="text-right">{{r.taxes|currency:'ARS'}}</td>
                                     <td class="text-right">{{r.amount|currency:'ARS'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col table-responsive">
+                        <table class="table table-striped nw-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Tipo</th>
+                                    <th scope="col" class="text-right">Neto</th>
+                                    <th scope="col" class="text-right">ITC</th>
+                                    <th scope="col" class="text-right">IVA</th>
+                                    <th class="text-right" scope="col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr scope="row" *ngFor="let p of invoicesSummbyType; last as isLast" class="text-secondary" [ngClass]="{'bg-primary font-weight-bold':isLast,'bg-dark':!isLast}">
+                                    <td>{{p.type=='PUMP'?'Surtidores':p.type=='PRODUCT'?'Productos':p.type}}</td>
+                                    <td class="text-right">{{p.net|currency:'ARS'}}</td>
+                                    <td class="text-right">{{p.itc|currency:'ARS'}}</td>
+                                    <td class="text-right">{{p.taxes|currency:'ARS'}}</td>
+                                    <td class="text-right">{{p.total|currency:'ARS'}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -55,13 +79,12 @@
             <div class=" card">
                 <div class=" card-header d-flex flex-sm-row flex-column justify-content-between">
                     <div class=" display-2">Registro de Facturación</div>
+                    <button class="btn btn-danger" (click)="newInvoice()"><i class="fa-solid fa-plus"></i> Nueva Factura</button>
                 </div>
                 <div class="card-body">
-                    <div class="mx-3 row justify-content-between">
-                        <div class="d-inline-flex">
-                            <div class="col-xs-3 col-sm-auto">
-                                <input id="table-complete-search" type="text" class="form-control" name="searchTerm" (ngModelChange)="refreshTable()" placeholder="Buscar" [(ngModel)]="searchTerm">
-                            </div>
+                    <div class="m-3 d-flex flex-column flex-md-row justify-content-between">
+                        <div class="d-inline-flex col-12 col-md-5">
+                            <input id="table-complete-search" type="text" class="form-control" name="searchTerm" (ngModelChange)="refreshTable()" placeholder="Buscar" [(ngModel)]="searchTerm">
                             <span class="col-auto col-form-label" *ngIf="_loading$ | async"><div class="sk-chase" style="font-size: 1em;">
                                 <div class="sk-chase-dot"></div>
                                 <div class="sk-chase-dot"></div>
@@ -102,16 +125,17 @@
                     </div>
                     <div class="col table-responsive">
                         <table class="table table-striped nw-table">
-                            <thead>
+                            <thead class="bg-dark sticky-top">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Cliente</th>
-                                    <th class="text-right" scope="col">CUIT/DNI</th>
-                                    <th class="text-right" scope="col">Monto</th>
+                                    <th class="text-center" scope="col">Modo</th>
+                                    <th class="text-center" scope="col">Cliente</th>
                                     <th class="text-center" scope="col">Tipo Factura</th>
+                                    <th class="text-right" scope="col">Monto</th>
                                     <th class="text-center" scope="col">CAE</th>
                                     <th class="text-center d-none d-lg-table-cell" scope="col">Realizado por</th>
                                     <th class="text-right" scope="col">Fecha/Hora</th>
+                                    <th class="text-right" scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -119,32 +143,38 @@
                                     <th>
                                         <ngb-highlight [result]="inv.n" [term]="searchTerm"></ngb-highlight>
                                     </th>
+                                    <th class="text-center">
+                                        <small><span class="badge badge-secondary mx-1" [ngClass]="{'badge-secondary':inv.performed_by_mode=='MANUAL','badge-primary':inv.performed_by_mode!='MANUAL'}">{{inv.performed_by_mode}}</span></small>
+                                    </th>
                                     <td class="font-weight-bold">
-                                        <ngb-highlight [result]="inv.user_name||inv.business_name" [term]="searchTerm"></ngb-highlight>
-                                        <small><span *ngIf="inv.performed_by_mode=='AUTO'" class="badge badge-secondary mx-1">AUTO</span></small>
-                                    </td>
-                                    <td class="text-right">
-                                        <ngb-highlight [result]="inv.identifier" [term]="searchTerm"></ngb-highlight>
-                                    </td>
-                                    <td class="text-right">
-                                        <ngb-highlight result="{{inv.amount|currency:'ARS'}}" [term]="searchTerm"></ngb-highlight>
+                                        <ngb-highlight [result]="inv.user_name||inv.business_name" [term]="searchTerm"></ngb-highlight><i *ngIf="inv.identifier!=0" ngbTooltip="DNI/CUIT:{{inv.identifier}}" [openDelay]="100" class="px-2 text-muted fa-solid fa-id-card"></i>
                                     </td>
                                     <td class="text-center">
                                         {{getVTDesc(inv.voucher_type)}}
                                     </td>
+                                    <td class="text-right">
+                                        <strong><ngb-highlight result="{{inv.amount|currency:'ARS'}}" [term]="searchTerm"></ngb-highlight></strong>
+                                    </td>
                                     <td class="text-center">
-                                        <ngb-highlight [result]="inv.CAE" [term]="searchTerm"></ngb-highlight><button class="btn btn-link" ngbTooltip="Vto:{{inv.CAE_exp_date|date:'shortDate'}}" [openDelay]="300"><i class="fa-solid fa-calendar-day"></i></button>
+                                        <ngb-highlight [result]="inv.CAE" [term]="searchTerm"></ngb-highlight><i class="fa-solid fa-calendar-day px-2 text-muted" ngbTooltip="Vto:{{inv.CAE_exp_date|date:'shortDate'}}" [openDelay]="100"></i>
                                     </td>
                                     <td class="text-center d-none d-lg-table-cell">
-                                        {{inv.performed_by}} <span *ngIf="inv.performed_by_role=='ADMIN'" class="badge badge-info">ADMIN</span>
+                                        {{inv.performed_by}} <span *ngIf="inv.performed_by_role=='ADMIN'"><small>(ADMIN)</small></span>
                                     </td>
-                                    <td class="font-weight-light text-right">{{inv.timestamp|date:'short'}}</td>
+                                    <td class="font-weight-light text-right"><small>{{inv.timestamp|date:'short'}}</small></td>
+                                    <td class="text-right">
+                                        <button class="btn btn-link" ngbTooltip="Ver Detalle" (click)="invoiceDetail(inv.n, inv.voucher_type)"><i class="fa-regular fa-eye text-light"></i></button>
+                                        <span *ngIf="getVTDesc(inv.voucher_type).includes('Crédito');else buttonCredit">Ref:{{inv.device_uuid}}</span>
+                                        <ng-template #buttonCredit>
+                                            <button class="btn btn-link" ngbTooltip="Nueva Nota de Crédito" (click)="newCreditNote(inv.n, inv.voucher_type)"><i class="fa-regular fa-pen-to-square text-danger"></i></button>
+                                        </ng-template>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="d-flex justify-content-between p-3 flex-wrap">
-                        <ngb-pagination [collectionSize]="(_collectionSize$|async)!" [(page)]="page" [pageSize]="pageSize" (pageChange)="refreshTable()">
+                        <ngb-pagination [collectionSize]="(_collectionSize$|async)!" size="sm" [(page)]="page" [maxSize]="4" [pageSize]="pageSize" (pageChange)="refreshTable()">
                         </ngb-pagination>
 
                         <select class="form-control" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshTable()">

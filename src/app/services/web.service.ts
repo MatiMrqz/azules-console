@@ -1181,8 +1181,61 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public getInvoicesSummary(payload:{from:string,to?:string}): Promise<any> {
-    return fetch(environment.baseUrl + '/invoices/summary', {
+  public getInvoicesSummarybyVoucher(payload:{from:string,to?:string}): Promise<any> {
+    return fetch(environment.baseUrl + '/invoices/summary/byvoucher', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: this.headersWithApiandAutoAuth(),
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getInvoiceDetail(n:number,type:number): Promise<any> {
+    return fetch(environment.baseUrl + `/invoices/${type}/${n}`, {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public getInvoicesSummarybyType(payload:{from:string,to?:string}): Promise<any> {
+    return fetch(environment.baseUrl + '/invoices/summary/bytype', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: this.headersWithApiandAutoAuth(),
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public newCreditNote(payload:{}): Promise<any> {
+    return fetch(environment.baseUrl + '/invoices/admin/newCreditNote', {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: this.headersWithApiandAutoAuth(),
