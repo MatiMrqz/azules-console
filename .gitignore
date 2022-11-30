@@ -160,3 +160,4 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/sublimetext,visualstudiocode,angular,macos,windows,linux
+src/environments/environment.prod.ts
