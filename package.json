@@ -1,6 +1,6 @@
 {
     "name": "azules-console",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "description": "Consola de administracion de Sistemas para Estaciones de Gas",
     "scripts": {
         "ng": "ng",

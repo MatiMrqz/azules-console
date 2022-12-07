@@ -58,6 +58,9 @@
     &+.input-group-prepend .input-group-text {
         background-color: $white;
     }
+    option {
+        background-color: lighten($body-bg, 5%);
+    }
 }
 
 .has-success .input-group-append .input-group-text,
