@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { catchError, debounceTime, defer, distinctUntilChanged, filter, map, merge, Observable, of, OperatorFunction, Subject, Subscription, switchMap, tap } from 'rxjs';
 import { EscposPrintService } from 'src/app/services/escpos-print.service';
@@ -71,7 +71,7 @@ export class NewInvoiceComponent implements OnInit {
 
   constructor(
     private webService: WebService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public activeModal: NgbActiveModal,
     private printer: EscposPrintService,
     private el: ElementRef
@@ -172,8 +172,8 @@ export class NewInvoiceComponent implements OnInit {
   }
 
   getClientbyID() {
-    const id = (this.clientForm.get('identifier') as FormControl).value
-    const vType = (this.clientForm.get('voucher_type') as FormControl).value
+    const id = (this.clientForm.get('identifier') as UntypedFormControl).value
+    const vType = (this.clientForm.get('voucher_type') as UntypedFormControl).value
 
     const formData = this.clientForm.value as InvoiceClient
     if (!id) return
