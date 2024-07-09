@@ -4,7 +4,7 @@
     "description": "Consola de administracion de Sistemas para Estaciones de Gas",
     "scripts": {
         "ng": "ng",
-        "start": "ng serve",
+        "start": "ng serve -c dev --proxy-config src/proxy.conf.json",
         "build": "ng build",
         "test": "ng test",
         "lint": "ng lint",
@@ -33,6 +33,7 @@
         "@angular/platform-browser-dynamic": "13.2.5",
         "@angular/router": "13.2.5",
         "@ng-bootstrap/ng-bootstrap": "12.0.0",
+        "@popperjs/core": "^2.11.8",
         "base64-js": "^1.5.1",
         "chart.js": "2.9.4",
         "core-js": "3.15.2",

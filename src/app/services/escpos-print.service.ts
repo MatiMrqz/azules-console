@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import EscPosEncoder from 'esc-pos-encoder';
+import EscPosEncoder from 'enjox-esc-pos-encoder';
 import { fromByteArray } from 'base64-js';
 
 interface EditedProducts extends Products { items_sold: number, items_replacement: number, end_stock: number, validated: boolean }
