@@ -22,8 +22,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <ngb-accordion [closeOthers]="true" activeIds="">
-                        <ngb-panel id="pumps">
+                    <div ngbAccordion [closeOthers]="true" activeIds="">
+                        <div ngbAccordionItem id="pumps">
                             <ng-template ngbPanelTitle>
                                 <div class="d-flex align-items-center">
                                     <div>
@@ -96,8 +96,8 @@
                                     </table>
                                 </div>
                             </ng-template>
-                        </ngb-panel>
-                        <ngb-panel id="gral_meter">
+                        </div>
+                        <div ngbAccordionItem id="gral_meter">
                             <ng-template ngbPanelTitle>
                                 <div class="d-flex align-items-center">
                                     <div>
@@ -137,8 +137,8 @@
                                     </table>
                                 </div>
                             </ng-template>
-                        </ngb-panel>
-                        <ngb-panel id="products">
+                        </div>
+                        <div ngbAccordionItem id="products">
                             <ng-template ngbPanelTitle>
                                 <div class="d-flex align-items-center">
                                     <div>
@@ -198,8 +198,8 @@
                                     </table>
                                 </div>
                             </ng-template>
-                        </ngb-panel>
-                        <ngb-panel id="accounts">
+                        </div>
+                        <div ngbAccordionItem id="accounts">
                             <ng-template ngbPanelTitle>
                                 <div class="d-flex align-items-center">
                                     <div>
@@ -290,8 +290,8 @@
                                     </table>
                                 </div>
                             </ng-template>
-                        </ngb-panel>
-                    </ngb-accordion>
+                        </div>
+                    </div>
                 </div>
                 <div class="p-4">
                     <p class="display-4 text-uppercase text-center text-md-left">Resultado del turno</p>

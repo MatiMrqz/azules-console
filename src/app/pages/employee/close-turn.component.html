@@ -23,8 +23,8 @@
                 <div class="h3 mb-1 text-muted font-italic font-weight-lighter">Turno {{turn.name}}</div>
             </div>
             <div class="card-body">
-                <ngb-accordion [closeOthers]="true" activeIds="">
-                    <ngb-panel id="pumps">
+                <div ngbAccordion [closeOthers]="true" activeIds="">
+                    <div ngbAccordionItem id="pumps">
                         <ng-template ngbPanelTitle>
                             <div *ngIf="!isLoading" class="d-flex align-items-center">
                                 <div>
@@ -95,8 +95,8 @@
                                 </table>
                             </div>
                         </ng-template>
-                    </ngb-panel>
-                    <ngb-panel id="gral_meter">
+                    </div>
+                    <div ngbAccordionItem id="gral_meter">
                         <ng-template ngbPanelTitle>
                             <div *ngIf="!isLoading" class="d-flex align-items-center">
                                 <div>
@@ -136,8 +136,8 @@
                                 </table>
                             </div>
                         </ng-template>
-                    </ngb-panel>
-                    <ngb-panel id="products">
+                    </div>
+                    <div ngbAccordionItem id="products">
                         <ng-template ngbPanelTitle>
                             <div *ngIf="!isLoading" class="d-flex align-items-center">
                                 <div>
@@ -195,8 +195,8 @@
                                 </table>
                             </div>
                         </ng-template>
-                    </ngb-panel>
-                    <ngb-panel id="accounts">
+                    </div>
+                    <div ngbAccordionItem id="accounts">
                         <ng-template ngbPanelTitle>
                             <div *ngIf="!isLoading" class="d-flex align-items-center">
                                 <div>
@@ -287,8 +287,8 @@
                                 </table>
                             </div>
                         </ng-template>
-                    </ngb-panel>
-                </ngb-accordion>
+                    </div>
+                </div>
             </div>
             <div *ngIf="!isLoading; else spinnerBlock" class="py-3 px-4">
                 <p class="font-weight-light">Progreso:</p>

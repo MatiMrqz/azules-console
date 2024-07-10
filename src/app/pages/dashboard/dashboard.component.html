@@ -131,8 +131,8 @@
                             </thead>
                         </table>
                     </div>
-                    <ngb-accordion [closeOthers]="true" activeIds="" *ngFor="let e of employeeSummary">
-                        <ngb-panel [id]="e.uname">
+                    <div ngbAccordion [closeOthers]="true" activeIds="" *ngFor="let e of employeeSummary">
+                        <div ngbAccordionItem [id]="e.uname">
                             <ng-template ngbPanelTitle>
                                 <table style="width: 100%;">
                                     <thead>
@@ -171,8 +171,8 @@
                                     </tbody>
                                 </table>
                             </ng-template>
-                        </ngb-panel>
-                    </ngb-accordion>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

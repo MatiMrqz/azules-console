@@ -81,15 +81,15 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "black-dashboard-angular:build",
-            "proxyConfig": "src/proxy.conf.json"
+            "proxyConfig": "src/proxy.conf.json",
+            "buildTarget": "black-dashboard-angular:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "black-dashboard-angular:build:production"
+              "buildTarget": "black-dashboard-angular:build:production"
             },
-            "dev":{
-              "browserTarget": "black-dashboard-angular:build:dev"
+            "dev": {
+              "buildTarget": "black-dashboard-angular:build:dev"
             }            
           },
           "defaultConfiguration": "production"
@@ -97,7 +97,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "black-dashboard-angular:build"
+            "buildTarget": "black-dashboard-angular:build"
           }
         },
         "test": {

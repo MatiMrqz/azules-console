@@ -12,8 +12,8 @@
                 </div>
                 <div class="card-body">
                     <p class="h4">Valores Iniciales</p>
-                    <ngb-accordion [closeOthers]="true" activeIds="">
-                        <ngb-panel id="pumps" title="Surtidores">
+                    <div ngbAccordion [closeOthers]="true" activeIds="">
+                        <div ngbAccordionItem id="pumps" title="Surtidores">
                             <ng-template ngbPanelContent>
                                 <div class="table-responsive">
                                     <table class=" table table-fix-head" id="">
@@ -46,8 +46,8 @@
                                     </table>
                                 </div>
                             </ng-template>
-                        </ngb-panel>
-                        <ngb-panel id="gral_meter" title="Medidor Gral">
+                        </div>
+                        <div ngbAccordionItem id="gral_meter" title="Medidor Gral">
                             <ng-template ngbPanelContent>
                                 <div class="table-responsive">
                                     <table class=" table table-fix-head" id="">
@@ -68,8 +68,8 @@
                                     </table>
                                 </div>
                             </ng-template>
-                        </ngb-panel>
-                        <ngb-panel id="products" title="Productos">
+                        </div>
+                        <div ngbAccordionItem id="products" title="Productos">
                             <ng-template ngbPanelContent>
                                 <div class="table-responsive">
                                     <table class=" table table-fix-head" id="">
@@ -102,8 +102,8 @@
                                     </table>
                                 </div>
                             </ng-template>
-                        </ngb-panel>
-                    </ngb-accordion>
+                        </div>
+                    </div>
                 </div>
                 <form #f="ngForm" [ngClass]="{'was-validated':!f.valid&&f.touched}" (ngSubmit)="sendToApi(f.value)">
                     <div *ngIf="!isLoading" class="align-items-center px-4">
