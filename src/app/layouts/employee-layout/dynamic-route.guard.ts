@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { CloseTurnComponent } from "src/app/pages/employee/close-turn.component";
 import { OpenTurnComponent } from "src/app/pages/open-turn/open-turn.component";
 import { WebService } from "src/app/services/web.service";
 
 @Injectable()
-export class DynamicRouteGuard implements CanActivate {
+export class DynamicRouteGuard  {
     constructor(
         private router: Router,
         private webService: WebService
