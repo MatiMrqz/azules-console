@@ -36,7 +36,7 @@
     "@popperjs/core": "^2.11.8",
     "base64-js": "^1.5.1",
     "canvas": "^2.11.2",
-    "chart.js": "^4.4.3",
+    "chart.js": "^2.9.4",
     "core-js": "^3.37.1",
     "enjox-esc-pos-encoder": "^2.0.3",
     "ngx-clipboard": "^16.0.0",
