@@ -4,7 +4,7 @@ import { registerLocaleData  } from "@angular/common";
 import localeEs from '@angular/common/locales/es-AR'
 registerLocaleData(localeEs,'es-AR');
 import { FormsModule } from "@angular/forms";
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { ToastrModule } from 'ngx-toastr';
 
@@ -23,26 +23,19 @@ import { NgxPrinterModule } from "ngx-printer";
 import { OperationSelectorComponent } from "./pages/operation-selector/operation-selector.component";
 import { OperationEditComponent } from "./pages/operation-edit/operation-edit.component";
 import { InvoiceSharedModule } from "./modules/invoice-shared/invoice-shared.module";
-@NgModule({
-  imports: [
-    BrowserAnimationsModule,
-    FormsModule,
-    HttpClientModule,
-    ComponentsModule,
-    NgbModule,
-    RouterModule,
-    AppRoutingModule,
-    InvoiceSharedModule,
-    ToastrModule.forRoot(),
-    WebModule.forRoot(),
-    NgxPrinterModule.forRoot({
-      printPreviewOnly:false,
-      renderClass: "printClass",
-      printOpenWindow:false
-    }),
-  ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, EmployeeLayoutComponent, OperationSelectorComponent, OperationDetailComponent, OperationEditComponent ],
-  providers: [{provide: LOCALE_ID, useValue:'es-AR'}],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, EmployeeLayoutComponent, OperationSelectorComponent, OperationDetailComponent, OperationEditComponent],
+    bootstrap: [AppComponent], imports: [BrowserAnimationsModule,
+        FormsModule,
+        ComponentsModule,
+        NgbModule,
+        RouterModule,
+        AppRoutingModule,
+        InvoiceSharedModule,
+        ToastrModule.forRoot(),
+        WebModule.forRoot(),
+        NgxPrinterModule.forRoot({
+            printPreviewOnly: false,
+            renderClass: "printClass",
+            printOpenWindow: false
+        })], providers: [{ provide: LOCALE_ID, useValue: 'es-AR' }, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
