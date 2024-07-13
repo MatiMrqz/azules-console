@@ -27,6 +27,9 @@ import { InvoicesComponent } from "src/app/pages/invoices/invoices.component";
 import { SettingsComponent } from "src/app/pages/settings/settings.component";
 import { NewCreditNoteComponent } from "src/app/modals/new-credit-note/new-credit-note.component";
 import { InvoiceDetailComponent } from "src/app/modals/invoice-detail/invoice-detail";
+import { PosComponent } from "src/app/pages/pos/pos.component";
+import { NewPosComponent } from "src/app/modals/pos/new/new.component";
+import { EditPosComponent } from "src/app/modals/pos/edit/edit.component";
 
 @NgModule({
   imports: [
@@ -58,7 +61,10 @@ import { InvoiceDetailComponent } from "src/app/modals/invoice-detail/invoice-de
     InvoicesComponent,
     SettingsComponent,
     NewCreditNoteComponent,
-    InvoiceDetailComponent
+    InvoiceDetailComponent,
+    PosComponent,
+    NewPosComponent,
+    EditPosComponent
   ],
   providers:[]
 })

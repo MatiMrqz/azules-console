@@ -34,6 +34,11 @@ export const ROUTES: RouteInfo[] = [
     icon: "fa-solid fa-gas-pump",
   },
   {
+    path: "/pos",
+    title: "Puntos de Venta",
+    icon: "fa-solid fa-store",
+  },
+  {
     path: "/products",
     title: "Productos",
     icon: "fa-solid fa-store",

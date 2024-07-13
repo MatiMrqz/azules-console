@@ -1,0 +1,38 @@
+<div class="modal-header">
+    <h4 class="modal-title">Nuevo Punto de Venta</h4>
+    <button type="button" class="btn-close btn btn-link" aria-label="Close" (click)="activeModal.dismiss('Cross click')">X</button>
+</div>
+<div class="modal-body">
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Nombre</span>
+        <input [(ngModel)]="item.name" type="text" class="form-control"
+            aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Descripción</span>
+        <input [(ngModel)]="item.description" type="text" class="form-control"
+            aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div class="input-group mb-3">
+        <label class="input-group-text" for="inputGroupSelect01">Tipo</label>
+        <select class="form-control" id="inputGroupSelect01" [(ngModel)]="item.decremental">
+            <option [ngValue]="false">Positivo</option>
+            <option [ngValue]="true">Negativo</option>
+        </select>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Valor inicial</span>
+        <span class="input-group-text">$</span>
+        <input [(ngModel)]="item.checkout" type="number" inputmode="numeric" min="0" class="form-control">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Precio Unitario</span>
+        <span class="input-group-text">$</span>
+        <input [(ngModel)]="item.unit_price" type="number" inputmode="numeric" min="0" class="form-control">
+    </div>
+</div>
+<div class="modal-footer">
+
+    <button type="button" class="btn btn-danger" (click)="activeModal.dismiss('Cancel')">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="saveItem()">Guardar</button>
+</div>

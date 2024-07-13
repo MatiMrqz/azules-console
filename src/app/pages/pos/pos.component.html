@@ -1,0 +1,66 @@
+<div class=" content">
+    <div class=" row">
+        <div class=" col">
+            <div class=" card">
+                <div class=" card-header d-flex flex-sm-row flex-column justify-content-between">
+                    <div class="display-2">Puntos de Venta</div>
+                    <div class="d-flex flex-row">
+                        <button class="btn btn-link text-light" (click)="newModal()" type="button" style="top: -0.3em;float:right">
+                            Nuevo
+                        </button>
+                    </div>
+                </div>
+                <div class=" card-body">
+                    <div class=" table-responsive">
+                        <table class=" table tablesorter" id="">
+                            <thead class=" text-primary">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Tipo</th>
+                                    <th class="text-center">Caja</th>
+                                    <th class=" text-center">Precio Unitario</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr></tr>
+                                <tr></tr>
+                                <tr></tr>
+                                <tr [ngClass]="{'d-none':!isLoading}">
+                                    <div class="sk-chase">
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                    </div>
+                                </tr>
+                                <tr></tr>
+                                <tr></tr>
+                                <tr></tr>
+                                <tr *ngFor="let item of pos">
+                                    <ng-template #tipContent>Editar<br><small>Ultima modificación:<br>{{item.last_update
+                                            | date:'d/M/yy H:mm'}}</small></ng-template>
+                                    <td>{{item.id}}</td>
+                                    <td>{{item.name}}</td>
+                                    <td>{{!item.description?'-':item.description}}</td>
+                                    <td><span class="badge" [ngClass]="{'badge-danger':item.decremental,'badge-success':!item.decremental}">{{item.decremental?'Negativo':'Positivo'}}</span></td>
+                                    <td class="text-center">{{item.checkout|currency:'ARS'}}</td>
+                                    <td class=" text-center">{{item.unit_price|currency:'ARS'}}</td>
+                                    <td class=" td-actions text-primary">
+                                        <button class=" btn btn-link" type="button" placement="bottom" [ngbTooltip]="tipContent" container="body" (click)="editModal(item)">
+                                            <i class=" tim-icons icon-pencil text-danger"> </i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

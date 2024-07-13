@@ -3,6 +3,11 @@ import { environment } from 'src/environments/environment';
 import { AuthDevService } from './auth-dev.service';
 import { AuthService } from './auth.service';
 
+interface MsgResponse{
+  msg: string
+  id?: string|number
+}
+
 @Injectable()
 export class WebService {
 
@@ -322,6 +327,58 @@ export class WebService {
         if (res.status == 200) {
           this.updateToken(res.headers.get('authorization'))
           return data as any[]
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public async getAllPos(): Promise<Array<PoS>> {
+    const res = await fetch(environment.baseUrl + '/posop/', {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    });
+    const data = await res.json();
+    if (res.status == 200) {
+      this.updateToken(res.headers.get('authorization'));
+      return data as any[];
+    }
+    else if (res.status == 401) {
+      this.authService.logout();
+    }
+    throw data.error;//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public async editPos(item: PoS): Promise<MsgResponse> {
+    return fetch(environment.baseUrl + `/posop/${item.id}`, {
+      method: 'PUT',
+      headers: this.headersWithApiandAuth,
+      body: JSON.stringify(item)
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+  public async newPoS(item:PoS): Promise<MsgResponse> {
+    console.debug(item)
+    return fetch(environment.baseUrl + '/posop/add/', {
+      method: 'POST',
+      headers: this.headersWithApiandAuth,
+      body: JSON.stringify(item)
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateToken(res.headers.get('authorization'))
+          return data
         }
         else if (res.status == 401) {
           this.authService.logout()

@@ -8,11 +8,13 @@ import { UsersComponent } from "src/app/pages/users/users.component";
 import { OperationsComponent } from "src/app/pages/operations/operations.component";
 import { InvoicesComponent } from "src/app/pages/invoices/invoices.component";
 import { SettingsComponent } from "src/app/pages/settings/settings.component";
+import { PosComponent } from "src/app/pages/pos/pos.component";
 
 export const AdminLayoutRoutes: Routes = [
   { path: "dashboard", component: DashboardComponent },
   { path: "products", component: ProductsComponent },
   { path: "pumps", component: PumpsComponent },
+  { path: "pos", component: PosComponent },
   { path: "devices", component: DevicesComponent },
   { path: "users", component: UsersComponent },
   { path: "operations", component: OperationsComponent },

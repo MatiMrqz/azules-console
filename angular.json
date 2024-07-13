@@ -31,7 +31,6 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
               "node_modules/ngx-toastr/toastr.css",
               "src/assets/scss/black-dashboard.scss",
               "src/assets/css/nucleo-icons.css"

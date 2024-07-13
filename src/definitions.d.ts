@@ -264,3 +264,11 @@ interface AutoSettings {
     AI_PROD_ALIQUOT_TYPE: number,
     AI_PROD_INV_MIN_THRESHOLD: number,
 }
+interface PoS{
+    id:number
+    name:string
+    unit_price:number
+    decremental:boolean
+    checkout:number
+    description:string
+}
