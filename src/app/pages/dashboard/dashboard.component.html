@@ -9,8 +9,8 @@
                     <div class="row align-items-center justify-content-evenly">
                         <div class="col-lg-4">
                             <h3 class=" card-title">
-                                <i [ngClass]="{'fa-door-open text-success':lastOperation.operation_type=='OPEN','fa-door-closed text-danger':lastOperation.operation_type=='CLOSE'}" class="fa-solid"> </i> {{lastOperation.operation_type=='CLOSE'?'Turno
-                                Cerrado':'Turno Abierto'}}
+                                <i [ngClass]="{'fa-door-open text-success':lastOperation.operation_type=='OPEN','fa-door-closed text-danger':lastOperation.operation_type=='CLOSE'}" class="fa-solid">
+                                </i> {{lastOperation.operation_type=='CLOSE'?'Turno Cerrado':'Turno Abierto'}}
                                 <h5 class="font-italic text-muted">Sincronizado {{lastOpDate|dateAgo}}</h5>
                             </h3>
                         </div>
@@ -133,44 +133,50 @@
                     </div>
                     <div ngbAccordion [closeOthers]="true" activeIds="" *ngFor="let e of employeeSummary">
                         <div ngbAccordionItem [id]="e.uname">
-                            <ng-template ngbPanelTitle>
-                                <table style="width: 100%;">
-                                    <thead>
-                                        <tr class="text-center">
-                                            <th class="col-1">{{e.N_OP}}</th>
-                                            <th class="col-2">{{e.uname}}</th>
-                                            <th class="col-2">~{{(+e.M3_SOLD/+e.N_OP)|number:'1.2-2'}}<small>[m³]/Turno</small></th>
-                                            <th class="col-2" [ngClass]="{'text-danger-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))<0,'text-success-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))>0}">{{(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))|currency:'ARS'}}</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </ng-template>
-                            <ng-template ngbPanelContent>
-                                <table class=" table tablesorter" id="">
-                                    <thead class=" text-primary">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Fecha</th>
-                                            <!-- <th>Venta Productos</th>
-                      <th>Venta Surtidores</th>
-                      <th>Total Rendido</th> -->
-                                            <th>M³ Vendidos</th>
-                                            <th>Diferencia S/F</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody *ngFor="let item of operationsReport|byuname:e.employee_id">
-                                        <tr>
-                                            <td><a [routerLink]="['/operations/detail/'+item.id]" href="" target="_blank">{{item.id}}</a></td>
-                                            <td>{{item.timestamp|date:'dd/MM/YY, HH:mm'}}hs</td>
-                                            <!-- <td>{{item.PRODUCT_AMOUNT_SOLD??0|currency:'ARS'}}</td>
-                      <td>{{item.PUMPS_AMOUNT_SOLD??0|currency:'ARS'}}</td>
-                      <td>{{item.REPORT??0|currency:'ARS'}}</td> -->
-                                            <td>{{item.M3_SOLD??0|number:'1.2-2'}}<small>[m³]</small></td>
-                                            <td>{{(+item.REPORT-(+item.PUMPS_AMOUNT_SOLD+ +item.PRODUCT_AMOUNT_SOLD))|currency:'ARS'}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </ng-template>
+                            <div ngbAccordionHeader>
+                                <button ngbAccordionButton>
+                                    <table style="width: 100%;">
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th class="col-1">{{e.N_OP}}</th>
+                                                <th class="col-2">{{e.uname}}</th>
+                                                <th class="col-2">~{{(+e.M3_SOLD/+e.N_OP)|number:'1.2-2'}}<small>[m³]/Turno</small></th>
+                                                <th class="col-2" [ngClass]="{'text-danger-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))<0,'text-success-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))>0}">{{(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))|currency:'ARS'}}</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </button>
+                            </div>
+                            <div ngbAccordionCollapse>
+                                <div ngbAccordionBody>
+                                    <ng-template>
+                                        <table class=" table tablesorter" id="">
+                                            <thead class=" text-primary">
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Fecha</th>
+                                                <!-- <th>Venta Productos</th>
+                                                    <th>Venta Surtidores</th>
+                                                    <th>Total Rendido</th> -->
+                                                    <th>M³ Vendidos</th>
+                                                    <th>Diferencia S/F</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngFor="let item of operationsReport|byuname:e.employee_id">
+                                                <tr>
+                                                    <td><a [routerLink]="['/operations/detail/'+item.id]" href="" target="_blank">{{item.id}}</a></td>
+                                                    <td>{{item.timestamp|date:'dd/MM/YY, HH:mm'}}hs</td>
+                                                    <!-- <td>{{item.PRODUCT_AMOUNT_SOLD??0|currency:'ARS'}}</td>
+                              <td>{{item.PUMPS_AMOUNT_SOLD??0|currency:'ARS'}}</td>
+                              <td>{{item.REPORT??0|currency:'ARS'}}</td> -->
+                                                    <td>{{item.M3_SOLD??0|number:'1.2-2'}}<small>[m³]</small></td>
+                                                    <td>{{(+item.REPORT-(+item.PUMPS_AMOUNT_SOLD+ +item.PRODUCT_AMOUNT_SOLD))|currency:'ARS'}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </ng-template>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
