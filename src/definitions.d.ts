@@ -91,11 +91,11 @@ interface Operation extends OperationDB {
     helper_id: string,
     helper_uname: string,
     passed: boolean,
-    GRAL_METER_DIFF: number,
     REPORT: number,
-    PRODUCT_AMOUNT_SOLD: number,
-    PUMPS_AMOUNT_SOLD: number,
-    M3_SOLD: number
+    POS_AMOUNT_SOLD: number
+    PRODUCT_AMOUNT_SOLD: number
+    TOTAL: number
+    DIFF: number
 }
 interface DetailOperationDB extends OperationDB {
     employee_uuid: string,

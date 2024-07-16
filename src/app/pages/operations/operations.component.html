@@ -58,10 +58,10 @@
                                     <th scope="col">Tipo</th>
                                     <th scope="col">Encargado</th>
                                     <th scope="col">Turno</th>
-                                    <th class="text-center" scope="col">m3 Vendidos</th>
-                                    <th class="text-center" scope="col">Comparación Ecogas</th>
+                                    <th class="text-center" scope="col">Productos</th>
+                                    <th class="text-center" scope="col">Resultado P.V.</th>
                                     <th class="text-right d-none d-lg-table-cell" scope="col">Venta Total</th>
-                                    <th class="text-right d-none d-lg-table-cell" scope="col">Rendicion</th>
+                                    <th class="text-right d-none d-lg-table-cell" scope="col">Rendición</th>
                                     <th class="text-right" scope="col">Diferencia</th>
                                     <th class="text-right" scope="col">Fecha/Hora</th>
                                 </tr>
@@ -86,11 +86,11 @@
                                     <td>
                                         <ngb-highlight [result]="op.turn_name" [term]="searchTerm"></ngb-highlight>
                                     </td>
-                                    <td style="white-space: nowrap;" class="text-center">{{op.operation_type=='CLOSE'?(op.M3_SOLD|number:'1.2-2'):'-'}} <small *ngIf="op.operation_type=='CLOSE'">[m³]</small> </td>
-                                    <td class="text-center font-weight-bold" [ngClass]="{'text-danger':op.operation_type=='CLOSE'&&((+op.M3_SOLD- +op.GRAL_METER_DIFF)/(+op.M3_SOLD))<0,'text-success':op.operation_type=='CLOSE'&&((+op.M3_SOLD- +op.GRAL_METER_DIFF)/(+op.M3_SOLD))>0}">{{op.operation_type=='CLOSE'?((+op.M3_SOLD- +op.GRAL_METER_DIFF)/(+op.M3_SOLD)|percent:'1.2-2'):'-'}} </td>
-                                    <td class="text-right d-none d-lg-table-cell">{{op.operation_type=='CLOSE'?(+op.PRODUCT_AMOUNT_SOLD + +op.PUMPS_AMOUNT_SOLD|currency:'ARS'):'-'}}</td>
+                                    <td class="text-center font-weight-bold" [ngClass]="{'text-danger':op.operation_type=='CLOSE'&&(op.PRODUCT_AMOUNT_SOLD)<0,'text-success':op.operation_type=='CLOSE'&&(op.PRODUCT_AMOUNT_SOLD)>0}">{{op.operation_type=='CLOSE'?((+op.PRODUCT_AMOUNT_SOLD)|currency:'ARS'):'-'}} </td>
+                                    <td class="text-center font-weight-bold" [ngClass]="{'text-danger':op.operation_type=='CLOSE'&&(op.POS_AMOUNT_SOLD)<0,'text-success':op.operation_type=='CLOSE'&&(op.POS_AMOUNT_SOLD)>0}">{{op.operation_type=='CLOSE'?((+op.POS_AMOUNT_SOLD)|currency:'ARS'):'-'}} </td>
+                                    <td class="text-center font-weight-bold" [ngClass]="{'text-danger':op.operation_type=='CLOSE'&&(op.TOTAL)<0,'text-success':op.operation_type=='CLOSE'&&(op.TOTAL)>0}">{{op.operation_type=='CLOSE'?((+op.TOTAL)|currency:'ARS'):'-'}} </td>
                                     <td class="text-right d-none d-lg-table-cell">{{op.operation_type=='CLOSE'?(op.REPORT|currency:'ARS'):'-'}}</td>
-                                    <td class="text-right font-weight-bold" [ngClass]="{'text-danger':op.operation_type=='CLOSE'&&((+op.REPORT - (+op.PRODUCT_AMOUNT_SOLD + +op.PUMPS_AMOUNT_SOLD))<0),'text-success':op.operation_type=='CLOSE'&&((+op.REPORT - (+op.PRODUCT_AMOUNT_SOLD + +op.PUMPS_AMOUNT_SOLD))>0)}">{{op.operation_type=='CLOSE'?((+op.REPORT - (+op.PRODUCT_AMOUNT_SOLD + +op.PUMPS_AMOUNT_SOLD))|currency:'ARS'):'-'}}
+                                    <td class="text-right font-weight-bold" [ngClass]="{'text-danger':op.operation_type=='CLOSE'&&((+op.DIFF)<0),'text-success':op.operation_type=='CLOSE'&&((+op.DIFF)>0)}">{{op.operation_type=='CLOSE'?((+op.DIFF)|currency:'ARS'):'-'}}
                                     </td>
                                     <td class="font-weight-light text-right">{{op.timestamp|date:'short'}}</td>
                                 </tr>

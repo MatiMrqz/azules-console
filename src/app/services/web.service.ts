@@ -1005,7 +1005,7 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
   public getAllOperations(period?: "1M" | "1Y" | "5Y"): Promise<Array<Operation>> {
-    return fetch(environment.baseUrl + `/operations/all/${period}`, {
+    return fetch(environment.baseUrl + `/operations/all/${period??''}`, {
       method: 'GET',
       headers: this.headersWithApiandAuth,
     }).then(
