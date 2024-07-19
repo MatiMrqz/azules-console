@@ -6,34 +6,22 @@ import { NgxPrinterService } from 'ngx-printer';
   styles: []
 })
 export class OperationDetailComponent implements OnInit {
-  public version: 'ORIGINAL' | 'REVIEWED' | null
-  public rev: Array<{ id: number | null, name: string }>
-  public saving: boolean = false
-  public passedSaving: boolean = false
 
-  @Input() operationDetail: { rev: { id: number, name: string }, operation: DetailOperationDB, products: Array<DetailProducts>, pumps: Array<DetailPumps>, accountancy: DetailAccountancy, operationBackups: OperationBackup[] }
+  @Input() operationDetail: { rev: { id: number, name: string }, operation: DetailOperationDB, products: Array<DetailProducts>, posop: Array<DetailPoS>, accountancy: DetailAccountancy, operationBackups: OperationBackup[] }
 
   constructor(
     private printerService: NgxPrinterService,
   ) { }
-  public pumpTotalAmount(): number {
+  public productTotalAmount(): number {
     var total: number = 0
-    this.operationDetail.pumps.forEach(p => {
+    this.operationDetail.products.forEach(p => {
       total += +p.amount_sold
     })
     return total
   }
-  public pumpm3Amount(): number {
-    let amount: number = 0
-    if (!this.operationDetail.pumps) return 0
-    this.operationDetail.pumps.forEach(v => {
-      amount += +v.meter_diff
-    })
-    return amount
-  }
-  public productTotalAmount(): number {
+  public posopTotalAmount(): number {
     var total: number = 0
-    this.operationDetail.products.forEach(p => {
+    this.operationDetail.posop.forEach(p => {
       total += +p.amount_sold
     })
     return total

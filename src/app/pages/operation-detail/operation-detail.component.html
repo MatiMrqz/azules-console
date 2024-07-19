@@ -35,21 +35,17 @@
             <div class="card-body">
                 <p class="h4">Registro:</p>
                 <div ngbAccordion [closeOthers]="true" activeIds="">
-                    <div ngbAccordionItem id="pumps">
+                    <div ngbAccordionItem id="products">
                         <div ngbAccordionHeader>
                             <button ngbAccordionButton>
                                 <div class="d-flex align-items-center">
                                     <div class="mx-3">
                                         <p class="text-dark title">
-                                            Surtidores</p>
+                                            Punto de Ventas</p>
                                     </div>
                                     <div class="mx-5">
                                         <p class="text-muted m-0" style="font-size: larger;">
-                                            {{pumpTotalAmount()|currency:'ARS'}}</p>
-                                    </div>
-                                    <div class="mx-3">
-                                        <p class="text-muted m-0" style="font-size: larger;">
-                                            {{pumpm3Amount()| number:'1.2-2'}} <small>[m3]</small> </p>
+                                            {{posopTotalAmount()|currency:'ARS'}}</p>
                                     </div>
                                 </div>
                             </button>
@@ -58,99 +54,29 @@
                             <div ngbAccordionBody>
                                 <ng-template>
                                     <div class="table-responsive">
-                                        <table class=" table table-fix-head" id="">
+                                        <table class=" table table-fix-head nw-table" id="">
                                             <thead class="thead-dark text-primary">
                                                 <tr>
-                                                    <th class="col-1 col-lg-1 text-center">#</th>
-                                                    <th class="col-1 d-none d-lg-table-cell">Tipo</th>
+                                                    <th class="col-1 col-lg-4">Nombre</th>
                                                     <th class="col-2 d-none d-lg-table-cell">Descripción</th>
-                                                    <th class="col-2 col-lg-3 text-center">Lectura Inicial</th>
-                                                    <th class="col-2 col-lg-3 text-center">Lectura Final</th>
-                                                    <th class="col-1 col-lg-1 text-center">Venteo</th>
-                                                    <th class="col-1 text-center">Vendido</th>
-                                                    <th class="col-1 d-none d-lg-table-cell text-center">Precio Unitario
-                                                    </th>
-                                                    <th class="col-1 col-lg-4 text-center">Importe</th>
+                                                    <th class="col-3 text-center">V. inicial</th>
+                                                    <th class="col-3 text-center">V. operación</th>
+                                                    <th class="col-3 text-center">V. final</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr *ngFor="let item of operationDetail.pumps"
-                                                    [ngClass]="{'bg-primary':!!item.venting||!!item.meter_diff}">
-                                                    <td class="text-center">{{item.pump_id}}
+                                                <tr *ngFor="let item of operationDetail.posop"
+                                                    [ngClass]="{'bg-primary':item.diff != 0 }">
+                                                    <td [ngClass]="{'scrolling-text':innerItem.offsetWidth>outerItem.clientWidth}"
+                                                        class="set-max-width" style="--mw:90px" #outerItem> <span
+                                                            #innerItem>{{item.name}}</span>
                                                     </td>
-                                                    <td class="cell-ellipsis d-none d-lg-table-cell"
-                                                        style="--mw:150px;">
-                                                        {{item.type_name}}</td>
                                                     <td class="cell-ellipsis d-none d-lg-table-cell"
                                                         style="--mw:150px;">
                                                         {{!item.description?'-':item.description}}</td>
-                                                    <td class=" text-center">
-                                                        {{item.init_meter|
-                                                        number:'1.2-2'}}<small>[{{item.unit}}]</small>
-                                                    </td>
-                                                    <td>
-                                                        {{+item.init_meter + +item.meter_diff + +(item.venting??0) |
-                                                        number:'1.2-2'}}<small>[{{item.unit}}]</small>
-                                                    </td>
-                                                    <td>
-                                                        {{item.venting??0|
-                                                        number:'1.2-2'}}<small>[{{item.unit}}]</small>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <strong>{{item.meter_diff??0|
-                                                            number:'1.2-2'}}</strong><small>[{{item.unit}}]</small>
-                                                    </td>
-
-                                                    <td class="d-none d-lg-table-cell text-center">
-                                                        {{item.unit_price|currency:'ARS'}}
-                                                    </td>
-                                                    <td class=" text-center">{{item.amount_sold??0|currency:'ARS'}}
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </ng-template>
-                            </div>
-                        </div>
-                    </div>
-                    <div ngbAccordionItem id="gral_meter">
-                        <div ngbAccordionHeader>
-                            <button ngbAccordionButton>
-                                <div class="d-flex align-items-center">
-                                    <div class="mx-3">
-                                        <p class="text-dark title">
-                                            Medidor General</p>
-                                    </div>
-                                </div>
-                            </button>
-                        </div>
-                        <div ngbAccordionCollapse>
-                            <div ngbAccordionBody>
-                                <ng-template>
-                                    <div class="table-responsive">
-                                        <table class=" table table-fix-head" id="">
-                                            <thead class="thead-dark text-primary">
-                                                <tr>
-                                                    <th class="text-center">#</th>
-                                                    <th class="text-center">Lectura Inicial</th>
-                                                    <th class="text-center">Diferencia</th>
-                                                    <th class="text-center">Lectura Final</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>GRAL</td>
-                                                    <td class="text-center">{{(+operationDetail.gralMeter.accumulated -
-                                                        +operationDetail.gralMeter.meter_diff)>0 ?
-                                                        (+operationDetail.gralMeter.accumulated -
-                                                        +operationDetail.gralMeter.meter_diff) : '0'| number:'1.2-2' }}
-                                                    </td>
-                                                    <td class="text-center">{{operationDetail.gralMeter.meter_diff |
-                                                        number:'1.2-2'}}
-                                                    </td>
-                                                    <td class="text-center">{{+operationDetail.gralMeter.accumulated |
-                                                        number:'1.2-2'}}
+                                                    <td class=" text-center">{{item.init_checkout|currency:'ARS'}}</td>
+                                                    <td class=" text-center">{{item.amount_sold??0|currency:'ARS'}}</td>
+                                                    <td class=" text-center">{{( +item.init_checkout + +item.amount_sold)??0|currency:'ARS'}}
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -246,9 +172,9 @@
                                     </div>
                                     <div *ngIf="operationDetail.operation.id_accountancy!=null" class="mx-3">
                                         <p class="m-0">
-                                            <span *ngIf="version!='ORIGINAL'" class="badge badge-warning">Editado por
-                                                {{operationDetail.operation.admin_name}} el
-                                                {{operationDetail.operation.updated_on|date:'short'}}</span>
+                                            <span *ngIf="operationDetail.rev.name!='ORIGINAL'" class="badge badge-warning">Editado por
+                                                {{operationDetail.operation.admin_name??'-'}} el
+                                                {{operationDetail.operation.updated_on??'-'|date:'short'}}</span>
                                         </p>
                                     </div>
                                 </div>
@@ -358,7 +284,7 @@
                         <div class="col-xl-3 col-md-5 flex-column">
                             <p class="font-weight-light text-muted mb-0">Ventas</p>
                             <p class="font-weight-light" style="font-size: 1.7em;">
-                                {{productTotalAmount()+pumpTotalAmount()|currency:'ARS'}}</p>
+                                {{productTotalAmount()+posopTotalAmount()|currency:'ARS'}}</p>
                         </div>
 
                         <div class="col-md-1">
@@ -368,9 +294,9 @@
                             <p class="font-weight-light text-muted mb-0">Diferencia <span
                                     class="text-success">S</span>/<span class="text-danger">F</span></p>
                             <p class="font-weight-bold"
-                                [ngClass]="{'text-success':accTotalAmount()-(productTotalAmount()+pumpTotalAmount())>0,'text-danger':accTotalAmount()-(productTotalAmount()+pumpTotalAmount())<0}"
+                                [ngClass]="{'text-success':accTotalAmount()-(productTotalAmount()+posopTotalAmount())>0,'text-danger':accTotalAmount()-(productTotalAmount()+posopTotalAmount())<0}"
                                 style="font-size: 1.7em;">
-                                {{accTotalAmount()-(productTotalAmount()+pumpTotalAmount())|currency:'ARS'}}</p>
+                                {{accTotalAmount()-(productTotalAmount()+posopTotalAmount())|currency:'ARS'}}</p>
                         </div>
                     </div>
                 </div>
@@ -407,8 +333,7 @@
         <p *ngIf="operationDetail.operation.operation_type=='OPEN'" class=" display-3">APERTURA DE TURNO
         </p>
         <p> <span class="font-weight-bold">Turno:</span> {{operationDetail.operation.turn_name}}</p>
-        <p><span class="font-weight-bold">Fecha/Hora:</span> {{operationDetail.operation.timestamp|date:'E d/MM/YYYY,
-            HH:mm'}}hs
+        <p><span class="font-weight-bold">Fecha/Hora:</span> {{operationDetail.operation.timestamp|date:'E d/MM/YYYY,HH:mm'}}hs
         </p>
         <p><span class="font-weight-bold">Encargado:</span> {{operationDetail.operation.uname}}</p>
         <p><span class="font-weight-bold">Ayudante:</span> {{operationDetail.operation.helper_uname??'-'}}</p>
@@ -416,70 +341,31 @@
         <p *ngIf="operationDetail.rev.name!='ORIGINAL'"><span class="font-weight-bold">Editado por:</span>
             {{operationDetail.operation.admin_name}} el {{operationDetail.operation.updated_on|date:'medium'}}</p>
         <p class="display-4 font-weight-bold pt-4">REGISTRO:</p>
-        <p class="display-4">Surtidores</p>
+        <p class="display-4">Punto de Ventas</p>
         <table class=" table table-bordered">
             <thead>
                 <tr>
-                    <th class="text-center">#</th>
-                    <th class="d-none d-lg-table-cell">Tipo</th>
-                    <th class="d-none d-lg-table-cell">Descripción</th>
-                    <th class="text-center">Lectura Inicial</th>
-                    <th class="text-center">Lectura Final</th>
-                    <th class="text-center">Venteo</th>
-                    <th class="text-center">Vendido</th>
-                    <th class="d-none d-lg-table-cell text-center">Precio Unitario</th>
-                    <th class=" text-center">Importe</th>
+                    <th class="text-center d-lg-table-cell">Nombre</th>
+                    <th class="text-center d-lg-table-cell">Descripción</th>
+                    <th class="text-center">V. Inicial</th>
+                    <th class="text-center">V. Operación</th>
+                    <th class="text-center">V. Final</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of operationDetail.pumps">
-                    <td class="text-center">{{item.pump_id}}
-                    </td>
-                    <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
-                        {{item.type_name}}</td>
-                    <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                <tr *ngFor="let item of operationDetail.posop">
+                    <td class="cell-ellipsis d-lg-table-cell">{{item.name}}</td>
+                    <td class="cell-ellipsis d-lg-table-cell" style="--mw:150px;">
                         {{!item.description?'-':item.description}}</td>
                     <td class=" text-center">
-                        {{item.init_meter| number:'1.2-2'}}<small>[{{item.unit}}]</small>
+                        {{item.init_checkout|currency:'ARS'}}
                     </td>
-                    <td>
-                        {{+item.init_meter + +item.meter_diff | number:'1.2-2'}}<small>[{{item.unit}}]</small>
+                    <td class=" text-center">
+                        {{item.amount_sold??0|currency:'ARS'}}
                     </td>
-                    <td>
-                        {{item.venting??0| number:'1.2-2'}}<small>[{{item.unit}}]</small>
+                    <td class=" text-center">
+                        {{( +item.init_checkout + +item.amount_sold)??0|currency:'ARS'}}
                     </td>
-                    <td class="text-center">
-                        <strong>{{item.meter_diff??0|
-                            number:'1.2-2'}}</strong><small>[{{item.unit}}]</small>
-                    </td>
-
-                    <td class="d-none d-lg-table-cell text-center">
-                        {{item.unit_price|currency:'ARS'}}
-                    </td>
-                    <td class=" text-center">{{item.amount_sold??0|currency:'ARS'}}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p class="display-4 pt-4 ">Medidor General</p>
-        <table class=" table table-bordered" id="">
-            <thead>
-                <tr>
-                    <th class="text-center">#</th>
-                    <th class="text-center">Lectura Inicial</th>
-                    <th class="text-center">Diferencia</th>
-                    <th class="text-center">Lectura Final</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>GRAL</td>
-                    <td class="text-center">{{(+operationDetail.gralMeter.accumulated -
-                        +operationDetail.gralMeter.meter_diff)>0 ? (+operationDetail.gralMeter.accumulated -
-                        +operationDetail.gralMeter.meter_diff) : '0'| number:'1.2-2' }}</td>
-                    <td class="text-center">{{operationDetail.gralMeter.meter_diff | number:'1.2-2'}}
-                    </td>
-                    <td class="text-center">{{operationDetail.gralMeter.accumulated| number:'1.2-2'}}</td>
                 </tr>
             </tbody>
         </table>
@@ -608,7 +494,7 @@
             <div class="col-xl-3 col-md-5 flex-column">
                 <p class="font-weight-light text-muted mb-0">Ventas</p>
                 <p class="font-weight-light" style="font-size: 1.7em;">
-                    {{productTotalAmount()+pumpTotalAmount()|currency:'ARS'}}</p>
+                    {{productTotalAmount()+posopTotalAmount()|currency:'ARS'}}</p>
             </div>
 
             <div class="col-md-1">
@@ -617,7 +503,7 @@
             <div class="col-xl-3 col-md-5 flex-column">
                 <p class="font-weight-light text-muted mb-0">Diferencia S/F</p>
                 <p class="font-weight-bold" style="font-size: 1.7em;">
-                    {{accTotalAmount()-(productTotalAmount()+pumpTotalAmount())|currency:'ARS'}}</p>
+                    {{accTotalAmount()-(productTotalAmount()+posopTotalAmount())|currency:'ARS'}}</p>
             </div>
         </div>
 

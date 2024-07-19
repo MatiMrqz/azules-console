@@ -14,7 +14,14 @@ interface DetailProducts extends Products {
     items_sold?: number,
     items_replacement?: number,
     amount_sold?: number
-
+}
+interface DetailPoS {
+    posop_id: number
+    description: string
+    unit_price: string
+    init_checkout:string
+    diff:string
+    amount_sold: string
 }
 interface Categories {
     id: number,
@@ -112,6 +119,12 @@ interface OperationEmpDB extends DetailOperationDB {
     phone: string,
     address: string,
     id_accountancy: number,
+}
+interface OperationDetail {
+    operation: DetailOperationDB
+    products: Array<DetailProducts>
+    pumps: Array<DetailPumps>
+    accountancy: DetailAccountancy
 }
 interface OperationsReport {
     PRODUCT_AMOUNT_SOLD?: number,

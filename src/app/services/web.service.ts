@@ -962,7 +962,7 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public getOperationDetailbyId(id: number): Promise<{ operation: DetailOperationDB, products: Array<DetailProducts>, pumps: Array<DetailPumps>, accountancy: DetailAccountancy, gralMeter: { meter_diff: number, accumulated: number } }> {
+  public getOperationDetailbyId(id: number): Promise<OperationDetail> {
     return fetch(environment.baseUrl + `/operations/${id}`, {
       method: 'GET',
       headers: this.headersWithApiandAuth,
@@ -971,7 +971,7 @@ export class WebService {
         const data = await res.json()
         if (res.status == 200) {
           this.updateToken(res.headers.get('authorization'))
-          return data as { operation: DetailOperationDB, products: Array<DetailProducts>, pumps: Array<DetailPumps>, accountancy: DetailAccountancy, gralMeter: { meter_diff: number, accumulated: number } }
+          return data as OperationDetail
         }
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet

@@ -18,11 +18,10 @@ interface PumpTempData extends TempData {
   ]
 })
 export class OperationEditComponent implements OnInit {
-  public operationDetail: { operation: DetailOperationDB, products: Array<DetailProducts>, pumps: Array<DetailPumps>, accountancy: DetailAccountancy, gralMeter: { meter_diff: number, accumulated: number } }
+  public operationDetail: OperationDetail
   public tempData: { acc: TempData, pumps: PumpTempData, products: TempData }
   public products = []
   public pumps = []
-  public gralMeter
   public saving = false
   public acc: {
     cash: number,
@@ -64,7 +63,7 @@ export class OperationEditComponent implements OnInit {
           return { ...p, amount_sold: p.amount_sold ?? 0, venting: p.venting ?? 0, meter_diff: p.meter_diff ?? 0, meter_end: (+p.init_meter) + (+p.meter_diff ?? 0) + (+p.venting ?? 0), validated: true, reset_meter: (+p.init_meter + +p.meter_diff ?? 0 + +p.venting ?? 0) < +p.init_meter }
         })
         this.refreshDonePumps()
-        this.gralMeter = { validated: true, meter_end: res.gralMeter.accumulated, meter_diff: res.gralMeter.meter_diff, meter: (+res.gralMeter.accumulated - +res.gralMeter.meter_diff) }
+
         this.acc = { ...res.accountancy, cash_v: true, envelopes_cash_v: true, n_envelopes_v: true, cards_v: true, vouchers_v: true, MercadoPago_v: true, expenses_v: true, others_v: true }
         this.accDoneUpdate()
       })
@@ -143,7 +142,6 @@ export class OperationEditComponent implements OnInit {
     }).map(p => {
       return { pump_id: p.pump_id, meter_diff: +p.meter_diff, venting: +p.venting, amount_sold: +p.amount_sold }
     })
-    const gralMeter = (+this.gralMeter.meter_end != +this.operationDetail.gralMeter.accumulated || +this.gralMeter.meter_diff != +this.operationDetail.gralMeter.meter_diff) ? { accumulated: this.gralMeter.meter_end, meter_diff: this.gralMeter.meter_diff } : null
     const products_operations_snapshot = this.products.filter(pr => {
       const refProduct = this.operationDetail.products.find(refP => refP.id == pr.id)
       return (+pr.init_stock != +refProduct.init_stock || +pr.unit_price != +refProduct.unit_price)
@@ -175,7 +173,7 @@ export class OperationEditComponent implements OnInit {
       vouchers: +this.acc.vouchers,
       others: +this.acc.others
     } : null
-    if (pumps_operation_snapshot.length == 0 && pumps_operation.length == 0 && gralMeter == null && products_operations.length == 0 && products_operations_snapshot.length == 0 && accountancy == null) {
+    if (pumps_operation_snapshot.length == 0 && pumps_operation.length == 0 && products_operations.length == 0 && products_operations_snapshot.length == 0 && accountancy == null) {
       this.showError('No hay cambios por guardar')
       setTimeout(() => {
         this.saving = false
@@ -185,7 +183,6 @@ export class OperationEditComponent implements OnInit {
     const payload = {
       pumps_operation_snapshot,
       pumps_operation,
-      gralMeter,
       products_operations_snapshot,
       products_operations,
       accountancy,
