@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { NgxPrinterService } from 'ngx-printer';
 @Component({
   selector: 'app-operation-detail',
@@ -7,7 +7,7 @@ import { NgxPrinterService } from 'ngx-printer';
 })
 export class OperationDetailComponent implements OnInit {
 
-  @Input() operationDetail: { rev: { id: number, name: string }, operation: DetailOperationDB, products: Array<DetailProducts>, posop: Array<DetailPoS>, accountancy: DetailAccountancy, operationBackups: OperationBackup[] }
+  @Input() operationDetail: (OperationDetail & OperationRev)
 
   constructor(
     private printerService: NgxPrinterService,
@@ -30,7 +30,7 @@ export class OperationDetailComponent implements OnInit {
     let acc = this.operationDetail.accountancy
     return +acc.MercadoPago + +acc.cards + +acc.cash + +acc.envelopes_cash + +acc.others + +acc.expenses + +acc.vouchers
   }
-  public print(template: HTMLTemplateElement) {
+  public print(template: TemplateRef<HTMLTemplateElement>) {
     this.printerService.printAngular(template)
   }
   ngOnInit(): void {

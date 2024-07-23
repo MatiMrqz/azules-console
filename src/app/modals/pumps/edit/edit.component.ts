@@ -10,7 +10,7 @@ import { WebService } from 'src/app/services/web.service';
 })
 export class EditPumpComponent implements OnInit {
   @Input() item:Pumps;
-  @Input() types:PumpType;
+  @Input() types:Array<PumpType>;
   constructor(
     public activeModal: NgbActiveModal,
     private webService: WebService

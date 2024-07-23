@@ -647,7 +647,7 @@ export class WebService {
         throw data.error;
       })
   }
-  public getUsers(): Promise<Array<any>> {
+  public getUsers(): Promise<Array<Employee>> {
     return fetch(environment.baseUrl + '/employees/all', {
       method: 'GET',
       headers: this.headersWithApiandAuth,

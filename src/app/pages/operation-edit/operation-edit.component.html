@@ -29,165 +29,6 @@
                 </div>
                 <div class="card-body">
                     <div ngbAccordion [closeOthers]="true" activeIds="">
-                        <div ngbAccordionItem id="pumps">
-                            <div ngbAccordionHeader>
-                                <button ngbAccordionButton>
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <i class="fa-2x"
-                                                [ngClass]="{'fa-square fa-regular':tempData.pumps.done!=pumps.length,'fa-square-check fa-solid text-muted':tempData.pumps.done==pumps.length}"></i>
-                                        </div>
-                                        <div class="mx-3">
-                                            <p class="text-dark title"
-                                                [ngClass]="{'text-through text-muted':tempData.pumps.done==pumps.length}">
-                                                Surtidores</p>
-                                            <p class=" text-muted">
-                                                {{tempData.pumps.done}}/{{pumps.length}}
-                                            </p>
-                                        </div>
-                                        <div class="mx-5">
-                                            <p class="text-muted m-0" style="font-size: larger;">
-                                                {{tempData.pumps.accumulated|currency:'ARS'}}</p>
-                                        </div>
-                                        <div class="mx-3">
-                                            <p class="text-muted m-0" style="font-size: larger;">
-                                                {{tempData.pumps.m3| number:'1.2-2'}} <small>[m3]</small> </p>
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
-                            <div ngbAccordionCollapse>
-                                <div ngbAccordionBody>
-                                    <ng-template>
-                                        <div class="table-responsive">
-                                            <table class=" table table-fix-head nw-table" id="">
-                                                <thead class="thead-dark text-primary">
-                                                    <tr>
-                                                        <th class="col-1 col-lg-1 text-center">#</th>
-                                                        <th class="col-1 d-none d-lg-table-cell">Tipo</th>
-                                                        <th class="col-2 d-none d-lg-table-cell">Descripcion</th>
-                                                        <th class="col-2 col-lg-3 text-center">Lectura Inicial</th>
-                                                        <th class="col-2 col-lg-3 text-center">Lectura Final</th>
-                                                        <th class="col-1 col-lg-1 text-center">Venteo</th>
-                                                        <th class="col-1 text-center d-none d-lg-table-cell">Vendido
-                                                        </th>
-                                                        <th class="col-1 d-none d-lg-table-cell text-center">Precio
-                                                            Unitario</th>
-                                                        <th class="col-1 col-lg-4 text-center">Importe</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr *ngFor="let item of pumps; index as i"
-                                                        [ngClass]="{'table-danger':item.validated===false,'table-success':item.validated===true}">
-                                                        <td class="text-center">{{item.pump_id}}
-                                                        </td>
-                                                        <td class="cell-ellipsis d-none d-lg-table-cell set-max-width"
-                                                            style="--mw:90px;">
-                                                            {{item.type_name}}</td>
-                                                        <td class="d-none d-lg-table-cell set-max-width"
-                                                            [ngClass]="{'scrolling-text':innerItem.offsetWidth>outerItem.clientWidth}"
-                                                            style="--mw:150px" #outerItem>
-                                                            <span
-                                                                #innerItem>{{!item.description?'-':item.description}}</span>
-                                                        </td>
-                                                        <td class=" text-center">
-                                                            <input [(ngModel)]="item.init_meter" inputmode="numeric"
-                                                                type="number" min="0" class="form-control"
-                                                                (input)="calcMeterDiff(i)">
-                                                            <!-- <small>[{{item.unit}}]</small> -->
-                                                        </td>
-                                                        <td>
-                                                            <input [(ngModel)]="item.meter_end" inputmode="numeric"
-                                                                type="number" min="0" class="form-control"
-                                                                (input)="calcMeterDiff(i)">
-                                                        </td>
-                                                        <td>
-                                                            <input [(ngModel)]="item.venting" inputmode="numeric"
-                                                                type="number" min="0" class="form-control"
-                                                                (input)="calcMeterDiff(i)">
-                                                        </td>
-                                                        <td class="text-center d-none d-lg-table-cell">
-                                                            <strong>{{item.meter_diff|
-                                                                number:'1.2-2'}}</strong><small>[{{item.unit}}]</small>
-                                                        </td>
-
-                                                        <td class="d-none d-lg-table-cell text-center">
-                                                            <input [(ngModel)]="item.unit_price" inputmode="numeric"
-                                                                type="number" min="0" class="form-control"
-                                                                (input)="calcMeterDiff(i)">
-                                                            <!-- {{item.unit_price|currency:'ARS'}} -->
-                                                        </td>
-                                                        <td class=" text-center">
-                                                            {{(item.amount_sold??0)|currency:'ARS'}}
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </ng-template>
-                                </div>
-                            </div>
-                        </div>
-                        <div ngbAccordionItem id="gral_meter">
-                            <div ngbAccordionHeader>
-                                <button ngbAccordionButton>
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <i class="fa-2x"
-                                                [ngClass]="{'fa-square fa-regular':!gralMeter.validated,'fa-square-check fa-solid text-muted':gralMeter.validated===true}"></i>
-                                        </div>
-                                        <div class="mx-3">
-                                            <p class="text-dark title"
-                                                [ngClass]="{'text-through text-muted':gralMeter.validated===true}">
-                                                Medidor General</p>
-                                            <p class=" text-muted">
-                                                {{gralMeter.validated?1:0}}/1
-                                            </p>
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
-                            <div ngbAccordionCollapse>
-                                <div ngbAccordionBody>
-                                    <ng-template>
-                                        <div class="table-responsive">
-                                            <table class=" table table-fix-head" id="">
-                                                <thead class="thead-dark text-primary">
-                                                    <tr>
-                                                        <th class="text-center">#</th>
-                                                        <th class="d-none d-lg-table-cell">Descripcion</th>
-                                                        <th class="text-center">Lectura Inicial</th>
-                                                        <th class="text-center">Lectura Final</th>
-                                                        <th class="text-center">Consumido</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr
-                                                        [ngClass]="{'table-danger':gralMeter.validated===false,'table-success':gralMeter.validated===true}">
-                                                        <td>GRAL</td>
-                                                        <td class="cell-ellipsis d-none d-lg-table-cell">Medidor General
-                                                        </td>
-                                                        <td class="text-center"><input [(ngModel)]="gralMeter.meter"
-                                                                inputmode="numeric" type="number" min="0"
-                                                                class="form-control"
-                                                                (input)="gralMeter.meter_diff= +gralMeter.meter_end > +gralMeter.meter ? (+gralMeter.meter_end - +gralMeter.meter): gralMeter.meter_end!=null? 'Contador Reiniciado' : '' ;gralMeter.validated=(gralMeter.meter!=null)">
-                                                        </td>
-                                                        <td><input [(ngModel)]="gralMeter.meter_end" inputmode="numeric"
-                                                                type="number" min="0" class="form-control"
-                                                                (input)="gralMeter.meter_diff= +gralMeter.meter_end > +gralMeter.meter ? (+gralMeter.meter_end - +gralMeter.meter): gralMeter.meter_end!=null? 'Contador Reiniciado' : '' ;gralMeter.validated=(gralMeter.meter_end!=null)">
-                                                        </td>
-                                                        <td class="text-center"> <span
-                                                                *ngIf="+gralMeter.meter_end < +gralMeter.meter && (gralMeter.meter_end!=null&&gralMeter.meter!=null) "><i
-                                                                    class="fa-solid fa-triangle-exclamation text-warning"></i></span>
-                                                            {{gralMeter.meter_diff}}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </ng-template>
-                                </div>
-                            </div>
-                        </div>
                         <div ngbAccordionItem id="products">
                             <div ngbAccordionHeader>
                                 <button ngbAccordionButton>
@@ -420,7 +261,7 @@
                         <div class="col-xl-3 col-md-5 flex-column">
                             <p class="font-weight-light text-muted mb-0">Ventas</p>
                             <p class="font-weight-light" style="font-size: 1.7em;">
-                                {{tempData.products.accumulated+tempData.pumps.accumulated|currency:'ARS'}}</p>
+                                {{tempData.products.accumulated+tempData.posop.accumulated|currency:'ARS'}}</p>
                         </div>
 
                         <div class="col-md-1">
@@ -430,9 +271,9 @@
                             <p class="font-weight-light text-muted mb-0">Diferencia <span
                                     class="text-success">S</span>/<span class="text-danger">F</span></p>
                             <p class="font-weight-bold"
-                                [ngClass]="{'text-success':tempData.acc.accumulated-(tempData.pumps.accumulated+tempData.products.accumulated)>0,'text-danger':tempData.acc.accumulated-(tempData.pumps.accumulated+tempData.products.accumulated)<0}"
+                                [ngClass]="{'text-success':tempData.acc.accumulated-(tempData.posop.accumulated+tempData.products.accumulated)>0,'text-danger':tempData.acc.accumulated-(tempData.posop.accumulated+tempData.products.accumulated)<0}"
                                 style="font-size: 1.7em;">
-                                {{tempData.acc.accumulated-(tempData.products.accumulated+tempData.pumps.accumulated)|currency:'ARS'}}
+                                {{tempData.acc.accumulated-(tempData.products.accumulated+tempData.posop.accumulated)|currency:'ARS'}}
                             </p>
                         </div>
                     </div>
@@ -461,7 +302,7 @@
                             </div>
                         </div>
                         <button type="submit" class="btn btn-lg btn-block text-dark btn-warning mb-2"
-                            [disabled]="(tempData.products.done!=(products).length||tempData.pumps.done!=(pumps).length||tempData.acc.done!=8||!gralMeter.validated)||f.invalid||saving">
+                            [disabled]="(tempData.products.done!=(products).length||tempData.posop.done!=(posop).length||tempData.acc.done!=8)||f.invalid||saving">
                             <span [ngClass]="{'d-none':!saving}">
                                 <div class="sk-chase" style="font-size: 1.5em;margin-left: -1.5em;">
                                     <div class="sk-chase-dot"></div>

@@ -9,7 +9,7 @@ import { WebService } from 'src/app/services/web.service';
   ]
 })
 export class NewProductComponent implements OnInit {
-  @Input() categories:Categories;
+  @Input() categories:Array<Categories>;
   public item={
     name:'',
     description:null,

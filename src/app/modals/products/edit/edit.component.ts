@@ -10,7 +10,7 @@ import { WebService } from 'src/app/services/web.service';
 })
 export class EditProductComponent implements OnInit {
   @Input() item:Products;
-  @Input() categories:Categories;
+  @Input() categories:Array<Categories>;
   constructor(
     public activeModal: NgbActiveModal,
     private webService: WebService

@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class UserPipe implements PipeTransform {
 
-  transform(value: Employee[], hidden: boolean, searchString: string): unknown {
+  transform(value: Employee[], hidden: boolean, searchString: string): Array<Employee> {
     hidden ??= false
     searchString = searchString.toLowerCase()
     if (!searchString) {

@@ -14,7 +14,7 @@ export class OperationSelectorComponent implements OnInit {
   public operationId: number
   public selectedId: number
   public selectedId$ = new Subject<number>()
-  public operationDetail$: Observable<{ operation: DetailOperationDB, products: Array<DetailProducts>, pumps: Array<DetailPumps>, accountancy: DetailAccountancy }>
+  public operationDetail$: Observable< OperationRev & OperationDetail >
   public isLoading: boolean = true
   public isPassed: boolean
 

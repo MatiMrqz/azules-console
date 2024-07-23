@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ProductPipe implements PipeTransform {
 
-  transform(value: Products[], hidden?: boolean, searchString?: string): unknown {
+  transform(value: Products[], hidden?: boolean, searchString?: string): Array<Products> {
     hidden ??= false
     searchString = searchString.toLowerCase()
     if (!searchString) {

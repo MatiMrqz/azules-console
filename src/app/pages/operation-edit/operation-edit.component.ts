@@ -7,9 +7,6 @@ interface TempData {
   done: number,
   accumulated: number
 }
-interface PumpTempData extends TempData {
-  m3: number
-}
 
 @Component({
   selector: 'app-operation-edit',
@@ -18,10 +15,11 @@ interface PumpTempData extends TempData {
   ]
 })
 export class OperationEditComponent implements OnInit {
+  public isLoading:boolean = true
   public operationDetail: OperationDetail
-  public tempData: { acc: TempData, pumps: PumpTempData, products: TempData }
+  public tempData: { acc: TempData, posop: TempData, products: TempData }
   public products = []
-  public pumps = []
+  public posop = []
   public saving = false
   public acc: {
     cash: number,
@@ -47,9 +45,10 @@ export class OperationEditComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router
   ) {
-    this.tempData = { acc: { done: 0, accumulated: 0 }, products: { done: 0, accumulated: 0 }, pumps: { m3: 0, done: 0, accumulated: 0 } }
+    this.tempData = { acc: { done: 0, accumulated: 0 }, products: { done: 0, accumulated: 0 }, posop: { done: 0, accumulated: 0 } }
   }
   public async getOperation(id: number) {
+    this.isLoading = true
     this.webService.getOperationDetailbyId(id)
       .then(res => {
         // console.log(res)
@@ -59,30 +58,11 @@ export class OperationEditComponent implements OnInit {
           return { ...p, items_sold: p.items_sold ?? 0, items_replacement: p.items_replacement ?? 0, end_stock: ((+p.init_stock) + (+p.items_replacement ?? 0) - (+p.items_sold ?? 0)), amount_sold: (+p.amount_sold), validated: true }
         })
         this.refreshDoneProducts()
-        this.pumps = res.pumps.map(p => {
-          return { ...p, amount_sold: p.amount_sold ?? 0, venting: p.venting ?? 0, meter_diff: p.meter_diff ?? 0, meter_end: (+p.init_meter) + (+p.meter_diff ?? 0) + (+p.venting ?? 0), validated: true, reset_meter: (+p.init_meter + +p.meter_diff ?? 0 + +p.venting ?? 0) < +p.init_meter }
-        })
-        this.refreshDonePumps()
 
         this.acc = { ...res.accountancy, cash_v: true, envelopes_cash_v: true, n_envelopes_v: true, cards_v: true, vouchers_v: true, MercadoPago_v: true, expenses_v: true, others_v: true }
         this.accDoneUpdate()
+        this.isLoading = false
       })
-  }
-  public refreshDonePumps(): void {
-    var done = 0
-    var m3 = 0
-    var accumulated = 0
-    if (this.pumps.length == 0) return
-
-    this.pumps.forEach(p => {
-      if (p.validated) {
-        done++;
-        m3 += +p.meter_diff
-        accumulated += (+p.unit_price * +p.meter_diff)
-      }
-    })
-    this.tempData.pumps = { m3, accumulated, done }
-
   }
   public refreshDoneProducts(): void {
     var done = 0
@@ -115,33 +95,9 @@ export class OperationEditComponent implements OnInit {
     this.tempData.acc = { done, accumulated: (+ +this.acc.MercadoPago + +this.acc.cards + +this.acc.cash + +this.acc.envelopes_cash + +this.acc.others + +this.acc.expenses + +this.acc.vouchers) }
     return
   }
-  public calcMeterDiff(i: number) {
-    const pI = this.pumps[i]
-    if (pI.init_meter == null || pI.meter_end == null || pI.venting == null || pI.unit_price == null) {
-      pI.validated = false;
-      this.refreshDonePumps()
-      return
-    }
-    pI.reset_meter = +pI.meter_end < +pI.init_meter
-    pI.meter_diff = pI.reset_meter ? (+pI.max_meter_value - +pI.init_meter) + pI.meter_end - +pI.venting : +pI.meter_end - +pI.init_meter - +pI.venting
-    pI.amount_sold = +pI.meter_diff * +pI.unit_price
-    pI.validated = (pI.meter_end != null && pI.venting != null && (pI.meter_diff >= 0 || pI.reset_meter))
-    this.refreshDonePumps()
-  }
+
   public saveOperation(operation: { observation: string, adminPass: string }) {
     this.saving = true
-    const pumps_operation_snapshot = this.pumps.filter(pu => {
-      const refPump = this.operationDetail.pumps.find(refP => refP.pump_id == pu.pump_id)
-      return (pu.init_meter != refPump.init_meter) || (pu.unit_price != refPump.unit_price)
-    }).map(p => {
-      return { pump_id: p.pump_id, unit_price: +p.unit_price, init_meter: +p.init_meter }
-    })
-    const pumps_operation = this.pumps.filter(pu => {
-      const refPump = this.operationDetail.pumps.find(refP => refP.pump_id == pu.pump_id)
-      return (pu.meter_diff != +(refPump.meter_diff ?? 0)) || (pu.venting != +(refPump.venting ?? 0) || (pu.amount_sold != +(refPump.amount_sold ?? 0)))
-    }).map(p => {
-      return { pump_id: p.pump_id, meter_diff: +p.meter_diff, venting: +p.venting, amount_sold: +p.amount_sold }
-    })
     const products_operations_snapshot = this.products.filter(pr => {
       const refProduct = this.operationDetail.products.find(refP => refP.id == pr.id)
       return (+pr.init_stock != +refProduct.init_stock || +pr.unit_price != +refProduct.unit_price)
@@ -173,7 +129,7 @@ export class OperationEditComponent implements OnInit {
       vouchers: +this.acc.vouchers,
       others: +this.acc.others
     } : null
-    if (pumps_operation_snapshot.length == 0 && pumps_operation.length == 0 && products_operations.length == 0 && products_operations_snapshot.length == 0 && accountancy == null) {
+    if ( products_operations.length == 0 && products_operations_snapshot.length == 0 && accountancy == null) {
       this.showError('No hay cambios por guardar')
       setTimeout(() => {
         this.saving = false
@@ -181,8 +137,7 @@ export class OperationEditComponent implements OnInit {
       return
     }
     const payload = {
-      pumps_operation_snapshot,
-      pumps_operation,
+
       products_operations_snapshot,
       products_operations,
       accountancy,

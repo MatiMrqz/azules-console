@@ -53,7 +53,7 @@
                             <td class="col-5 text-right">{{inv.amount_untaxed|currency:'ARS'}}</td>
                             <td class="col-5 text-right"><input type="number" inputmode="numeric" name="amount_untaxed" id="" class="form-control text-right font-weight-bold" (input)="totalCalc(cn.value)" step=".01" min="0" required ngModel>
                                 <div class="invalid-tooltip" style="position: relative; width:fit-content;">
-                                    {{cn.amount_untaxed
+                                    {{cn.value.amount_untaxed
                                     < 0? 'No puede ser negativo': 'Requerido'}} </div>
                             </td>
                         </tr>
@@ -62,7 +62,7 @@
                             <td class="col-5 text-right">{{inv.amount_exent|currency:'ARS'}}</td>
                             <td class="col-5 text-right"><input type="number" inputmode="numeric" name="amount_exent" id="" class="form-control text-right font-weight-bold" (input)="totalCalc(cn.value)" step=".01" min="0" required ngModel>
                                 <div class="invalid-tooltip" style="position: relative; width:fit-content;">
-                                    {{cn.amount_exent
+                                    {{cn.value.amount_exent
                                     < 0? 'No puede ser negativo': 'Requerido'}} </div>
                             </td>
                         </tr>

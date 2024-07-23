@@ -16,7 +16,7 @@ interface PumpTempData extends TempData {
 
 @Pipe({ name: 'validProducts' })
 export class ValidProductsPipe implements PipeTransform {
-  transform(value: Products[]): unknown {
+  transform(value: EditedProducts[]): Array<EditedProducts> {
     return value.filter(v => { return v.hidden == false })
   }
 }
@@ -38,7 +38,7 @@ export class CloseTurnComponent implements OnInit {
   public turn: { name: string, schedule: string }
   public employee: { uuid: string, uname: string } = { uname: '-', uuid: '' }
   public saving: boolean = false
-  public products = []
+  public products: Array<EditedProducts> = []
   public categories = []
   public helpers = []
   public helperSelected = null

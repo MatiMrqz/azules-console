@@ -9,7 +9,7 @@ import { WebService } from 'src/app/services/web.service';
   ]
 })
 export class NewPumpComponent implements OnInit {
-  @Input() types:PumpType;
+  @Input() types:Array<PumpType>;
   public item={
     description:null,
     type_id:null,

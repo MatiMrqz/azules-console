@@ -10,7 +10,7 @@ import { WebService } from 'src/app/services/web.service';
   ]
 })
 export class UsersComponent implements OnInit {
-  @ViewChild('newPass') newPass;
+  @ViewChild('newPass', {static:true}) newPass;
   @Input() pin: string;
   constructor(
     private webService: WebService,
@@ -18,7 +18,7 @@ export class UsersComponent implements OnInit {
     private toastr: ToastrService
   ) { }
 
-  public users = []
+  public users:Array<Employee> = []
   public helpers = []
   public turns = []
   public isLoading: boolean = true
@@ -26,6 +26,7 @@ export class UsersComponent implements OnInit {
   public helpersSearch: string = ''
   public validated: boolean = false
   public user;
+  public hide:boolean = true;
 
   ngOnInit(): void {
     this.getAll()
@@ -48,7 +49,7 @@ export class UsersComponent implements OnInit {
   private async updateHelpers() {
     this.helpers = await this.webService.getHelpers()
   }
-  private async updateTurns() {
+  public async updateTurns() {
     const tempTurns = await this.webService.getTurns()
     this.turns = tempTurns.map(e => {
       return { editing: false, newName: e.name, ...e }

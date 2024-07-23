@@ -21,7 +21,7 @@
                 </div> -->
                 <div class="d-flex flex-row align-items-center m-3">
                     <label class="font-weight-bold mx-1 my-0" for="revSelect">Histórico</label>
-                    <select id="revSelect" name="opSelected" class="custom-select mx-1" (change)="changeId($event.target.value)">
+                    <select #rSelect id="revSelect" name="opSelected" class="custom-select mx-1" (change)="changeId(+rSelect.value)">
                                 <option *ngFor="let r of rev" [selected]="r.id==operationId" [value]="r.id" >{{r.name}}</option>
                             </select>
                     <button class="btn btn-warning btn-simple mx-1" [disabled]="selectedId!=operationId" [routerLink]="['/operations/edit/'+operationId]"><i

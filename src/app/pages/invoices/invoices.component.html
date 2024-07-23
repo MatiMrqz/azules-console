@@ -141,7 +141,7 @@
                             <tbody>
                                 <tr scope="row" *ngFor="let inv of _invoices$ | async" class="bg-dark text-secondary">
                                     <th>
-                                        <ngb-highlight [result]="inv.n" [term]="searchTerm"></ngb-highlight>
+                                        <ngb-highlight [result]="inv.n.toString()" [term]="searchTerm"></ngb-highlight>
                                     </th>
                                     <th class="text-center">
                                         <small><span class="badge badge-secondary mx-1" [ngClass]="{'badge-secondary':inv.performed_by_mode=='MANUAL','badge-primary':inv.performed_by_mode!='MANUAL'}">{{inv.performed_by_mode}}</span></small>

@@ -15,8 +15,10 @@ interface DetailProducts extends Products {
     items_replacement?: number,
     amount_sold?: number
 }
+interface EditedProducts extends Products { items_sold: number, items_replacement: number, end_stock: number, validated: boolean }
 interface DetailPoS {
     posop_id: number
+    name: string
     description: string
     unit_price: string
     init_checkout:string
@@ -123,7 +125,7 @@ interface OperationEmpDB extends DetailOperationDB {
 interface OperationDetail {
     operation: DetailOperationDB
     products: Array<DetailProducts>
-    pumps: Array<DetailPumps>
+    posop: Array<DetailPoS>
     accountancy: DetailAccountancy
 }
 interface OperationsReport {
@@ -165,6 +167,9 @@ interface OperationBackup {
     backup_operation_id: number,
     revision: number,
 }
+interface OperationRev{
+    rev: { id: number, name: string }
+}
 interface InvoiceRecord {
     n: number,
     amount: string,
@@ -189,6 +194,7 @@ interface InvoiceRecord {
     performed_by: string,
     performed_by_role: 'ADMIN' | 'EMP',
     timestamp: Date
+    device_uuid: string
 }
 interface InvoiceVoucherTypes {
     Id: number,
@@ -267,6 +273,7 @@ interface AfipSettings {
     IIBB: string,
     EMP_ALLOWED_VTYPES: string,
     ALIQUOT_TYPE_SELECTED: string,
+    FISCAL_CONDITION: string
 }
 interface AutoSettings {
     AI_MAX_AMOUNT: number,
@@ -284,4 +291,5 @@ interface PoS{
     decremental:boolean
     checkout:number
     description:string
+    last_update?: string
 }

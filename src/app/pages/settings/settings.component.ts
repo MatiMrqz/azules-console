@@ -76,7 +76,8 @@ export class SettingsComponent implements OnInit {
       })
   }
 
-  setVoucher(checked: boolean, id: number) {
+  setVoucher(target: EventTarget, id: number) {
+    const checked = (<HTMLInputElement>target).checked
     if (checked) {
       this.vouchersAllowed.add(id)
     } else {

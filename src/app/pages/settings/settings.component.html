@@ -182,7 +182,7 @@
                             <p>Facturación habilitada en playa:</p>
                             <ng-template ngFor let-voucher [ngForOf]="vouchers" let-i="index">
                                 <div class="form-check-inline">
-                                    <input class="form-check-input" type="checkbox" (change)="setVoucher($event.target.checked,voucher.Id)" [checked]="vouchersAllowed.has(voucher.Id)" [id]="'check-'+i">
+                                    <input class="form-check-input" type="checkbox" (change)="setVoucher($event.target,voucher.Id)" [checked]="vouchersAllowed.has(voucher.Id)" [id]="'check-'+i">
                                     <label class="form-check-label" [for]="'check-'+i">
                                           {{voucher.Desc}}
                                         </label>

@@ -66,7 +66,7 @@
                                             </thead>
                                             <tbody>
                                                 <tr *ngFor="let item of operationDetail.posop"
-                                                    [ngClass]="{'bg-primary':item.diff != 0 }">
+                                                    [ngClass]="{'bg-primary': +item.diff != 0 }">
                                                     <td [ngClass]="{'scrolling-text':innerItem.offsetWidth>outerItem.clientWidth}"
                                                         class="set-max-width" style="--mw:90px" #outerItem> <span
                                                             #innerItem>{{item.name}}</span>
