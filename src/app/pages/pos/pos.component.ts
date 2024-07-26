@@ -48,7 +48,7 @@ export class PosComponent implements OnInit {
         container: 'app-pos'
       })
     
-      modalRef.componentInstance.item = { ...item, decremental:Boolean(item.decremental) }
+      modalRef.componentInstance.item = { ...item }
       console.log(modalRef.componentInstance.item)
     modalRef.result.then(
       (closed: string) => {

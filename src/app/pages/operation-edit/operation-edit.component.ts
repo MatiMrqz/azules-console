@@ -7,6 +7,12 @@ interface TempData {
   done: number,
   accumulated: number
 }
+interface DetailProductsValidated extends DetailProducts{
+  validated: boolean
+}
+interface DetailPoSValidated extends DetailPoS{
+  validated: boolean
+}
 
 @Component({
   selector: 'app-operation-edit',
@@ -18,8 +24,8 @@ export class OperationEditComponent implements OnInit {
   public isLoading:boolean = true
   public operationDetail: OperationDetail
   public tempData: { acc: TempData, posop: TempData, products: TempData }
-  public products = []
-  public posop = []
+  public products:Array<DetailProductsValidated> = []
+  public posop: Array<DetailPoSValidated> = []
   public saving = false
   public acc: {
     cash: number,
@@ -54,11 +60,12 @@ export class OperationEditComponent implements OnInit {
         // console.log(res)
 
         this.operationDetail = res
-        this.products = res.products.map(p => {
+        this.products = res.products.map<DetailProductsValidated>(p => {
           return { ...p, items_sold: p.items_sold ?? 0, items_replacement: p.items_replacement ?? 0, end_stock: ((+p.init_stock) + (+p.items_replacement ?? 0) - (+p.items_sold ?? 0)), amount_sold: (+p.amount_sold), validated: true }
         })
         this.refreshDoneProducts()
-
+        this.posop = res.posop.map<DetailPoSValidated>(p => { return { ...p, validated: true } })
+        this.refreshDonePoS()
         this.acc = { ...res.accountancy, cash_v: true, envelopes_cash_v: true, n_envelopes_v: true, cards_v: true, vouchers_v: true, MercadoPago_v: true, expenses_v: true, others_v: true }
         this.accDoneUpdate()
         this.isLoading = false
@@ -76,6 +83,18 @@ export class OperationEditComponent implements OnInit {
     })
     this.tempData.products = { done, accumulated }
   }
+  public refreshDonePoS(): void {
+    var done = 0
+    var accumulated = 0
+    if (!this.posop) return
+    this.posop.forEach(p => {
+      if (p.validated) {
+        done++
+        accumulated += +p.unit_price * +p.sales_in - +p.sales_out
+      }
+    })
+    this.tempData.posop = { done, accumulated }
+  }
   public calcProd(item) {
     if ((+item.init_stock < 0 || +item.items_sold < 0 || +item.items_replacement < 0 || +item.unit_price < 0) || (item.init_stock == null || item.items_sold == null || item.items_replacement == null || item.unit_price == null)) {
       item.validated = false
@@ -86,6 +105,16 @@ export class OperationEditComponent implements OnInit {
     }
     this.refreshDoneProducts()
   }
+  public calcPos(item:DetailPoSValidated) {
+    if (item.init_checkout == null || item.sales_in == null || item.sales_out == null || +item.sales_in < 0 ||+item.sales_out < 0) {
+      item.validated = false
+    } else {
+      item.amount_sold = ((+item.sales_in - +item.sales_out) * (+item.unit_price)).toString()
+      item.validated = Boolean(Object.values(item))
+    }
+    this.refreshDonePoS()
+  }
+
   public accDoneUpdate(): void {
     var done: number = 0
     if (!this.acc) return
@@ -98,6 +127,19 @@ export class OperationEditComponent implements OnInit {
 
   public saveOperation(operation: { observation: string, adminPass: string }) {
     this.saving = true
+    const posop_operations_snapshot = this.posop.filter(pr => {
+      const refPoS = this.operationDetail.posop.find(refP => refP.posop_id == pr.posop_id)
+      return (+pr.init_checkout != +refPoS.init_checkout || +pr.unit_price != +refPoS.unit_price)
+    }).map(ps => {
+      return { posop_id: +ps.posop_id, unit_price: +ps.unit_price, init_checkout: +ps.init_checkout }
+    })
+    const posop_operation = this.posop.filter(pr => {
+      const refPoS = this.operationDetail.posop.find(refP => refP.posop_id == pr.posop_id)
+      pr.amount_sold = (Math.round((+pr.amount_sold + Number.EPSILON) * 100) / 100).toString()
+      return (+pr.sales_in != +(refPoS.sales_in ?? 0) || +pr.sales_out != (refPoS.sales_out ?? 0) || pr.amount_sold != (refPoS.amount_sold ?? 0))
+    }).map(ps => {
+      return { posop_id: +ps.posop_id, sales_in: +ps.sales_in, sales_out: +ps.sales_out, amount_sold: +ps.amount_sold }
+    })
     const products_operations_snapshot = this.products.filter(pr => {
       const refProduct = this.operationDetail.products.find(refP => refP.id == pr.id)
       return (+pr.init_stock != +refProduct.init_stock || +pr.unit_price != +refProduct.unit_price)

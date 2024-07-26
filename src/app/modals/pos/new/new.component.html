@@ -14,13 +14,6 @@
             aria-describedby="inputGroup-sizing-default">
     </div>
     <div class="input-group mb-3">
-        <label class="input-group-text" for="inputGroupSelect01">Tipo</label>
-        <select class="form-control" id="inputGroupSelect01" [(ngModel)]="item.decremental">
-            <option [ngValue]="false">Positivo</option>
-            <option [ngValue]="true">Negativo</option>
-        </select>
-    </div>
-    <div class="input-group mb-3">
         <span class="input-group-text">Valor inicial</span>
         <span class="input-group-text">$</span>
         <input [(ngModel)]="item.checkout" type="number" inputmode="numeric" min="0" class="form-control">

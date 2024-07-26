@@ -12,7 +12,6 @@ export class NewPosComponent {
   public item: PoS ={
     id:null,
     name:null,
-    decremental:false,
     description:null,
     checkout:0,
     unit_price:1,

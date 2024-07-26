@@ -14,6 +14,7 @@ interface DetailProducts extends Products {
     items_sold?: number,
     items_replacement?: number,
     amount_sold?: number
+    end_stock?: number
 }
 interface EditedProducts extends Products { items_sold: number, items_replacement: number, end_stock: number, validated: boolean }
 interface DetailPoS {
@@ -22,7 +23,8 @@ interface DetailPoS {
     description: string
     unit_price: string
     init_checkout:string
-    diff:string
+    sales_in:string
+    sales_out:string
     amount_sold: string
 }
 interface Categories {
@@ -288,7 +290,6 @@ interface PoS{
     id:number
     name:string
     unit_price:number
-    decremental:boolean
     checkout:number
     description:string
     last_update?: string

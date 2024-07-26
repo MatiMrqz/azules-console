@@ -57,16 +57,18 @@
                                         <table class=" table table-fix-head nw-table" id="">
                                             <thead class="thead-dark text-primary">
                                                 <tr>
-                                                    <th class="col-1 col-lg-4">Nombre</th>
-                                                    <th class="col-2 d-none d-lg-table-cell">Descripción</th>
-                                                    <th class="col-3 text-center">V. inicial</th>
-                                                    <th class="col-3 text-center">V. operación</th>
-                                                    <th class="col-3 text-center">V. final</th>
+                                                    <th class="col-2 col-lg-1">Nombre</th>
+                                                    <th class="col-1 d-none d-lg-table-cell">Descripción</th>
+                                                    <th class="col-2 text-center">Inicial</th>
+                                                    <th class="col-2 text-center">Entrada</th>
+                                                    <th class="col-2 text-center">Salida</th>
+                                                    <th class="col-2 text-center">Resultado</th>
+                                                    <th class="col-2 text-center">Caja</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr *ngFor="let item of operationDetail.posop"
-                                                    [ngClass]="{'bg-primary': +item.diff != 0 }">
+                                                    [ngClass]="{'bg-primary': (+item.sales_in || +item.sales_out)}">
                                                     <td [ngClass]="{'scrolling-text':innerItem.offsetWidth>outerItem.clientWidth}"
                                                         class="set-max-width" style="--mw:90px" #outerItem> <span
                                                             #innerItem>{{item.name}}</span>
@@ -75,6 +77,8 @@
                                                         style="--mw:150px;">
                                                         {{!item.description?'-':item.description}}</td>
                                                     <td class=" text-center">{{item.init_checkout|currency:'ARS'}}</td>
+                                                    <td class=" text-center">{{item.sales_in|number:'1.2-2'}}</td>
+                                                    <td class=" text-center">{{item.sales_out|number:'1.2-2'}}</td>
                                                     <td class=" text-center">{{item.amount_sold??0|currency:'ARS'}}</td>
                                                     <td class=" text-center">{{( +item.init_checkout + +item.amount_sold)??0|currency:'ARS'}}
                                                     </td>
