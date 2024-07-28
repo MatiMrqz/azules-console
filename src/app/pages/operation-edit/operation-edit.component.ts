@@ -179,7 +179,8 @@ export class OperationEditComponent implements OnInit {
       return
     }
     const payload = {
-
+      posop_operations_snapshot,
+      posop_operation,
       products_operations_snapshot,
       products_operations,
       accountancy,
