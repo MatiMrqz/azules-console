@@ -171,7 +171,7 @@ export class OperationEditComponent implements OnInit {
       vouchers: +this.acc.vouchers,
       others: +this.acc.others
     } : null
-    if ( products_operations.length == 0 && products_operations_snapshot.length == 0 && accountancy == null) {
+    if ( posop_operation.length == 0 && posop_operations_snapshot.length ==0 && products_operations.length == 0 && products_operations_snapshot.length == 0 && accountancy == null) {
       this.showError('No hay cambios por guardar')
       setTimeout(() => {
         this.saving = false
