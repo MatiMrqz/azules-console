@@ -132,14 +132,19 @@ interface OperationDetail {
 }
 interface OperationsReport {
     PRODUCT_AMOUNT_SOLD?: number,
-    PUMPS_AMOUNT_SOLD?: number,
+    POSOP_AMOUNT_SOLD?: number,
     REPORT: number,
-    M3_SOLD: number,
     id: number,
-    timestamp: Date,
+    timestamp: number,
     turn_name?: string,
     uname: string,
     employee_id: string
+}
+interface PoSOperationDetail{
+    posop_id: number,
+    name: string,
+    amount_sold: string
+    timestamp: number
 }
 interface OperationsEmployeeSummary {
     N_OP: number,
@@ -147,8 +152,7 @@ interface OperationsEmployeeSummary {
     uname: string
     REPORT: number,
     PRODUCTS_TOTAL: number,
-    PUMPS_TOTAL: number,
-    M3_SOLD: number
+    POSOP_TOTAL: number,
 }
 interface Turns {
     id: number,

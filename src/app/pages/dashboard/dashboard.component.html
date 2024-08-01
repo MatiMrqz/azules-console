@@ -72,37 +72,24 @@
         <div class=" col-12">
             <div class=" card card-chart">
                 <div class=" card-header">
-                    <h5 class=" card-category">Rendiciones</h5>
+                    <h5 class=" card-category">Detalle</h5>
                     <h3 class=" card-title">
-                        <i class=" fa-solid fa-scale-balanced text-primary"> </i> Diferencias S/F
+                        <i class=" fa-solid fa-scale-balanced text-primary"> </i> Puntos de Venta
                     </h3>
                 </div>
                 <div class=" card-body">
-                    <div class=" chart-area"><canvas id="CountryChart"> </canvas></div>
+                    <div class=" chart-area"><canvas id="PoSChart"> </canvas></div>
                 </div>
             </div>
         </div>
     </div>
     <div class=" row">
-        <div class=" col-lg-6">
-            <div class=" card card-chart">
-                <div class=" card-header">
-                    <h5 class=" card-category">m³ vendidos</h5>
-                    <h3 class=" card-title">
-                        <i class=" fa-solid fa-gauge-simple text-danger-states"> </i> Promedio:{{!gasAverage?'-':gasAverage}}[m³]
-                    </h3>
-                </div>
-                <div class=" card-body">
-                    <div class=" chart-area"><canvas id="chartLineRed"> </canvas></div>
-                </div>
-            </div>
-        </div>
-        <div class=" col-lg-6">
+        <div class=" col-12">
             <div class=" card card-chart">
                 <div class=" card-header">
                     <h5 class=" card-category">Ventas</h5>
                     <h3 class=" card-title">
-                        <i class=" fa-solid fa-cash-register text-light"> </i> <span style="color: #00d6b4;">Productos</span>/<span style="color:#d600d6;">Surtidores</span>
+                        <i class=" fa-solid fa-cash-register text-light"> </i> <span style="color: #00d6b4;">Productos</span>/<span style="color:#d600d6;">Puntos de Venta</span>
                     </h3>
                 </div>
                 <div class=" card-body">
@@ -119,14 +106,13 @@
                     <h4 class=" card-title">Por encargado</h4>
                 </div>
                 <div class=" card-body">
-                    <div class="col-11 ml-4">
+                    <div class="col-11 mx-auto">
                         <table class=" table tablesorter text-center" id="">
-                            <thead class=" text-primary">
+                            <thead class="text-left text-primary">
                                 <tr>
-                                    <th class="col-1">Nº Operaciones</th>
-                                    <th class="col-2">Encargado</th>
-                                    <th class="col-2">M³ Promedio</th>
-                                    <th class="col-2">Diferencia</th>
+                                    <th class="col-4">Encargado</th>
+                                    <th class="col-2">Nº Operaciones</th>
+                                    <th class="col-4 text-right">Saldo</th>
                                 </tr>
                             </thead>
                         </table>
@@ -137,11 +123,10 @@
                                 <button ngbAccordionButton>
                                     <table style="width: 100%;">
                                         <thead>
-                                            <tr class="text-center">
-                                                <th class="col-1">{{e.N_OP}}</th>
-                                                <th class="col-2">{{e.uname}}</th>
-                                                <th class="col-2">~{{(+e.M3_SOLD/+e.N_OP)|number:'1.2-2'}}<small>[m³]/Turno</small></th>
-                                                <th class="col-2" [ngClass]="{'text-danger-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))<0,'text-success-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))>0}">{{(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.PUMPS_TOTAL))|currency:'ARS'}}</th>
+                                            <tr>
+                                                <th class="col-4 text-left">{{e.uname}}</th>
+                                                <th class="col-2 text-center">{{e.N_OP}}</th>
+                                                <th class="col-4 text-right" [ngClass]="{'text-danger-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.POSOP_TOTAL))<0,'text-success-dark':(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.POSOP_TOTAL))>0}">{{(+e.REPORT-(+e.PRODUCTS_TOTAL + +e.POSOP_TOTAL))|currency:'ARS'}}</th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -155,22 +140,20 @@
                                                 <tr>
                                                     <th>ID</th>
                                                     <th>Fecha</th>
-                                                <!-- <th>Venta Productos</th>
-                                                    <th>Venta Surtidores</th>
-                                                    <th>Total Rendido</th> -->
-                                                    <th>M³ Vendidos</th>
-                                                    <th>Diferencia S/F</th>
+                                                    <th>Productos</th>
+                                                    <th>Puntos de Venta</th>
+                                                    <th>Rendición</th>
+                                                    <th>Saldo</th>
                                                 </tr>
                                             </thead>
                                             <tbody *ngFor="let item of operationsReport|byuname:e.employee_id">
                                                 <tr>
                                                     <td><a [routerLink]="['/operations/detail/'+item.id]" href="" target="_blank">{{item.id}}</a></td>
                                                     <td>{{item.timestamp|date:'dd/MM/YY, HH:mm'}}hs</td>
-                                                    <!-- <td>{{item.PRODUCT_AMOUNT_SOLD??0|currency:'ARS'}}</td>
-                              <td>{{item.PUMPS_AMOUNT_SOLD??0|currency:'ARS'}}</td>
-                              <td>{{item.REPORT??0|currency:'ARS'}}</td> -->
-                                                    <td>{{item.M3_SOLD??0|number:'1.2-2'}}<small>[m³]</small></td>
-                                                    <td>{{(+item.REPORT-(+item.PUMPS_AMOUNT_SOLD+ +item.PRODUCT_AMOUNT_SOLD))|currency:'ARS'}}</td>
+                                                    <td>{{item.PRODUCT_AMOUNT_SOLD??0|currency:'ARS'}}</td>
+                                                    <td>{{item.POSOP_AMOUNT_SOLD??0|currency:'ARS'}}</td>
+                                                    <td>{{item.REPORT??0|currency:'ARS'}}</td>
+                                                    <td>{{(+item.REPORT-(+item.POSOP_AMOUNT_SOLD+ +item.PRODUCT_AMOUNT_SOLD))|currency:'ARS'}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>

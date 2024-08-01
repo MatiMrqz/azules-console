@@ -57,12 +57,13 @@ export class DashboardComponent implements OnInit {
   private chartReports: Chart
   private chartProdPumps: Chart
 
-  public gasAverage: number = 0;
+
   public turns: Turns[];
   private lastTurn: string;
-  private pumpsGasSold: { id: number, PUMPS_M3_SOLD: number, timestamp: string }[]
+
   private dailyReportbyTurns: { turn: string, schedule: string, dailyOperations: OperationsReport[] }[]
   public operationsReport: OperationsReport[]
+  private posDetail: PoSOperationDetail[][];
   public employeeSummary: OperationsEmployeeSummary[]
   public lastOperation: OperationEmpDB = {
     id: 0,
@@ -121,20 +122,15 @@ export class DashboardComponent implements OnInit {
   }
 
   public async init() {
-    await this.apiDataGet()
     await this.getLastOperationStatus()
-    console.info('Carga Finalizada')
-    this.dailySalesChart()
-    this.gasSoldChart()
-    this.reportsChart()
-    this.prodpumpsChart()
+    await this.updateDataandCharts()
   }
-  public async apiDataGet() {
+  public async getApiData() {
     return Promise.all([
       this.getTurns(),
       this.getDailyReportbyTurns(),
       this.getOperationsReport(),
-      this.getGasSoldData()
+      this.getDailyOperationsbyPoS()
     ])
   }
   //API GETTER METHODS
@@ -152,6 +148,13 @@ export class DashboardComponent implements OnInit {
         this.operationsReportbyEmployee(or)
       })
   }
+  public async getDailyOperationsbyPoS(){
+    return this.webService.getDailyPoSbyDate(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
+      .then(res=>{
+        this.posDetail=res
+      }
+      )
+  }
   private operationsReportbyEmployee(or: OperationsReport[]) {
     const employees = or.reduce((acc:string[], item) => {
       if (acc.includes(item.employee_id)) {
@@ -164,14 +167,13 @@ export class DashboardComponent implements OnInit {
         .reduce<OperationsEmployeeSummary>((acc:OperationsEmployeeSummary,item:OperationsReport)=>{
           return acc = {
             PRODUCTS_TOTAL: +acc.PRODUCTS_TOTAL + +item.PRODUCT_AMOUNT_SOLD,
-            PUMPS_TOTAL: +acc.PUMPS_TOTAL + +item.PUMPS_AMOUNT_SOLD,
+            POSOP_TOTAL: +acc.POSOP_TOTAL + +item.POSOP_AMOUNT_SOLD,
             REPORT: +acc.REPORT + +item.REPORT,
-            M3_SOLD: +acc.M3_SOLD + +item.M3_SOLD,
             N_OP:acc.N_OP+1,
             employee_id: item.employee_id,
             uname: item.uname
           }
-        },{PUMPS_TOTAL:0,PRODUCTS_TOTAL:0,REPORT:0,M3_SOLD:0,N_OP:0,employee_id:null,uname:null})
+        },{POSOP_TOTAL:0,PRODUCTS_TOTAL:0,REPORT:0,N_OP:0,employee_id:null,uname:null})
     })
   }
   public async getLastOperationStatus() {
@@ -179,23 +181,18 @@ export class DashboardComponent implements OnInit {
       .then(lastOp => {
         this.lastOperation = lastOp;
         this.lastOpDate = new Date()
+        console.debug('Last op updated')
       })
   }
   public async getDailyReportbyTurns() {
-    this.webService.getDailybyTurnsReport(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
+    return this.webService.getDailybyTurnsReport(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
       .then(res => {
         this.dailyReportbyTurns = res
       })
   }
-  public async getGasSoldData() {
-    return this.webService.getPumpsGasSold(this.formatter.format(this.fromDate), this.formatter.format(this.toDate))
-      .then(gs => {
-        this.pumpsGasSold = gs
-      })
-  }
   //CHARTS
   public dailySalesChart() {
-    var gradientBarChartConfiguration: ChartOptions = {
+    let gradientBarChartConfiguration: ChartOptions = {
       maintainAspectRatio: false,
       legend: {
         display: true
@@ -257,7 +254,7 @@ export class DashboardComponent implements OnInit {
     };
     this.canvas = <HTMLCanvasElement>document.getElementById("chartBig1");
     this.ctx = this.canvas.getContext("2d");
-    var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
+    let gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
 
     gradientStroke.addColorStop(1, 'rgba(29,140,248,0.2)');
     gradientStroke.addColorStop(0.4, 'rgba(29,140,248,0.0)');
@@ -279,214 +276,17 @@ export class DashboardComponent implements OnInit {
             borderDashOffset: 0.0,
             data: turn.dailyOperations.map(o => {
               let dt = new Date(o.timestamp)
-              return { t: o.turn_name == this.lastTurn ? dt.setDate(dt.getDate() - 1) : dt, y: (+(o.PRODUCT_AMOUNT_SOLD ?? 0) + +(o.PUMPS_AMOUNT_SOLD ?? 0)) }
+              return { t: o.turn_name == this.lastTurn ? dt.setDate(dt.getDate() - 1) : dt, y: (+(o.PRODUCT_AMOUNT_SOLD ?? 0) + +(o.POSOP_AMOUNT_SOLD ?? 0)) }
             })
           }
         })
       },
       options: gradientBarChartConfiguration
     });
-  }
-  public gasSoldChart() {
-    var gradientChartOptionsConfigurationWithTooltipRed: ChartOptions = {
-      maintainAspectRatio: false,
-      legend: {
-        display: false
-      },
-
-      tooltips: {
-        callbacks: {
-          title: () => `Total diario`,
-          label: (tooltipItem, data) => {
-            var label = `${tooltipItem.yLabel}[m³]`
-            return label
-          }
-        },
-        backgroundColor: '#f5f5f5',
-        titleFontColor: '#333',
-        bodyFontColor: '#666',
-        bodySpacing: 4,
-        xPadding: 12,
-        mode: "nearest",
-        intersect: false,
-        position: "nearest"
-      },
-      responsive: true,
-      scales: {
-        yAxes: [{
-          // barPercentage: 1.6,
-          gridLines: {
-            drawBorder: false,
-            color: 'rgba(29,140,248,0.0)',
-            zeroLineColor: "transparent",
-          },
-          ticks: {
-            min: 0,
-            padding: 20,
-            fontColor: "#9a9a9a"
-          }
-        }],
-
-        xAxes: [{
-          distribution: 'linear',
-          type: 'time',
-          time: {
-            unit: 'day',
-            tooltipFormat: 'HH:mm[hs]',
-          },
-          gridLines: {
-            drawBorder: false,
-            color: 'rgba(233,32,16,0.1)',
-            zeroLineColor: "transparent",
-          },
-          ticks: {
-            padding: 20,
-            fontColor: "#9a9a9a"
-          }
-        }]
-      }
-    };
-
-    this.canvas = <HTMLCanvasElement>document.getElementById("chartLineRed");
-    this.ctx = this.canvas.getContext("2d");
-
-    var gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
-
-    gradientStroke.addColorStop(1, 'rgba(233,32,16,0.2)');
-    gradientStroke.addColorStop(0.4, 'rgba(233,32,16,0.0)');
-    gradientStroke.addColorStop(0, 'rgba(233,32,16,0)'); //red colors
-
-    var data = {
-      datasets: [{
-        label: "Cantidad",
-        fill: true,
-        backgroundColor: gradientStroke,
-        borderColor: '#ec250d',
-        borderWidth: 2,
-        borderDash: [],
-        borderDashOffset: 0.0,
-        pointBackgroundColor: '#ec250d',
-        pointBorderColor: 'rgba(255,255,255,0)',
-        pointHoverBackgroundColor: '#ec250d',
-        pointBorderWidth: 20,
-        pointHoverRadius: 4,
-        pointHoverBorderWidth: 15,
-        pointRadius: 4,
-        data: this.pumpsGasSold.map(op => {
-          this.gasAverage += +op.PUMPS_M3_SOLD
-          return { t: op.timestamp, y: +op.PUMPS_M3_SOLD }
-        })
-      }]
-    };
-    this.gasAverage = this.gasAverage / this.pumpsGasSold.length
-    this.gasAverage = Math.round(this.gasAverage * 100) / 100
-    this.chartGasSold = new Chart(this.ctx, {
-      type: 'line',
-      data: data,
-      options: gradientChartOptionsConfigurationWithTooltipRed
-    });
+    console.log(this.chartDailySales.config.data.datasets)
   }
   public reportsChart() {
-    var gradientChartOptionsConfigurationWithTooltipPurple: ChartOptions = {
-      maintainAspectRatio: false,
-      legend: {
-        display: true
-      },
-
-      tooltips: {
-        backgroundColor: '#f5f5f5',
-        titleFontColor: '#333',
-        bodyFontColor: '#666',
-        bodySpacing: 4,
-        xPadding: 12,
-        mode: "nearest",
-        intersect: false,
-        position: "nearest",
-        callbacks: {
-          label: (tooltipItem, data) => {
-            return `${data.datasets[tooltipItem.datasetIndex].label}:$${Math.round(+tooltipItem.yLabel * 100) / 100}`
-          }
-        }
-      },
-      responsive: true,
-      scales: {
-        yAxes: [{
-          // barPercentage: 1.6,
-          gridLines: {
-            drawBorder: false,
-            color: 'rgba(29,140,248,0.0)',
-            zeroLineColor: "transparent",
-          },
-          ticks: {
-            suggestedMin: 60,
-            suggestedMax: 125,
-            padding: 20,
-            fontColor: "#9a9a9a"
-          }
-        }],
-
-        xAxes: [{
-          offset: true,
-          distribution: 'linear',
-          type: 'time',
-          time: {
-            unit: 'day',
-            round: 'day',
-            tooltipFormat: 'DD/MM/YY HH:mm[hs]'
-          },
-          gridLines: {
-            drawBorder: false,
-            color: 'rgba(225,78,202,0.1)',
-            zeroLineColor: "transparent",
-          },
-          ticks: {
-            padding: 20,
-            fontColor: "#9a9a9a"
-          }
-        }]
-      }
-    };
-
-    this.canvas = <HTMLCanvasElement>document.getElementById("CountryChart");
-    this.ctx = this.canvas.getContext("2d");
-
-    var gradientStroke = this.ctx.createLinearGradient(0, 220, 0, 0);
-
-    gradientStroke.addColorStop(1, 'rgba(46,204,113,0.8)');
-    gradientStroke.addColorStop(0.5, 'rgba(30,30,30,0.0)');
-    gradientStroke.addColorStop(0, 'rgba(231,76,60,0.8)');
-    var config: ChartConfiguration = {
-      type: 'bar',
-      data: {
-        datasets: this.turns.map((t, i) => {
-          return {
-            label: `${t.name}`,
-            fill: true,
-            backgroundColor: gradientStroke,
-            borderColor: this.borderColors[i],
-            borderWidth: 2,
-            borderDash: [],
-            borderDashOffset: 0.0,
-            pointBackgroundColor: this.borderColors[i],
-            pointBorderColor: 'rgba(255,255,255,0)',
-            pointHoverBackgroundColor: '#909497',
-            pointBorderWidth: 20,
-            pointHoverRadius: 4,
-            pointHoverBorderWidth: 15,
-            pointRadius: 4,
-            data: this.operationsReport.filter(ot => { return ot.turn_name == t.name }).map(ot => {
-              let dt = new Date(ot.timestamp)
-              return { t: ot.turn_name == this.lastTurn ? dt.setDate(dt.getDate() - 1) : dt, y: (+ot.REPORT - (+ot.PRODUCT_AMOUNT_SOLD + +ot.PUMPS_AMOUNT_SOLD)) }
-            }),
-          }
-        })
-      },
-      options: gradientChartOptionsConfigurationWithTooltipPurple
-    };
-    this.chartReports = new Chart(this.ctx, config);
-  }
-  public prodpumpsChart() {
-    var gradientChartOptionsConfigurationWithTooltipGreen: ChartOptions = {
+    let gradientChartOptionsConfigurationWithTooltipGreen: ChartOptions = {
       maintainAspectRatio: false,
       legend: {
         display: false
@@ -530,6 +330,7 @@ export class DashboardComponent implements OnInit {
           distribution: 'linear',
           stacked: true,
           time: {
+            parser: (t)=> new Date(t*1000),
             unit: 'day',
             tooltipFormat: '[Ventas] DD/MM/YY HH:mm[hs]'
           },
@@ -540,7 +341,108 @@ export class DashboardComponent implements OnInit {
           },
           ticks: {
             padding: 20,
+            fontColor: "#9a9a9a"
+          }
+        }]
+      }
+    };
+
+    this.canvas = <HTMLCanvasElement>document.getElementById("PoSChart");
+    this.ctx = this.canvas.getContext("2d");
+
+    const genGradient = (hexColor:string) => {
+      const gradientStroke = this.ctx.createLinearGradient(0, 230, 0, 50);
+
+      gradientStroke.addColorStop(1, hexColor+'11');
+      gradientStroke.addColorStop(0.4, hexColor+'00'); //green colors
+      gradientStroke.addColorStop(0, hexColor+'00');
+      return gradientStroke
+    }
+
+    let backgrounds = ['#00d6b4', '#d600d6']
+
+    this.chartProdPumps = new Chart(this.ctx, {
+      type: 'line',
+      data: {
+        datasets: 
+        this.posDetail.map((pos,i) => ({
+          label: pos[0].name,
+          fill: true,
+          backgroundColor: genGradient(backgrounds[i]),
+          borderColor: backgrounds[i],
+          borderWidth: 2,
+          borderDash: [],
+          borderDashOffset: 0.0,
+          pointBackgroundColor: backgrounds[i],
+          pointBorderColor: 'rgba(255,255,255,0)',
+          pointHoverBackgroundColor: backgrounds[i],
+          pointBorderWidth: 20,
+          pointHoverRadius: 4,
+          pointHoverBorderWidth: 15,
+          pointRadius: 4,
+          data: pos.map(op => ({t: op.timestamp, y: +op.amount_sold}))
+        }))
+      },
+      options: gradientChartOptionsConfigurationWithTooltipGreen
+    });
+  }
+  public prodPoSChart() {
+    let gradientChartOptionsConfigurationWithTooltipGreen: ChartOptions = {
+      maintainAspectRatio: false,
+      legend: {
+        display: false
+      },
+
+      tooltips: {
+        backgroundColor: '#f5f5f5',
+        titleFontColor: '#333',
+        bodyFontColor: '#666',
+        bodySpacing: 4,
+        xPadding: 12,
+        mode: "nearest",
+        intersect: false,
+        position: "nearest",
+        callbacks: {
+          label: (tooltipItem, data) => {
+            return `${data.datasets[tooltipItem.datasetIndex].label}:$${tooltipItem.yLabel}`
+          }
+        }
+      },
+      responsive: true,
+      scales: {
+        yAxes: [{
+          // barPercentage: 1.6,
+          gridLines: {
+            drawBorder: false,
+            color: 'rgba(29,140,248,0.0)',
+            zeroLineColor: "transparent",
+          },
+          ticks: {
+            suggestedMin: 50,
+            suggestedMax: 125,
+            padding: 20,
             fontColor: "#9e9e9e"
+          }
+        }],
+
+        xAxes: [{
+          // barPercentage: 1.6,
+          type: 'time',
+          distribution: 'linear',
+          stacked: true,
+          time: {
+            parser: (t)=> new Date(t*1000),
+            unit: 'day',
+            tooltipFormat: '[Ventas] DD/MM/YY HH:mm[hs]'
+          },
+          gridLines: {
+            drawBorder: false,
+            color: 'rgba(0,242,195,0.1)',
+            zeroLineColor: "transparent",
+          },
+          ticks: {
+            padding: 20,
+            fontColor: "#9a9a9a"
           }
         }]
       }
@@ -550,19 +452,19 @@ export class DashboardComponent implements OnInit {
     this.ctx = this.canvas.getContext("2d");
 
 
-    var gradientStrokeGreen = this.ctx.createLinearGradient(0, 230, 0, 50);
+    let gradientStrokeGreen = this.ctx.createLinearGradient(0, 230, 0, 50);
 
     gradientStrokeGreen.addColorStop(1, 'rgba(0,214,180,0.15)');
     gradientStrokeGreen.addColorStop(0.4, 'rgba(0,214,180,0.0)'); //green colors
     gradientStrokeGreen.addColorStop(0, 'rgba(0,214,180,0)'); //green colors
 
-    var gradientStrokePink = this.ctx.createLinearGradient(0, 230, 0, 50);
+    let gradientStrokePink = this.ctx.createLinearGradient(0, 230, 0, 50);
 
     gradientStrokePink.addColorStop(1, 'rgba(214,0,214,0.15)');
     gradientStrokePink.addColorStop(0.4, 'rgba(214,0,214,0.0)'); //green colors
     gradientStrokePink.addColorStop(0, 'rgba(214,0,214,0)'); //green colors
 
-    var backgrounds = ['#00d6b4', '#d600d6']
+    let backgrounds = ['#00d6b4', '#d600d6']
 
     this.chartProdPumps = new Chart(this.ctx, {
       type: 'line',
@@ -585,7 +487,7 @@ export class DashboardComponent implements OnInit {
           data: this.operationsReport.map(op => { return { t: op.timestamp, y: +op.PRODUCT_AMOUNT_SOLD } }),
         },
         {
-          label: "Surtidores",
+          label: "Puntos de Venta",
           fill: true,
           backgroundColor: gradientStrokePink,
           borderColor: backgrounds[1],
@@ -600,7 +502,7 @@ export class DashboardComponent implements OnInit {
           pointHoverBorderWidth: 15,
           pointRadius: 4,
           data: this.operationsReport.map(op => {
-            return { t: op.timestamp, y: +op.PUMPS_AMOUNT_SOLD }
+            return { t: op.timestamp, y: +op.POSOP_AMOUNT_SOLD }
           }),
         }
         ]
@@ -609,18 +511,17 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  public updateDataandCharts() {
-    this.apiDataGet().then(
+  public async updateDataandCharts() {
+    return this.getApiData().then(
       () => {
-        this.chartDailySales.destroy()
-        this.chartGasSold.destroy()
-        this.chartProdPumps.destroy()
-        this.chartReports.destroy()
+        this.chartDailySales?.destroy()
+        this.chartGasSold?.destroy()
+        this.chartProdPumps?.destroy()
+        this.chartReports?.destroy()
         this.dailySalesChart()
-        this.gasSoldChart()
         this.reportsChart()
-        this.prodpumpsChart()
-        console.info('Datos Actualizados')
+        this.prodPoSChart()
+        console.debug('Charts updated')
       }
     )
   }

@@ -918,11 +918,10 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public getPumpsGasSold(fromDate?: string, toDate?: string): Promise<{ id: number, PUMPS_M3_SOLD: number, timestamp: string }[]> {
-    return fetch(environment.baseUrl + `/operations/report/gassold`, {
-      method: 'POST',
+  public getDailyPoSbyDate(fromDate?: string, toDate?: string): Promise<PoSOperationDetail[][]> {
+    return fetch(environment.baseUrl + `/operations/report/bypos?from=${encodeURI(fromDate)}&to=${encodeURI(toDate)}`, {
+      method: 'GET',
       headers: this.headersWithApiandAuth,
-      body: JSON.stringify({ fromDate, toDate })
     }).then(
       async res => {
         const data = await res.json()
