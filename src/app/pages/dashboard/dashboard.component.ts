@@ -359,7 +359,7 @@ export class DashboardComponent implements OnInit {
       return gradientStroke
     }
 
-    let backgrounds = ['#00d6b4', '#d600d6']
+    let backgrounds = ['#EE6055','#00FFCD','#FFE8C2','#9EB7E5','#00d6b4', '#d600d6']
 
     this.chartProdPumps = new Chart(this.ctx, {
       type: 'line',
