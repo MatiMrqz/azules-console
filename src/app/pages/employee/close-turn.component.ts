@@ -1,7 +1,6 @@
 import { Component, HostListener, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ToastrService } from 'ngx-toastr';
 import { NewInvoiceComponent } from 'src/app/modals/new-invoice/new-invoice.component';
 import { EscposPrintService } from 'src/app/services/escpos-print.service';
 import { WebService } from 'src/app/services/web.service';
@@ -9,9 +8,6 @@ import { WebService } from 'src/app/services/web.service';
 interface TempData {
   done: number,
   accumulated: number
-}
-interface PumpTempData extends TempData {
-  m3: number
 }
 
 @Pipe({ name: 'validProducts' })
@@ -34,17 +30,15 @@ export class CloseTurnComponent implements OnInit {
     return false;
   }
   @HostListener('window:unload', ['$event'])
-  public tempData: { acc: TempData, pumps: PumpTempData, products: TempData }
+  public tempData: { acc: TempData, posop:TempData, products: TempData }
   public turn: { name: string, schedule: string }
   public employee: { uuid: string, uname: string } = { uname: '-', uuid: '' }
   public saving: boolean = false
   public products: Array<EditedProducts> = []
+  public PoS: Array<EditedPoS> = []
   public categories = []
   public helpers = []
   public helperSelected = null
-  public gralMeter
-  public pumps = []
-  public pump_types = []
   public isLoading: boolean = true
   public acc: {
     cash: number,
@@ -84,7 +78,7 @@ export class CloseTurnComponent implements OnInit {
       expenses: null,
       others: null
     }
-    this.tempData = this.getTemp('TEMP') ?? { acc: { done: 0, accumulated: 0 }, products: { done: 0, accumulated: 0 }, pumps: { m3: 0, done: 0, accumulated: 0 } }
+    this.tempData = this.getTemp('TEMP') ?? { acc: { done: 0, accumulated: 0 }, products: { done: 0, accumulated: 0 }, posop: { done: 0, accumulated: 0 } }
   }
 
   ngOnInit(): void {
@@ -99,67 +93,53 @@ export class CloseTurnComponent implements OnInit {
   private getAll() {
     this.isLoading = true
     Promise.all([
-      this.updateCategories(),
-      this.updateProducts(),
-      this.updateHelpers(),
-      this.updatePumps(),
-      this.getPumpTypes(),
-      this.updateGralMeter()
+      this.getCategories(),
+      this.getProducts(),
+      this.getHelpers(),
+      this.getPoS()
     ]).then(() => {
       this.isLoading = false
     })
   }
-  private async updateProducts() {
+  private async getPoS() {
+    const tempPoS = await this.webService.getAllPoSDev()
+    this.PoS = this.getTemp('POS') ?? tempPoS.map(p => {
+      return { amount_sold: null, sales_in: null, sales_out: null, validated: null, ...p }
+    })
+  }
+  private async getProducts() {
     const tempProducts = await this.webService.getAllProductsDev()
     this.products = this.getTemp('PRODUCTS') ?? tempProducts.map(p => {
       return { items_sold: p.stock == 0 ? 0 : null, items_replacement: null, end_stock: null, validated: null, ...p }
     })
   }
-  private async updateCategories() {
+  private async getCategories() {
     this.categories = await this.webService.getAllCategoriesDev()
   }
-  private async updateHelpers() {
+  private async getHelpers() {
     this.helpers = await this.webService.getHelpersDev()
   }
   public getCategorybyId(id?: number) {
     if (!id) return null
     return this.categories.find(c => c.id == id) ?? '-'
   }
-  public async updatePumps() {
-    const tempPumps = await this.webService.getAllPumpsDev()
-    this.pumps = this.getTemp('PUMPS') ?? tempPumps.map(p => {
-      return { venting: null, meter_end: null, meter_diff: null, validated: null, reset_meter: false, ...p }
-    })
-  }
-  public async updateGralMeter() {
-    const tempMeter = await this.webService.getGralMeterDev()
-    this.gralMeter = this.getTemp('GRAL') ?? { validated: null, meter_diff: null, meter_end: null, ...tempMeter }
-  }
-  public async getPumpTypes() {
-    this.pump_types = await this.webService.getAllPumpTypesDev()
-  }
-  public getTypebyId(id: number) {
-    return this.pump_types.find(c => c.id == id) ?? '-'
-  }
-  public refreshDonePumps(): void {
-    var done = 0
-    var m3 = 0
-    var accumulated = 0
-    if (!this.pumps) return
-    this.pumps.forEach(p => {
+  public refreshDonePoS(): void {
+    let done = 0
+    let accumulated = 0
+    if (!this.PoS) return
+    this.PoS.forEach(p => {
       if (p.validated) {
-        done++;
-        m3 += p.meter_diff
-        accumulated += (p.unit_price * p.meter_diff)
+        done++
+        accumulated += p.unit_price * (p.sales_in - p.sales_out)
       }
     })
-    this.tempData.pumps = { m3, accumulated, done }
-    this.storeTemp('PUMPS', this.pumps)
+    this.tempData.posop = { done, accumulated }
+    this.storeTemp('POS', this.PoS)
     this.storeTemp('TEMP', this.tempData)
   }
   public refreshDoneProducts(): void {
-    var done = 0
-    var accumulated = 0
+    let done = 0
+    let accumulated = 0
     if (!this.products) return
     this.products.forEach(p => {
       if (p.validated) {
@@ -172,7 +152,7 @@ export class CloseTurnComponent implements OnInit {
     this.storeTemp('TEMP', this.tempData)
   }
   public accDoneUpdate(): void {
-    var done: number = 0
+    let done: number = 0
     if (!this.acc) return
     Object.values(this.acc).forEach(v => {
       if (typeof v == 'boolean' && v === true) done++
@@ -183,14 +163,8 @@ export class CloseTurnComponent implements OnInit {
     return
   }
   public saveDisabled(val?: string): boolean {
-    const status = !!val && (this.tempData.pumps.done == this.pumps.length) && this.gralMeter.validated === true && (this.tempData.products.done == this.products.filter(p => p.hidden == false).length) && (this.tempData.acc.done == 8)
+    const status = !!val && (this.tempData.posop.done == this.PoS.length) && (this.tempData.products.done == this.products.filter(p => p.hidden == false).length) && (this.tempData.acc.done == 8)
     return !status
-  }
-  public calcMeterDiff(i: number) {
-    const pumpItem = this.pumps[i]
-    if (+pumpItem.meter_end > +pumpItem.meter) pumpItem.reset_meter = false
-    pumpItem.meter_diff = pumpItem.reset_meter ? (+pumpItem.max_meter_value - +pumpItem.meter) + pumpItem.meter_end - +pumpItem.venting : +pumpItem.meter_end - +pumpItem.meter - +pumpItem.venting
-    pumpItem.validated = (pumpItem.meter_end != null && pumpItem.venting != null && (pumpItem.meter_diff >= 0 || pumpItem.reset_meter))
   }
   public storeClosingShift(observations: string, pass: string, content) {
     this.saving = true
@@ -202,18 +176,16 @@ export class CloseTurnComponent implements OnInit {
     ).finally(() => {
       this.serverResponse = { error: null }
     })
-    const pump_operations = this.pumps.map(p => {
-      if (p.meter == p.meter_end) return
-      else {
-        return { pump_id: p.id, meter_diff: p.meter_diff, venting: p.venting, unit_price: p.unit_price }
-      }
-    }).filter(p => p != undefined)
     const product_operations = this.products.map(p => {
       if (p.validated && (p.items_sold != 0 || p.items_replacement != 0)) {
         return { product_id: p.id, items_sold: p.items_sold, items_replacement: p.items_replacement, unit_price: p.unit_price, prev_stock: p.stock }
       }
-    }).filter(p => p != undefined)
-    const gral_meter = { meter_diff: this.gralMeter.meter_diff, accumulated: this.gralMeter.meter_end }
+    }).filter(Boolean)
+    const posop_operations = this.PoS.map(p => {
+      if (p.validated) {
+        return { posop_id: p.id, sales_in: p.sales_in, sales_out: p.sales_out, unit_price: p.unit_price }
+      }
+    }).filter(Boolean)
     const accountancy = {
       cash: this.acc.cash,
       envelopes_cash: this.acc.envelopes_cash,
@@ -224,9 +196,9 @@ export class CloseTurnComponent implements OnInit {
       expenses: this.acc.expenses,
       others: this.acc.others
     }
-    // console.log({ pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, helper_id: this.helperSelected, observations })
+    console.log({ posop_operations, product_operations, accountancy, turn: this.turn, helper_id: this.helperSelected, observations })
     this.serverResponse={ error: null, msg:'Realizando cierre de turno...' }
-    this.webService.shiftClosingDev({ employee: { uuid: this.employee.uuid, pass }, helper_id: (this.helperSelected ? this.helperSelected.uuid : null), pump_operations, product_operations, gral_meter, accountancy, turn: this.turn, observations })
+    this.webService.shiftClosingDev({ employee: { uuid: this.employee.uuid, pass }, helper_id: (this.helperSelected ? this.helperSelected.uuid : null), posop_operations, product_operations, accountancy, turn: this.turn, observations })
       .then(res => {
         this.cleanTemp()
         this.serverResponse = { ...res, observations, accountancy }
@@ -243,37 +215,23 @@ export class CloseTurnComponent implements OnInit {
         }
       })
   }
-
-  public async showModal(content, i: number) {
-    this.modalService.open(content).result.then(
-      () => {
-        this.pumps[i].reset_meter = true
-        this.calcMeterDiff(i)
-      },
-      () => { }
-    )
-  }
-  public storeTempGral() {
-    this.storeTemp('GRAL', this.gralMeter)
-  }
-  private storeTemp(name: 'PUMPS' | 'PRODUCTS' | 'ACC' | 'TEMP' | 'GRAL', payload: any) {
+  private storeTemp(name: 'POS' | 'PRODUCTS' | 'ACC' | 'TEMP', payload: any) {
     sessionStorage.setItem(name, JSON.stringify(payload))
   }
-  private getTemp(name: 'PUMPS' | 'PRODUCTS' | 'ACC' | 'TEMP' | 'GRAL'): any {
+  private getTemp(name: 'POS' | 'PRODUCTS' | 'ACC' | 'TEMP'): any {
     return JSON.parse(sessionStorage.getItem(name))
   }
   private cleanTemp() {
-    sessionStorage.removeItem('PUMPS')
+    sessionStorage.removeItem('POS')
     sessionStorage.removeItem('PRODUCTS')
     sessionStorage.removeItem('ACC')
     sessionStorage.removeItem('TEMP')
-    sessionStorage.removeItem('GRAL')
   }
 
   public print() {
     this.serverResponse = { ...this.serverResponse,...{ msg: 'Imprimiendo comprobante...', error: null } }
     console.log(this.serverResponse)
-    this.escposService.printShiftSummary(this.serverResponse.id, this.turn, this.employee, (this.helperSelected ?? null), this.serverResponse.emitter, this.products, this.pumps, this.serverResponse.accountancy, { accountancy: this.tempData.acc.accumulated, products: this.tempData.products.accumulated, pumps: this.tempData.pumps.accumulated }, this.serverResponse.nInvoicesDone, this.serverResponse.observations)
+    this.escposService.printShiftSummary(this.serverResponse.id, this.turn, this.employee, (this.helperSelected ?? null), this.serverResponse.emitter, this.products, this.serverResponse.accountancy, { accountancy: this.tempData.acc.accumulated, products: this.tempData.products.accumulated, posop: this.tempData.posop.accumulated }, this.serverResponse.nInvoicesDone, this.serverResponse.observations)
     .then(res => {
       if (res.success) {
         this.serverResponse = { ...this.serverResponse,...{ msg: 'Impresion finalizada', error: 2 } }

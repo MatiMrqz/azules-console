@@ -35,7 +35,7 @@ export class EscposPrintService {
       return res.json()
     })
   }
-  public async printShiftSummary(opId: number, turn: { name: string, schedule: string }, employee: { uname: string, uuid: string }, helper: { uname: string, uuid: string } | null, emitter: VoucherEmitterData, products: Array<EditedProducts>, pumps: Array<EditedPumps>, accountancy: { cash: number, envelopes_cash: number, n_envelopes: number, cards: number, vouchers: number, MercadoPago: number, expenses: number, others: number }, acc: { accountancy: number, products: number, pumps: number }, invoices: string, obs?: string) {
+  public async printShiftSummary(opId: number, turn: { name: string, schedule: string }, employee: { uname: string, uuid: string }, helper: { uname: string, uuid: string } | null, emitter: VoucherEmitterData, products: Array<EditedProducts>, accountancy: { cash: number, envelopes_cash: number, n_envelopes: number, cards: number, vouchers: number, MercadoPago: number, expenses: number, others: number }, acc: { accountancy: number, products: number, posop: number }, invoices: string, obs?: string) {
     const d = new Date()
     var enc = new EscPosEncoder({ codepageMapping: 'star' })
       .initialize()
@@ -73,19 +73,6 @@ export class EscposPrintService {
       .line('------------------------------------------------')
       .align('center')
       .bold(true)
-      .line('CONTROL DE STOCK - Aforadores')
-      .bold(false)
-      .align('left')
-      .table([
-        { width: 12, align: 'left' },
-        { width: 18, align: 'right' },
-        { width: 18, align: 'right' }
-      ], [
-        ['Descripcion', 'Valor inicial', 'Valor final'],
-        ...pumps.map(p => [(p.description?.substring(0, 12) ?? p.id), `${p.meter}[${p.unit ?? '-'}]`, `${p.meter_end}[${p.unit ?? '-'}]`])
-      ])
-      .align('center')
-      .bold(true)
       .line('CONTROL DE STOCK - Productos')
       .bold(false)
       .table([
@@ -110,7 +97,6 @@ export class EscposPrintService {
         { width: 11, align: 'right' }
       ], [
         ['Item', 'U.Vend.', 'P.Unit.', 'Subtotal'],
-        ...pumps.filter(p => (p.meter != p.meter_end && +p.meter_diff > p.venting)).map(p => [(p.description ?? `Surtidor ${p.id}`), `${(+p.meter_diff).toFixed(2)}${p.unit ?? '-'}`, `$${p.unit_price}`, `$${(p.unit_price * +p.meter_diff).toFixed(2)}`]),
         ...products.filter(p => (p.hidden == false && p.items_sold > 0 && p.validated)).map(p => { return [p.name.substring(0, 15), `${p.items_sold}[u.]`, '$' + p.unit_price, `$${(p.unit_price * p.items_sold).toFixed(2)}`] })
       ])
       .table([
@@ -118,7 +104,7 @@ export class EscposPrintService {
         { width: 24, align: 'right' }
       ],
         [
-          [(enc) => { return enc.bold(true).text('TOTAL') }, (enc) => { return enc.bold(true).text(`$${Math.round((acc.products + acc.pumps) * 100) / 100}`).bold(false) }]
+          [(enc) => { return enc.bold(true).text('TOTAL') }, (enc) => { return enc.bold(true).text(`$${Math.round((acc.products + acc.posop) * 100) / 100}`).bold(false) }]
         ]
       )
       .line('------------------------------------------------')
@@ -148,10 +134,10 @@ export class EscposPrintService {
       .align('center')
       .bold(true)
       .line('RESULTADO DEL TURNO')
-      .line(`$${Math.round((acc.accountancy - (acc.products + acc.pumps)) * 100) / 100}`)
+      .line(`$${Math.round((acc.accountancy - (acc.products + acc.posop)) * 100) / 100}`)
       .bold(false)
       .size('small')
-      .line(acc.accountancy - (acc.products + acc.pumps) < 0 ? 'Deuda' : 'A favor')
+      .line(acc.accountancy - (acc.products + acc.posop) < 0 ? 'Deuda' : 'A favor')
       .size('normal')
       .align('left')
       .line('------------------------------------------------')

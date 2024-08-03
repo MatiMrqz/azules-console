@@ -1,5 +1,7 @@
 {
   "conventionalCommits.scopes": [
-    "Operation detail"
+    "Operation detail",
+    "Operation",
+    "Dashboard"
   ]
 }

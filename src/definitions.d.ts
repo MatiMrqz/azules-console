@@ -17,6 +17,7 @@ interface DetailProducts extends Products {
     end_stock?: number
 }
 interface EditedProducts extends Products { items_sold: number, items_replacement: number, end_stock: number, validated: boolean }
+interface EditedPoS extends PoS { sales_in: number, sales_out: number, amount_sold: number, validated: boolean }
 interface DetailPoS {
     posop_id: number
     name: string

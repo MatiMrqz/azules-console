@@ -190,6 +190,24 @@ export class WebService {
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
 
+  public getAllPoSDev(): Promise<Array<PoS>> {
+    return fetch(environment.baseUrl + '/posop/', {
+      method: 'GET',
+      headers: this.headersWithApiandDevAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateDevToken(res.headers.get('authorization'))
+          return data as any[]
+        }
+        // else if (res.status == 401) {
+        //   this.authService.logout()
+        // }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
+
   public getAllCategories(): Promise<Array<any>> {
     return fetch(environment.baseUrl + '/products/categories/', {
       method: 'GET',
@@ -386,34 +404,6 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
-  public getAllPumpsDev(): Promise<Array<Pumps>> {
-    return fetch(environment.baseUrl + '/pumps/', {
-      method: 'GET',
-      headers: this.headersWithApiandDevAuth,
-    }).then(
-      async res => {
-        const data = await res.json()
-        if (res.status == 200) {
-          this.updateDevToken(res.headers.get('authorization'))
-          return data as any[]
-        }
-        throw data.error;
-      })//Ver si agregar catch para cuando no hay conexion a internet
-  }
-  public getGralMeterDev(): Promise<any> {
-    return fetch(environment.baseUrl + '/pumps/gral-meter', {
-      method: 'GET',
-      headers: this.headersWithApiandDevAuth,
-    }).then(
-      async res => {
-        const data = await res.json()
-        if (res.status == 200) {
-          this.updateDevToken(res.headers.get('authorization'))
-          return data
-        }
-        throw data.error;
-      })//Ver si agregar catch para cuando no hay conexion a internet
-  }
   public getGralMeter(): Promise<{ accumulated: number }> {
     return fetch(environment.baseUrl + '/pumps/gral-meter', {
       method: 'GET',
@@ -470,20 +460,6 @@ export class WebService {
         }
         else if (res.status == 401) {
           this.authService.logout()
-        }
-        throw data.error;
-      })//Ver si agregar catch para cuando no hay conexion a internet
-  }
-  public getAllPumpTypesDev(): Promise<Array<any>> {
-    return fetch(environment.baseUrl + '/pumps/type/', {
-      method: 'GET',
-      headers: this.headersWithApiandDevAuth,
-    }).then(
-      async res => {
-        const data = await res.json()
-        if (res.status == 200) {
-          this.updateDevToken(res.headers.get('authorization'))
-          return data as any[]
         }
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet

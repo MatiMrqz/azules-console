@@ -17,11 +17,8 @@ export class OpenTurnComponent implements OnInit {
   public saving: boolean = false
   public turns: any[]
   public products: any[]
-  public pumps: any[]
   public employees: Employee[]
   public categories: any[]
-  public gralMeter
-  public pump_types = []
   public isLoading: boolean = true
   public async getTurns() {
     this.turns = await this.webService.getTurnsDev()
@@ -34,9 +31,6 @@ export class OpenTurnComponent implements OnInit {
       this.updateCategories(),
       this.updateEmployeesList(),
       this.updateProducts(),
-      this.updatePumps(),
-      this.getPumpTypes(),
-      this.updateGralMeter()
     ]).then(() => {
       this.isLoading = false
     })
@@ -54,24 +48,10 @@ export class OpenTurnComponent implements OnInit {
     return this.categories.find(c => c.id == id) ?? '-'
   }
 
-  public async updatePumps() {
-    this.pumps = await this.webService.getAllPumpsDev()
-  }
 
   public async updateEmployeesList() {
     const tempEmployees = await this.webService.getEmployeesDev()
     this.employees = tempEmployees.filter(v=>!v.hidden)
-  }
-
-  public async updateGralMeter() {
-    this.gralMeter = await this.webService.getGralMeterDev()
-  }
-
-  public async getPumpTypes() {
-    this.pump_types = await this.webService.getAllPumpTypesDev()
-  }
-  public getTypebyId(id: number) {
-    return this.pump_types.find(c => c.id == id) ?? '-'
   }
 
   public sendToApi(f: object) {
