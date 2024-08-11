@@ -59,22 +59,22 @@ export class OpenTurnComponent implements OnInit {
   }
   public sendToApi(f: object) {
     this.saving = true
-    // this.webService.shiftOpeningDev(f)
-    //   .then(
-    //     res => {
-    //       this.showSuccess(res.msg)
-    //       setTimeout(() => {
-    //         this.router.navigate(['employee'])
-    //       }, 500)
-    //     }
-    //   )
-    //   .catch(
-    //     err => {
-    //       this.saving = false
-    //       if (err.includes('password')) err = 'Contraseña errónea. Intente nuevamente.'
-    //       this.showError(err)
-    //     }
-    //   )
+    this.webService.shiftOpeningDev(f)
+      .then(
+        res => {
+          this.showSuccess(res.msg)
+          setTimeout(() => {
+            this.router.navigate(['employee'])
+          }, 500)
+        }
+      )
+      .catch(
+        err => {
+          this.saving = false
+          if (err.includes('password')) err = 'Contraseña errónea. Intente nuevamente.'
+          this.showError(err)
+        }
+      )
   }
 
   private showError(msg: string) {
