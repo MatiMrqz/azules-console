@@ -16,112 +16,148 @@
                         <div ngbAccordionItem id="products" title="Productos">
                             <h2 ngbAccordionHeader>
                                 <button ngbAccordionButton>
+                                    Puntos de Venta
+                                </button>
+                            </h2>
+                            <div ngbAccordionCollapse>
+                                <div ngbAccordionBody>
+                                    <ng-template>
+                                        <div class="table-responsive">
+                                            <table class=" table table-fix-head" id="">
+                                                <thead class="thead-dark text-primary">
+                                                    <tr>
+                                                        <th>Nombre</th>
+                                                        <th class="">Descripcion</th>
+                                                        <th class="text-right">Caja</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody *ngIf="!isLoading">
+                                                    <tr *ngFor="let item of PoS">
+                                                        <td class="cell-ellipsis" style="--mw:90px;">{{item.name}}
+                                                        </td>
+                                                        <td class="cell-ellipsis"
+                                                            style="--mw:150px;">
+                                                            {{!item.description?'-':item.description}}</td>
+                                                        <td class=" text-right">{{item.checkout|currency:'ARS'}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </ng-template>
+                                </div>
+                            </div>
+                        </div>
+                        <div ngbAccordionItem id="products" title="Productos">
+                            <h2 ngbAccordionHeader>
+                                <button ngbAccordionButton>
                                     Productos
                                 </button>
                             </h2>
-                        </div>
-                        <div ngbAccordionCollapse>
-                            <div ngbAccordionBody>
-                                <ng-template>
-                                    <div class="table-responsive">
-                                        <table class=" table table-fix-head" id="">
-                                            <thead class="thead-dark text-primary">
-                                                <tr>
-                                                    <th>Nombre</th>
-                                                    <th class="d-none d-lg-table-cell">Descripcion</th>
-                                                    <th class="">Categoría</th>
-                                                    <th class="text-center">Stock</th>
-                                                    <th class=" text-center">Precio Unitario</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody *ngIf="!isLoading">
-                                                <tr *ngFor="let item of products">
-                                                    <td class="cell-ellipsis" style="--mw:90px;">{{item.name}}
-                                                    </td>
-                                                    <td class="cell-ellipsis d-none d-lg-table-cell"
-                                                        style="--mw:150px;">
-                                                        {{!item.description?'-':item.description}}</td>
-                                                    <td class="">
-                                                        {{!item.category_id?'-':getCategorybyId(item.category_id).name}}
-                                                    </td>
-                                                    <td class=" text-center">{{item.stock}}</td>
+                            <div ngbAccordionCollapse>
+                                <div ngbAccordionBody>
+                                    <ng-template>
+                                        <div class="table-responsive">
+                                            <table class=" table table-fix-head" id="">
+                                                <thead class="thead-dark text-primary">
+                                                    <tr>
+                                                        <th>Nombre</th>
+                                                        <th class="d-none d-lg-table-cell">Descripcion</th>
+                                                        <th class="">Categoría</th>
+                                                        <th class="text-center">Stock</th>
+                                                        <th class=" text-center">Precio Unitario</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody *ngIf="!isLoading">
+                                                    <tr *ngFor="let item of products">
+                                                        <td class="cell-ellipsis" style="--mw:90px;">{{item.name}}
+                                                        </td>
+                                                        <td class="cell-ellipsis d-none d-lg-table-cell"
+                                                            style="--mw:150px;">
+                                                            {{!item.description?'-':item.description}}</td>
+                                                        <td class="">
+                                                            {{!item.category_id?'-':getCategorybyId(item.category_id).name}}
+                                                        </td>
+                                                        <td class=" text-center">{{item.stock}}</td>
 
-                                                    <td class=" text-center">
-                                                        {{item.unit_price|currency:'ARS'}}
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                                        <td class=" text-center">
+                                                            {{item.unit_price|currency:'ARS'}}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </ng-template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form #f="ngForm" [ngClass]="{'was-validated':!f.valid&&f.touched}" (ngSubmit)="sendToApi(f.value)">
+                    <div *ngIf="!isLoading" class="align-items-center px-4">
+                        <div class="form-group col col-md-8 col-xl-6 px-3">
+                            <label class="font-weight-light" style="font-size: 1em;" for="obs">Observaciones:</label>
+                            <textarea name="observations" ngModel id="obs" style="min-height: 7.8em;"
+                                class="form-control"
+                                placeholder="**Opcional&#10;Ej:Error en stock de producto, diferencias de precio mal actualizado, error de sistema, etc"></textarea>
+                        </div>
+                        <p class="h4">Datos de encargado:</p>
+                        <div class="form-group px-3 col-8 col-md-6 col-xl-4">
+                            <label class="font-weight-light" style="font-size: 1em;" for="turn">Seleccione
+                                turno:</label>
+                            <select name="turn" id="turn" class="form-control mb-0" required ngModel>
+                                <option disabled value="">-</option>
+                                <option *ngFor="let item of turns" [ngValue]="item">{{item.name}}</option>
+                            </select>
+                            <div class="invalid-tooltip">
+                                Debe seleccionar turno
+                            </div>
+
+                        </div>
+                        <fieldset ngModelGroup="employee">
+                            <div class="form-row px-3">
+                                <div class="form-group col-8 col-md-6 col-xl-4">
+                                    <label class="font-weight-light" style="font-size: 1em;"
+                                        for="emp">Encargado:</label>
+                                    <select name="uuid" id="employeeUuid" class="form-control mb-0" ngModel required>
+                                        <option value="" disabled>-</option>
+                                        <option [ngValue]="item.uuid" *ngFor="let item of employees">{{item.uname}}
+                                        </option>
+                                    </select>
+                                    <div class="invalid-tooltip">
+                                        Debe seleccionar encargado
                                     </div>
-                                </ng-template>
+                                </div>
+                                <div class="form-group col-4 col-md-2 col-xl-1">
+                                    <label class="font-weight-light" style="font-size: 1em;" for="pass">PIN:</label>
+                                    <input name="pass" ngModel id="pass" type="password"
+                                        class="form-control text-center mb-0" minlength="4" placeholder="****" required>
+                                    <div class="invalid-tooltip">
+                                        {{ !f.value.employee?.pass?'Ingrese pin':'4 dígitos'}}
+                                    </div>
+                                </div>
+
                             </div>
+                        </fieldset>
+                        <div class="form-group col-12">
+                            <button type="submit" class="btn text-dark btn-warning btn-lg btn-block"
+                                [disabled]="!f.valid||saving">
+                                <span [ngClass]="{'d-none':!saving}">
+                                    <div class="sk-chase" style="font-size: 1.5em;margin-left: -1.5em;">
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                        <div class="sk-chase-dot"></div>
+                                    </div>
+                                </span>{{saving?null:'Abrir turno'}}</button>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
-            <form #f="ngForm" [ngClass]="{'was-validated':!f.valid&&f.touched}" (ngSubmit)="sendToApi(f.value)">
-                <div *ngIf="!isLoading" class="align-items-center px-4">
-                    <div class="form-group col col-md-8 col-xl-6 px-3">
-                        <label class="font-weight-light" style="font-size: 1em;" for="obs">Observaciones:</label>
-                        <textarea name="observations" ngModel id="obs" style="min-height: 7.8em;" class="form-control"
-                            placeholder="**Opcional&#10;Ej:Error en stock de producto, diferencias de precio mal actualizado, error de sistema, etc"></textarea>
-                    </div>
-                    <p class="h4">Datos de encargado:</p>
-                    <div class="form-group px-3 col-8 col-md-6 col-xl-4">
-                        <label class="font-weight-light" style="font-size: 1em;" for="turn">Seleccione
-                            turno:</label>
-                        <select name="turn" id="turn" class="form-control mb-0" required ngModel>
-                            <option disabled value="">-</option>
-                            <option *ngFor="let item of turns" [ngValue]="item">{{item.name}}</option>
-                        </select>
-                        <div class="invalid-tooltip">
-                            Debe seleccionar turno
-                        </div>
 
-                    </div>
-                    <fieldset ngModelGroup="employee">
-                        <div class="form-row px-3">
-                            <div class="form-group col-8 col-md-6 col-xl-4">
-                                <label class="font-weight-light" style="font-size: 1em;" for="emp">Encargado:</label>
-                                <select name="uuid" id="employeeUuid" class="form-control mb-0" ngModel required>
-                                    <option value="" disabled>-</option>
-                                    <option [ngValue]="item.uuid" *ngFor="let item of employees">{{item.uname}}</option>
-                                </select>
-                                <div class="invalid-tooltip">
-                                    Debe seleccionar encargado
-                                </div>
-                            </div>
-                            <div class="form-group col-4 col-md-2 col-xl-1">
-                                <label class="font-weight-light" style="font-size: 1em;" for="pass">PIN:</label>
-                                <input name="pass" ngModel id="pass" type="password"
-                                    class="form-control text-center mb-0" minlength="4" placeholder="****" required>
-                                <div class="invalid-tooltip">
-                                    {{ !f.value.employee?.pass?'Ingrese pin':'4 dígitos'}}
-                                </div>
-                            </div>
-
-                        </div>
-                    </fieldset>
-                    <div class="form-group col-12">
-                        <button type="submit" class="btn text-dark btn-warning btn-lg btn-block"
-                            [disabled]="!f.valid||saving">
-                            <span [ngClass]="{'d-none':!saving}">
-                                <div class="sk-chase" style="font-size: 1.5em;margin-left: -1.5em;">
-                                    <div class="sk-chase-dot"></div>
-                                    <div class="sk-chase-dot"></div>
-                                    <div class="sk-chase-dot"></div>
-                                    <div class="sk-chase-dot"></div>
-                                    <div class="sk-chase-dot"></div>
-                                    <div class="sk-chase-dot"></div>
-                                </div>
-                            </span>{{saving?null:'Abrir turno'}}</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <ng-template #spinnerBlock>
+            <!-- <ng-template #spinnerBlock>
             <div class="row py-5">
                 <div class="col d-flex align-items-center justify-content-center">
                     <div class="sk-chase" style="font-size: 5em;">
@@ -134,4 +170,6 @@
                     </div>
                 </div>
             </div>
-        </ng-template>
+        </ng-template> -->
+        </div>
+    </div>

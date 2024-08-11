@@ -20,6 +20,8 @@ export class OpenTurnComponent implements OnInit {
   public employees: Employee[]
   public categories: any[]
   public isLoading: boolean = true
+  public PoS: Array<PoS> = []
+
   public async getTurns() {
     this.turns = await this.webService.getTurnsDev()
   }
@@ -28,50 +30,51 @@ export class OpenTurnComponent implements OnInit {
     this.isLoading = true
     Promise.all([
       this.getTurns(),
-      this.updateCategories(),
-      this.updateEmployeesList(),
-      this.updateProducts(),
+      this.getCategories(),
+      this.getEmployeesList(),
+      this.getProducts(),
+      this.getPoS()
     ]).then(() => {
       this.isLoading = false
     })
   }
 
-  private async updateProducts() {
+  private async getProducts() {
     const tempProducts = await this.webService.getAllProductsDev()
     this.products = tempProducts.filter(p => !p.hidden)
   }
-  private async updateCategories() {
+  private async getCategories() {
     this.categories = await this.webService.getAllCategoriesDev()
   }
   public getCategorybyId(id?: number) {
     if (!id) return null
     return this.categories.find(c => c.id == id) ?? '-'
   }
-
-
-  public async updateEmployeesList() {
+  private async getPoS() {
+    this.PoS = await this.webService.getAllPoSDev()
+  }
+  public async getEmployeesList() {
     const tempEmployees = await this.webService.getEmployeesDev()
     this.employees = tempEmployees.filter(v=>!v.hidden)
   }
-
   public sendToApi(f: object) {
     this.saving = true
-    this.webService.shiftOpeningDev(f)
-      .then(
-        res => {
-          this.showSuccess(res.msg)
-          setTimeout(() => {
-            this.router.navigate(['employee'])
-          }, 500)
-        }
-      )
-      .catch(
-        err => {
-          this.saving = false
-          if (err.includes('password')) err = 'Contraseña errónea. Intente nuevamente.'
-          this.showError(err)
-        }
-      )
+    // this.webService.shiftOpeningDev(f)
+    //   .then(
+    //     res => {
+    //       this.showSuccess(res.msg)
+    //       setTimeout(() => {
+    //         this.router.navigate(['employee'])
+    //       }, 500)
+    //     }
+    //   )
+    //   .catch(
+    //     err => {
+    //       this.saving = false
+    //       if (err.includes('password')) err = 'Contraseña errónea. Intente nuevamente.'
+    //       this.showError(err)
+    //     }
+    //   )
   }
 
   private showError(msg: string) {
@@ -82,7 +85,6 @@ export class OpenTurnComponent implements OnInit {
       positionClass: 'toast-top-center'
     });
   }
-
   private showSuccess(msg: string) {
     this.toastr.success('<span class="tim-icons icon-check-2" [data-notify]="icon"></span>' + msg, '', {
       timeOut: 5000,
@@ -91,15 +93,13 @@ export class OpenTurnComponent implements OnInit {
       positionClass: 'toast-top-center'
     });
   }
-
   private cleanTemp() {
-    sessionStorage.removeItem('PUMPS')
+    sessionStorage.removeItem('POS')
     sessionStorage.removeItem('PRODUCTS')
     sessionStorage.removeItem('ACC')
     sessionStorage.removeItem('TEMP')
     sessionStorage.removeItem('GRAL')
   }
-
   ngOnInit(): void {
     this.cleanTemp()
     this.getAll()

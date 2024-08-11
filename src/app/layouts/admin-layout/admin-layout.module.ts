@@ -30,6 +30,9 @@ import { InvoiceDetailComponent } from "src/app/modals/invoice-detail/invoice-de
 import { PosComponent } from "src/app/pages/pos/pos.component";
 import { NewPosComponent } from "src/app/modals/pos/new/new.component";
 import { EditPosComponent } from "src/app/modals/pos/edit/edit.component";
+import { OperationEditComponent } from "src/app/pages/operation-edit/operation-edit.component";
+import { OperationDetailComponent } from "src/app/pages/operation-detail/operation-detail.component";
+import { OperationSelectorComponent } from "src/app/pages/operation-selector/operation-selector.component";
 
 @NgModule({
   imports: [
@@ -57,6 +60,9 @@ import { EditPosComponent } from "src/app/modals/pos/edit/edit.component";
     OpByUname,
     DateAgoPipe,
     OperationsComponent,
+    OperationSelectorComponent,
+    OperationEditComponent,
+    OperationDetailComponent,
     EditGralMeterMax,
     InvoicesComponent,
     SettingsComponent,

@@ -2,6 +2,7 @@
   "conventionalCommits.scopes": [
     "Operation detail",
     "Operation",
-    "Dashboard"
+    "Dashboard",
+    "Employee"
   ]
 }
