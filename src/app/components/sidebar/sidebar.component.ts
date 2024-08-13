@@ -29,14 +29,9 @@ export const ROUTES: RouteInfo[] = [
     icon: "fa-solid fa-users",
   },
   {
-    path: "/pumps",
-    title: "Surtidores",
-    icon: "fa-solid fa-gas-pump",
-  },
-  {
     path: "/pos",
     title: "Puntos de Venta",
-    icon: "fa-solid fa-store",
+    icon: "fa-solid fa-cash-register",
   },
   {
     path: "/products",
