@@ -32,17 +32,17 @@
                             </label>
                         </div>
 
-                        <div class="btn-group btn-group-sm align-self-start" role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="radioDef">
+                        <div class="btn-group btn-group-sm align-self-start" role="group" ngbRadioGroup name="radioBasic">
                             <label ngbButtonLabel class="btn-info btn-simple">
-                                <input ngbButton type="radio" class="btn-check" value="1M" (click)="getData('1M')"> 1
+                                <input ngbButton type="radio" class="btn-check" [(ngModel)]="radioDef" value="1M" (click)="getData('1M')" checked> 1
                                 Mes
                             </label>
                             <label ngbButtonLabel class="btn-info btn-simple">
-                                <input ngbButton type="radio" class="btn-check" value="1Y" (click)="getData('1Y')"> 1
+                                <input ngbButton type="radio" class="btn-check" [(ngModel)]="radioDef" value="1Y" (click)="getData('1Y')"> 1
                                 Año
                             </label>
                             <label ngbButtonLabel class="btn-info btn-simple">
-                                <input ngbButton type="radio" class="btn-check" value="5Y" (click)="getData('1M')"> 5
+                                <input ngbButton type="radio" class="btn-check" [(ngModel)]="radioDef" value="5Y" (click)="getData('5Y')"> 5
                                 Años
                             </label>
                         </div>

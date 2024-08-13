@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, OnInit, PipeTransform } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, debounceTime, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { WebService } from 'src/app/services/web.service';
 
@@ -20,15 +20,14 @@ export class OperationsComponent implements OnInit {
   public page = 1;
   public pageSize = 10;
 
-  public radioDef = '1M';
+  public radioDef : '1M'|'1Y'|'5Y';
   public filter = {
     close: true,
     open: false
   }
 
   constructor(
-    private webService: WebService,
-    private pipe: DecimalPipe
+    private webService: WebService
   ) {
     this._search$.pipe(
       tap(() => this._loading$.next(true)),
@@ -54,7 +53,7 @@ export class OperationsComponent implements OnInit {
 
     let operations = this.operationsFetch
     operations = operations.filter(op => (op.operation_type == "CLOSE" && this.filter.close) || (op.operation_type == "OPEN" && this.filter.open))
-    operations = operations.filter(op => this.matches(op, this.searchTerm, this.pipe))
+    operations = operations.filter(op => this.matches(op, this.searchTerm))
 
     const size = operations.length
 
@@ -63,7 +62,7 @@ export class OperationsComponent implements OnInit {
     return of({ operations, size })
   }
 
-  private matches(operation: Operation, term: string, pipe: PipeTransform) {
+  private matches(operation: Operation, term: string) {
     return operation.id.toString().includes(term) || operation.uname.toLowerCase().includes(term.toLowerCase()) || operation.turn_name.toLowerCase().includes(term.toLowerCase()) || operation.observations!.toLowerCase().includes(term.toLowerCase()) || operation.helper_uname?.toLowerCase().includes(term.toLowerCase())
   }
 
