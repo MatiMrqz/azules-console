@@ -53,9 +53,9 @@ export class DashboardComponent implements OnInit {
   private borderColors = ['#00d6b4', '#ffeef1', '#1f8ef1', '#553233', '#3f57d3']
 
   private chartDailySales: Chart
-  private chartGasSold: Chart
+  private chartPoS: Chart
   private chartReports: Chart
-  private chartProdPumps: Chart
+  private chartProdPoS: Chart
 
 
   public turns: Turns[];
@@ -361,7 +361,7 @@ export class DashboardComponent implements OnInit {
 
     let backgrounds = ['#EE6055','#00FFCD','#FFE8C2','#9EB7E5','#00d6b4', '#d600d6']
 
-    this.chartProdPumps = new Chart(this.ctx, {
+    this.chartPoS = new Chart(this.ctx, {
       type: 'line',
       data: {
         datasets: 
@@ -466,7 +466,7 @@ export class DashboardComponent implements OnInit {
 
     let backgrounds = ['#00d6b4', '#d600d6']
 
-    this.chartProdPumps = new Chart(this.ctx, {
+    this.chartProdPoS = new Chart(this.ctx, {
       type: 'line',
       data: {
         datasets: [{
@@ -515,8 +515,8 @@ export class DashboardComponent implements OnInit {
     return this.getApiData().then(
       () => {
         this.chartDailySales?.destroy()
-        this.chartGasSold?.destroy()
-        this.chartProdPumps?.destroy()
+        this.chartPoS?.destroy()
+        this.chartProdPoS?.destroy()
         this.chartReports?.destroy()
         this.dailySalesChart()
         this.reportsChart()
