@@ -1301,6 +1301,23 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
+  public getDevSettings(): Promise<DevSettings> {
+    return fetch(environment.baseUrl + '/settings/dev', {
+      method: 'GET',
+      headers: this.headersWithApiandDevAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateDevToken(res.headers.get('authorization'))
+          return data
+        }
+        // else if (res.status == 401) {
+        //   this.authService.logout()
+        // }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
   public getCompanySettings(): Promise<CompanySettings> {
     return fetch(environment.baseUrl + '/settings/company', {
       method: 'GET',

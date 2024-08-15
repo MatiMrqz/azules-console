@@ -1,5 +1,5 @@
 <div class="row justify-content-center mx-0">
-    <div class="col-12 col-lg-6">
+    <div *ngIf="invoicingEnabled()" class="col-12 col-lg-6">
         <div class="card mt-5">
             <div class="card-header d-flex align-items-center">
                 <i class="fa-solid fa-file-invoice-dollar fa-3x"></i>
@@ -361,6 +361,13 @@
             </div>
         </div>
         <div *ngSwitchCase="0" class="d-flex flex-row">
+            <i class="fa-solid fa-check text-success fa-3x mr-3"></i>
+
+            <p class="text-light">
+                {{serverResponse.msg}}
+            </p>
+        </div>
+        <div *ngSwitchCase="4" class="d-flex flex-row">
             <i class="fa-solid fa-check text-success fa-3x mr-3"></i>
 
             <p class="text-light">

@@ -19,6 +19,10 @@
                 </div>
                 <div class="card-body">
                     <form #localForm="ngForm" (submit)="passModal(pModal,localForm.value, 'LOCAL')" [ngClass]="{'was-validated':localForm.invalid&&localForm.touched}">
+                        <div class="form-group ml-3">
+                            <input type="checkbox" name="INVOICING_ENABLED" class="form-check-input" id="invoicing" aria-describedby="invoicing" [ngModel]="company.INVOICING_ENABLED">
+                            <label for="invoicing">Facturación habilitada</label>
+                        </div>
                         <div class="form-group">
                             <label for="local_name">Nombre</label>
                             <input type="text" name="LOCAL_NAME" class="form-control" id="local_name" aria-describedby="localName" [ngModel]="company.LOCAL_NAME" required>
@@ -56,6 +60,13 @@
                 </div>
                 <div class="card-body">
                     <form #autoForm="ngForm" (submit)="passModal(pModal,autoForm.value, 'AUTO')" [ngClass]="{'was-validated':autoForm.invalid&&autoForm.touched}">
+                        <div class="form-group">
+                            <label for="auto_max_amount">Habilitar Facturación</label>
+                            <input type="number" inputmode="numeric" name="AI_MAX_AMOUNT" class="form-control" id="auto_max_amount" aria-describedby="auto_max_amount" [ngModel]="auto.AI_MAX_AMOUNT" required>
+                            <div class="invalid-tooltip">
+                                Campo requerido. Solo valores numéricos.
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="auto_max_amount">Monto máximo por factura</label>
                             <input type="number" inputmode="numeric" name="AI_MAX_AMOUNT" class="form-control" id="auto_max_amount" aria-describedby="auto_max_amount" [ngModel]="auto.AI_MAX_AMOUNT" required>

@@ -63,7 +63,7 @@ export class SettingsComponent implements OnInit {
           .then(res => {
             this.showSuccess('Datos actualizados correctamente')
             if (type == 'LOCAL') {
-              SidebarComponent.setLocal(formData.LOCAL_NAME, formData.LOCAL_ADDRESS, formData.COMPANY_MAIL)
+              SidebarComponent.setLocal(formData.LOCAL_NAME, formData.LOCAL_ADDRESS, formData.COMPANY_MAIL, formData.INVOICING_ENABLED)
             }
             this.fetchData()
           })

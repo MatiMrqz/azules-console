@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { Component, HostListener, OnInit, Pipe, PipeTransform, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NewInvoiceComponent } from 'src/app/modals/new-invoice/new-invoice.component';
@@ -58,7 +58,7 @@ export class CloseTurnComponent implements OnInit {
     expenses_v?: boolean,
     others_v?: boolean
   }
-  public accDoneCounter: number = 0
+  public invoicingEnabled = signal(false)
   public serverResponse: any = { error: null, msg:'Realizando cierre de turno.' }
 
   constructor(
@@ -68,6 +68,9 @@ export class CloseTurnComponent implements OnInit {
     private modalService: NgbModal,
     private escposService: EscposPrintService
   ) {
+    this.webService.getDevSettings().then((settings) => {
+      this.invoicingEnabled.set(settings.INVOICING_ENABLED)
+    })
     this.acc = this.getTemp('ACC') ?? {
       cash: null,
       envelopes_cash: null,
@@ -196,14 +199,17 @@ export class CloseTurnComponent implements OnInit {
       expenses: this.acc.expenses,
       others: this.acc.others
     }
-    console.log({ posop_operations, product_operations, accountancy, turn: this.turn, helper_id: this.helperSelected, observations })
     this.serverResponse={ error: null, msg:'Realizando cierre de turno...' }
     this.webService.shiftClosingDev({ employee: { uuid: this.employee.uuid, pass }, helper_id: (this.helperSelected ? this.helperSelected.uuid : null), posop_operations, product_operations, accountancy, turn: this.turn, observations })
       .then(res => {
         this.cleanTemp()
         this.serverResponse = { ...res, observations, accountancy }
         this.saving = false
-        this.print()
+        if(this.invoicingEnabled()){
+          this.print()
+        }else{
+          this.serverResponse = { ...this.serverResponse,...{ msg: 'Operación registrada', error: 4 } }
+        }
       })
       .catch((err) => {
         this.saving = false

@@ -9,7 +9,7 @@
         <p class="local-extra">{{lData.email}}</p>
     </div>
 </div>
-<div class="sidebar-wrapper">
+<div class="sidebar-wrapper" *ngIf="mItems|async as menuItems">
     <ul class="nav">
         <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{ menuItem.class }} nav-item">
             <a [routerLink]="[menuItem.path]">

@@ -266,12 +266,16 @@ interface VoucherEmitterData {
     local: { name: string, address: string }
     seller: { name: string, mail?: string }
 }
+interface DevSettings {
+    INVOICING_ENABLED: boolean
+}
 interface CompanySettings {
     COMPANY_NAME: string,
     COMPANY_DOMAIN: string,
     COMPANY_MAIL: string,
     LOCAL_NAME: string,
     LOCAL_ADDRESS: string,
+    INVOICING_ENABLED: boolean
 }
 interface AfipSettings {
     SALES_POINT: number,

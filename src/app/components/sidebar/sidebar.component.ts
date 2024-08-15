@@ -51,6 +51,7 @@ export const ROUTES: RouteInfo[] = [
 ];
 
 const local= new BehaviorSubject<{name:string,address:string,email:string}>({name:'-',address:'-',email:'-'})
+const menuItems$: Subject<any[]> = new Subject<any[]>();
 
 @Component({
   selector: "app-sidebar",
@@ -58,41 +59,20 @@ const local= new BehaviorSubject<{name:string,address:string,email:string}>({nam
   styleUrls: ["./sidebar.component.css"]
 })
 export class SidebarComponent implements OnInit {
-  menuItems: any[];
+  mItems = menuItems$
   local = local
   constructor(
     private webService:WebService
   ) {
-    var localName:string|null = localStorage.getItem('localName')
-    var localAddress:string|null = localStorage.getItem('localAddress')
-    var localEmail:string|null = localStorage.getItem('localEmail')
-    if(!localName){
-      this.webService.getCompanySettings().then(res=>{
-        localName= res.LOCAL_NAME
-        localAddress = res.LOCAL_ADDRESS
-        localEmail = res.COMPANY_MAIL
-        localStorage.setItem('localName',localName)
-        localStorage.setItem('localAddress',localAddress)
-        localStorage.setItem('localEmail',localEmail)
-        SidebarComponent.setLocal(localName,localAddress,localEmail)
-      })
-    }else{
-      local.next(
-        {
-          name:localName,
-          address:localAddress,
-          email:localEmail
-        }
-      )
-    }
+    this.webService.getCompanySettings().then(res=>{
+      SidebarComponent.setLocal(res.LOCAL_NAME, res.LOCAL_ADDRESS, res.COMPANY_MAIL,res.INVOICING_ENABLED)
+    })
   }
 
   ngOnInit() {
-
-    this.menuItems = ROUTES.filter(menuItem => menuItem);
   }
 
-  static setLocal(name:string,address:string,email:string){
+  static setLocal(name:string,address:string,email:string,inv_enabled:boolean){
     local.next({
       name:name,
       address:address,
@@ -101,6 +81,13 @@ export class SidebarComponent implements OnInit {
     localStorage.setItem('localName',name)
     localStorage.setItem('localAddress',address)
     localStorage.setItem('localEmail',email)
+    if(inv_enabled){
+      sessionStorage.setItem('INV_ENABLED',"1")
+      menuItems$.next(ROUTES)
+    }else{
+      sessionStorage.removeItem('INV_ENABLED')
+      menuItems$.next(ROUTES.filter(item=>item.path!='/invoices'))
+    }
   }
   isMobileMenu() {
     if (window.innerWidth > 991) {
