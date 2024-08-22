@@ -5,6 +5,8 @@
     "Dashboard",
     "Employee",
     "Settings",
-    "UI"
+    "UI",
+    "Devices",
+    "Auth"
   ]
 }
