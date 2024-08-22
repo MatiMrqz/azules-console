@@ -14,7 +14,7 @@
                                         <label for="floatingInput">Email</label>
                                         <input [(ngModel)]="mail" name="email" type="email" class="form-control"
                                         id="floatingInput" placeholder="mail@ejemplo.com"
-                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required>
+                                         autocomplete="username" required>
                                         <div class="invalid-tooltip">
                                             {{!mail?'Ingrese mail':'Mail inválido'}}
                                         </div>
@@ -22,7 +22,7 @@
                                     <div class="form-label text-left position-relative">
                                         <label for="floatingPassword">Contraseña</label>
                                         <input [(ngModel)]="pass" name="password" type="password" class="form-control"
-                                        id="floatingPassword" placeholder="******" required>
+                                        id="floatingPassword" placeholder="******" autocomplete="current-password" required>
                                         <div class="invalid-tooltip">
                                             Ingrese una contraseña
                                         </div>
