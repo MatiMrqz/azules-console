@@ -17,7 +17,6 @@ import { ComponentsModule } from "./components/components.module";
 import { EmployeeLayoutComponent } from "./layouts/employee-layout/employee-layout.component";
 import { WebModule } from "./services/web.module";
 import { NgxPrinterModule } from "ngx-printer";
-import { OperationSelectorComponent } from "./pages/operation-selector/operation-selector.component";
 import { InvoiceSharedModule } from "./modules/invoice-shared/invoice-shared.module";
 @NgModule({ declarations: [
     AppComponent,

@@ -33,6 +33,7 @@ import { EditPosComponent } from "src/app/modals/pos/edit/edit.component";
 import { OperationEditComponent } from "src/app/pages/operation-edit/operation-edit.component";
 import { OperationDetailComponent } from "src/app/pages/operation-detail/operation-detail.component";
 import { OperationSelectorComponent } from "src/app/pages/operation-selector/operation-selector.component";
+import { QRCodeModule } from "angularx-qrcode";
 
 @NgModule({
   imports: [
@@ -41,6 +42,7 @@ import { OperationSelectorComponent } from "src/app/pages/operation-selector/ope
     FormsModule,
     NgbModule,
     ClipboardModule,
+    QRCodeModule
   ],
   declarations: [
     DashboardComponent,

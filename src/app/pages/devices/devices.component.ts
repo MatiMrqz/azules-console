@@ -22,7 +22,6 @@ export class DevicesComponent implements OnInit {
   public isLoading: boolean = true;
   public urlDevice: string = '';
   public wspLink: string = '';
-  public qrSrc: string = null;
 
   public async updateDevices() {
     this.isLoading = true
@@ -55,8 +54,7 @@ export class DevicesComponent implements OnInit {
     this.webService.generateAuthorization()
       .then((res) => {
         this.urlDevice = `${environment.fBaseUrl}#/auth/device/${res.authToken}`
-        this.qrSrc = encodeURIComponent(`${environment.fBaseUrl}#/auth/device/${res.authToken}`)
-        this.wspLink = `https://wa.me/?text=${encodeURI('Link para autorizar nuevo dispositivo: ')+this.qrSrc}`
+        this.wspLink = `https://wa.me/?text=${encodeURI('Link para autorizar nuevo dispositivo: ')+encodeURIComponent(this.urlDevice)}`
         console.debug({ next: this.urlDevice })
       })
       .then(() => {

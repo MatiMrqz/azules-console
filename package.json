@@ -34,6 +34,7 @@
     "@angular/router": "18.0.6",
     "@ng-bootstrap/ng-bootstrap": "^17.0.0",
     "@popperjs/core": "^2.11.8",
+    "angularx-qrcode": "^18.0.1",
     "base64-js": "^1.5.1",
     "canvas": "^2.11.2",
     "chart.js": "^2.9.4",

@@ -91,7 +91,7 @@
         <button type="button" class="btn-close btn btn-link" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
     </div>
     <div class="modal-body text-center">
-        <img src="https://chart.googleapis.com/chart?chs=300x300&amp;choe=UTF-8&amp;cht=qr&amp;chl={{qrSrc}}" />
+        <qrcode [qrdata]="urlDevice" [width]="300" [errorCorrectionLevel]="'M'"></qrcode>
         <p class="text-light">
             Escanee el código en el dispositivo que desea autorizar. Una vez autorizado tendrá acceso al sistema.
         </p>
