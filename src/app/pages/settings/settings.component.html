@@ -74,36 +74,6 @@
                                 Campo requerido. Solo valores numéricos.
                             </div>
                         </div>
-                        <div class="card-header pt-0">
-                            <h4 class="m-0">Surtidores</h4>
-                        </div>
-                        <div class="border border-light rounded p-3 m-1">
-                            <div class="form-group">
-                                <label for="pumps_percent">Porcentaje a facturar</label>
-                                <input type="number" inputmode="numeric" name="AI_PUMPS_INV_RATIO" [ngModel]="auto.AI_PUMPS_INV_RATIO" class="form-control" id="pumps_percent" aria-describedby="pumps_percent" required>
-                                <div class="invalid-tooltip">
-                                    Sólo se admiten números entre 5 y 100
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="pump_min_threshold">Monto mínimo requerido para emitir factura</label>
-                                <input type="number" inputmode="numeric" name="AI_PUMPS_INV_MIN_THRESHOLD" [ngModel]="auto.AI_PUMPS_INV_MIN_THRESHOLD" class="form-control" id="pump_min_threshold" required>
-                                <div class="invalid-tooltip">
-                                    Campo requerido. Solo valores numéricos.
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="auto_max_amount">IVA</label>
-                                <select name="AI_PUMPS_ALIQUOT_TYPE" class="custom-select" id="aliquot" required [ngModel]="auto.AI_PUMPS_ALIQUOT_TYPE">
-                                    <option selected disabled value="" hidden>Seleccionar</option>
-                                    <option *ngFor="let a of aliquots" [value]="a.Id">{{a.Desc}}</option>
-                                  </select>
-
-                                <div class="invalid-tooltip">
-                                    Campo requerido.
-                                </div>
-                            </div>
-                        </div>
                         <div class="card-header">
                             <h4 class="m-0">Productos</h4>
                         </div>
