@@ -28,7 +28,7 @@ export class OperationDetailComponent implements OnInit {
   }
   public accTotalAmount(): number {
     let acc = this.operationDetail.accountancy
-    return +acc.MercadoPago + +acc.cards + +acc.cash + +acc.envelopes_cash + +acc.others + +acc.expenses + +acc.vouchers
+    return +acc.cash + +acc.cashbacks + +acc.vouchers + +acc.mp_transf + +acc.recharges + +acc.pays_upfront + +acc.others
   }
   public print(template: TemplateRef<HTMLTemplateElement>) {
     this.printerService.printAngular(template)

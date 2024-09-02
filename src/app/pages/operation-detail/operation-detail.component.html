@@ -197,17 +197,6 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr
-                                                    [ngClass]="{'table-success':+operationDetail.accountancy.envelopes_cash>0}">
-                                                    <td>Sobres</td>
-                                                    <td class="cell-ellipsis d-none d-lg-table-cell"
-                                                        style="--mw:150px;">Nº de sobres/Total entregado</td>
-                                                    <td>
-                                                        <div>
-                                                            {{operationDetail.accountancy.n_envelopes}}/{{operationDetail.accountancy.envelopes_cash|currency:'ARS'}}
-                                                        </div>
-                                                    </td>
-                                                </tr>
                                                 <tr [ngClass]="{'table-success':+operationDetail.accountancy.cash>0}">
                                                     <td>Efectivo</td>
                                                     <td class="cell-ellipsis d-none d-lg-table-cell"
@@ -217,8 +206,16 @@
                                                     <td>{{operationDetail.accountancy.cash|currency:'ARS'}}
                                                     </td>
                                                 </tr>
+                                                <tr [ngClass]="{'table-success':+operationDetail.accountancy.mp_transf>0}">
+                                                    <td>MPago/Transf</td>
+                                                    <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                                                        MercadoPago/Transferencias
+                                                    </td>
+                                                    <td>{{operationDetail.accountancy.mp_transf|currency:'ARS'}}
+                                                    </td>
+                                                </tr>
                                                 <tr
-                                                    [ngClass]="{'table-success':+operationDetail.accountancy.envelopes_cash>0}">
+                                                    [ngClass]="{'table-success':+operationDetail.accountancy.vouchers>0}">
                                                     <td>Vales</td>
                                                     <td class="cell-ellipsis d-none d-lg-table-cell"
                                                         style="--mw:150px;">
@@ -227,32 +224,32 @@
                                                     <td>{{operationDetail.accountancy.vouchers|currency:'ARS'}}
                                                     </td>
                                                 </tr>
-                                                <tr [ngClass]="{'table-success':+operationDetail.accountancy.cards>0}">
-                                                    <td>Tarjetas</td>
+                                                <tr [ngClass]="{'table-success':+operationDetail.accountancy.cashbacks>0}">
+                                                    <td>Devoluciones</td>
                                                     <td class="cell-ellipsis d-none d-lg-table-cell"
                                                         style="--mw:150px;">
-                                                        Crédito/Débito</td>
-                                                    <td>{{operationDetail.accountancy.cards|currency:'ARS'}}
+                                                        Devoluciones</td>
+                                                    <td>{{operationDetail.accountancy.cashbacks|currency:'ARS'}}
                                                     </td>
                                                 </tr>
                                                 <tr
-                                                    [ngClass]="{'table-success':+operationDetail.accountancy.expenses>0}">
-                                                    <td>Gastos</td>
+                                                    [ngClass]="{'table-success':+operationDetail.accountancy.recharges>0}">
+                                                    <td>Recargas</td>
                                                     <td class="cell-ellipsis d-none d-lg-table-cell"
                                                         style="--mw:150px;">
-                                                        Retiros
+                                                        Recargas L. Tradicional
                                                     </td>
-                                                    <td>{{operationDetail.accountancy.expenses|currency:'ARS'}}
+                                                    <td>{{operationDetail.accountancy.recharges|currency:'ARS'}}
                                                     </td>
                                                 </tr>
                                                 <tr
-                                                    [ngClass]="{'table-success':+operationDetail.accountancy.MercadoPago>0}">
-                                                    <td>MPago</td>
+                                                    [ngClass]="{'table-success':+operationDetail.accountancy.pays_upfront>0}">
+                                                    <td>Pagos/Adelantos</td>
                                                     <td class="cell-ellipsis d-none d-lg-table-cell"
                                                         style="--mw:150px;">
-                                                        MercadoPago
+                                                        Pagos o adelantos
                                                     </td>
-                                                    <td>{{operationDetail.accountancy.MercadoPago|currency:'ARS'}}
+                                                    <td>{{operationDetail.accountancy.pays_upfront|currency:'ARS'}}
                                                     </td>
                                                 </tr>
                                                 <tr [ngClass]="{'table-success':+operationDetail.accountancy.others>0}">
@@ -426,21 +423,19 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>Sobres</td>
-                    <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">Nº de sobres/Total entregado
-                    </td>
-                    <td>
-                        <div>
-                            {{operationDetail.accountancy.n_envelopes}}/{{operationDetail.accountancy.envelopes_cash|currency:'ARS'}}
-                        </div>
-                    </td>
-                </tr>
-                <tr>
                     <td>Efectivo</td>
                     <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                         Dinero en efectivo
                     </td>
                     <td>{{operationDetail.accountancy.cash|currency:'ARS'}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>MP/Transf</td>
+                    <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
+                        MercadoPago/Transferencias
+                    </td>
+                    <td>{{operationDetail.accountancy.mp_transf|currency:'ARS'}}
                     </td>
                 </tr>
                 <tr>
@@ -452,26 +447,26 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Tarjetas</td>
+                    <td>Devoluciones</td>
                     <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
-                        Crédito/Débito</td>
-                    <td>{{operationDetail.accountancy.cards|currency:'ARS'}}
+                        Devoluciones</td>
+                    <td>{{operationDetail.accountancy.cashbacks|currency:'ARS'}}
                     </td>
                 </tr>
                 <tr>
-                    <td>Gastos</td>
+                    <td>Recargas</td>
                     <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
-                        Retiros
+                        Recargas L. Tradicional
                     </td>
-                    <td>{{operationDetail.accountancy.expenses|currency:'ARS'}}
+                    <td>{{operationDetail.accountancy.recharges|currency:'ARS'}}
                     </td>
                 </tr>
                 <tr>
-                    <td>MPago</td>
+                    <td>Pagos/Adelantos</td>
                     <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
-                        MercadoPago
+                        Pagos o adelantos
                     </td>
-                    <td>{{operationDetail.accountancy.MercadoPago|currency:'ARS'}}
+                    <td>{{operationDetail.accountancy.pays_upfront|currency:'ARS'}}
                     </td>
                 </tr>
                 <tr>

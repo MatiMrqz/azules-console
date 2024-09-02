@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, Pipe, PipeTransform, signal } from '@angular/core';
+import { Component, HostListener, OnInit, Pipe, PipeTransform, signal, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NewInvoiceComponent } from 'src/app/modals/new-invoice/new-invoice.component';
@@ -30,7 +30,7 @@ export class CloseTurnComponent implements OnInit {
     return false;
   }
   @HostListener('window:unload', ['$event'])
-  public tempData: { acc: TempData, posop:TempData, products: TempData }
+  public tempData: { acc: TempData, posop: TempData, products: TempData }
   public turn: { name: string, schedule: string }
   public employee: { uuid: string, uname: string } = { uname: '-', uuid: '' }
   public saving: boolean = false
@@ -42,24 +42,26 @@ export class CloseTurnComponent implements OnInit {
   public isLoading: boolean = true
   public acc: {
     cash: number,
-    envelopes_cash: number,
-    n_envelopes: number,
-    cards: number,
+    cashbacks: number,
     vouchers: number,
-    MercadoPago: number,
-    expenses: number,
+    mp_transf: number,
+    recharges: number,
+    pays_upfront: number,
     others: number,
     cash_v?: boolean,
-    envelopes_cash_v?: boolean,
-    n_envelopes_v?: boolean,
-    cards_v?: boolean,
+    cashbacks_v?: boolean,
     vouchers_v?: boolean,
-    MercadoPago_v?: boolean,
-    expenses_v?: boolean,
+    mp_transf_v?: boolean,
+    recharges_v?: boolean,
+    pays_upfront_v: boolean,
     others_v?: boolean
   }
+
+  public pin = signal("")
+  public observation = signal("")
+  public savingDisabled: boolean = true
   public invoicingEnabled = signal(false)
-  public serverResponse: any = { error: null, msg:'Realizando cierre de turno.' }
+  public serverResponse: any = { error: null, msg: 'Realizando cierre de turno.' }
 
   constructor(
     private webService: WebService,
@@ -73,13 +75,12 @@ export class CloseTurnComponent implements OnInit {
     })
     this.acc = this.getTemp('ACC') ?? {
       cash: null,
-      envelopes_cash: null,
-      n_envelopes: null,
-      cards: null,
+      cashbacks: null,
       vouchers: null,
-      MercadoPago: null,
-      expenses: null,
-      others: null
+      mp_transf: null,
+      recharges: null,
+      pays_upfront: null,
+      others: null,
     }
     this.tempData = this.getTemp('TEMP') ?? { acc: { done: 0, accumulated: 0 }, products: { done: 0, accumulated: 0 }, posop: { done: 0, accumulated: 0 } }
   }
@@ -160,14 +161,34 @@ export class CloseTurnComponent implements OnInit {
     Object.values(this.acc).forEach(v => {
       if (typeof v == 'boolean' && v === true) done++
     })
-    this.tempData.acc = { done, accumulated: (+ this.acc.MercadoPago + this.acc.cards + this.acc.cash + this.acc.envelopes_cash + this.acc.others + this.acc.expenses + this.acc.vouchers) }
+    this.tempData.acc = { done, accumulated: (+ this.acc.mp_transf + this.acc.cashbacks + this.acc.cash + this.acc.others + this.acc.recharges + this.acc.vouchers) }
     this.storeTemp('ACC', this.acc)
     this.storeTemp('TEMP', this.tempData)
     return
   }
-  public saveDisabled(val?: string): boolean {
-    const status = !!val && (this.tempData.posop.done == this.PoS.length) && (this.tempData.products.done == this.products.filter(p => p.hidden == false).length) && (this.tempData.acc.done == 8)
-    return !status
+
+  public formErrorMsgs(): string {
+    const val = this.pin()
+    const obs = this.observation()
+    if (this.acc.pays_upfront > 0 && !obs.length) {
+      this.savingDisabled = true
+      return 'Rendición:Pagos/Adelantos requiere una observación'
+    }
+    if (this.acc.others > 0 && !obs.length) {
+      this.savingDisabled = true
+      return 'Rendición:Otros requiere una observación'
+    }
+    const status = (this.tempData.posop.done == this.PoS.length) && (this.tempData.products.done == this.products.filter(p => p.hidden == false).length) && (this.tempData.acc.done == 7)
+    if (!status) {
+      this.savingDisabled = true
+      return 'Planilla incompleta'
+    }
+    if (val.length < 4) {
+      this.savingDisabled = true
+      return 'Ingrese pin'
+    }
+    this.savingDisabled = false
+    return ''
   }
   public storeClosingShift(observations: string, pass: string, content) {
     this.saving = true
@@ -191,29 +212,28 @@ export class CloseTurnComponent implements OnInit {
     }).filter(Boolean)
     const accountancy = {
       cash: this.acc.cash,
-      envelopes_cash: this.acc.envelopes_cash,
-      n_envelopes: this.acc.n_envelopes,
-      cards: this.acc.cards,
+      cashbacks: this.acc.cashbacks,
       vouchers: this.acc.vouchers,
-      MercadoPago: this.acc.MercadoPago,
-      expenses: this.acc.expenses,
+      mp_transf: this.acc.mp_transf,
+      recharges: this.acc.recharges,
+      pays_upfront: this.acc.pays_upfront,
       others: this.acc.others
     }
-    this.serverResponse={ error: null, msg:'Realizando cierre de turno...' }
+    this.serverResponse = { error: null, msg: 'Realizando cierre de turno...' }
     this.webService.shiftClosingDev({ employee: { uuid: this.employee.uuid, pass }, helper_id: (this.helperSelected ? this.helperSelected.uuid : null), posop_operations, product_operations, accountancy, turn: this.turn, observations })
       .then(res => {
         this.cleanTemp()
         this.serverResponse = { ...res, observations, accountancy }
         this.saving = false
-        if(this.invoicingEnabled()){
+        if (this.invoicingEnabled()) {
           this.print()
-        }else{
-          this.serverResponse = { ...this.serverResponse,...{ msg: 'Operación registrada', error: 4 } }
+        } else {
+          this.serverResponse = { ...this.serverResponse, ...{ msg: 'Operación registrada', error: 4 } }
         }
       })
       .catch((err) => {
         this.saving = false
-        if (err instanceof(Error)) {
+        if (err instanceof (Error)) {
           this.serverResponse = { error: 1, msg: err.message }
         } else {
           if (err.includes('password')) this.serverResponse = { error: 1, msg: 'Contraseña incorrecta. Intente nuevamente.' }
@@ -235,23 +255,23 @@ export class CloseTurnComponent implements OnInit {
   }
 
   public print() {
-    this.serverResponse = { ...this.serverResponse,...{ msg: 'Imprimiendo comprobante...', error: null } }
+    this.serverResponse = { ...this.serverResponse, ...{ msg: 'Imprimiendo comprobante...', error: null } }
     console.log(this.serverResponse)
     this.escposService.printShiftSummary(this.serverResponse.id, this.turn, this.employee, (this.helperSelected ?? null), this.serverResponse.emitter, this.products, this.serverResponse.accountancy, { accountancy: this.tempData.acc.accumulated, products: this.tempData.products.accumulated, posop: this.tempData.posop.accumulated }, this.serverResponse.nInvoicesDone, this.serverResponse.observations)
-    .then(res => {
-      if (res.success) {
-        this.serverResponse = { ...this.serverResponse,...{ msg: 'Impresion finalizada', error: 2 } }
-      } else {
-        this.serverResponse = { ...this.serverResponse,...{ msg: 'Error al imprimir: ' + res.data, error: 3 } }
-      }
-    })
-    .catch((err) => {
-      if (err instanceof (Error)) {
-        this.serverResponse = { ...this.serverResponse,...{ msg: 'Error de comunicación con impresora:' + err.message, error:3 } }
-      } else {
-        this.serverResponse = { ...this.serverResponse,...{ msg: 'Error de comunicación con impresora:' + err, error:3 } }
-      }
-    })
+      .then(res => {
+        if (res.success) {
+          this.serverResponse = { ...this.serverResponse, ...{ msg: 'Impresion finalizada', error: 2 } }
+        } else {
+          this.serverResponse = { ...this.serverResponse, ...{ msg: 'Error al imprimir: ' + res.data, error: 3 } }
+        }
+      })
+      .catch((err) => {
+        if (err instanceof (Error)) {
+          this.serverResponse = { ...this.serverResponse, ...{ msg: 'Error de comunicación con impresora:' + err.message, error: 3 } }
+        } else {
+          this.serverResponse = { ...this.serverResponse, ...{ msg: 'Error de comunicación con impresora:' + err, error: 3 } }
+        }
+      })
   }
 
   public continueButton() {

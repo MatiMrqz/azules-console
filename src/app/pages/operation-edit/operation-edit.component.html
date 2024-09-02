@@ -226,25 +226,6 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr
-                                                        [ngClass]="{'table-danger':(acc.n_envelopes_v&&acc.envelopes_cash_v)===false,'table-success':(acc.n_envelopes_v&&acc.envelopes_cash_v)===true}">
-                                                        <td>Sobres</td>
-                                                        <td class="cell-ellipsis d-none d-lg-table-cell"
-                                                            style="--mw:150px;">Nº de sobres/Total entregado</td>
-                                                        <td>
-                                                            <div class="row justify-content-center">
-                                                                <input [(ngModel)]="acc.n_envelopes" inputmode="numeric"
-                                                                    type="number" min="0" class="form-control col-3"
-                                                                    (input)="acc.n_envelopes_v=acc.n_envelopes>=0 && acc.n_envelopes!=null;accDoneUpdate()"
-                                                                    placeholder="NºSobres">
-                                                                <input [(ngModel)]="acc.envelopes_cash"
-                                                                    inputmode="numeric" type="number" min="0"
-                                                                    class="form-control col-8"
-                                                                    (input)="acc.envelopes_cash_v=acc.envelopes_cash>=0 && acc.envelopes_cash!=null;accDoneUpdate()"
-                                                                    placeholder="$">
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr
                                                         [ngClass]="{'table-danger':acc.cash_v===false,'table-success':acc.cash_v===true}">
                                                         <td>Efectivo</td>
                                                         <td class="cell-ellipsis d-none d-lg-table-cell"
@@ -254,6 +235,18 @@
                                                         <td><input [(ngModel)]="acc.cash" inputmode="numeric"
                                                                 type="number" min="0" class="form-control"
                                                                 (input)="acc.cash_v=acc.cash>=0 && acc.cash!=null;accDoneUpdate()">
+                                                        </td>
+                                                    </tr>
+                                                    <tr
+                                                        [ngClass]="{'table-danger':acc.mp_transf_v===false,'table-success':acc.mp_transf_v===true}">
+                                                        <td>MP/Transf</td>
+                                                        <td class="cell-ellipsis d-none d-lg-table-cell"
+                                                            style="--mw:150px;">
+                                                            MercadoPago/Transferencias
+                                                        </td>
+                                                        <td><input [(ngModel)]="acc.mp_transf" inputmode="numeric"
+                                                                type="number" min="0" class="form-control"
+                                                                (input)="acc.mp_transf_v=acc.mp_transf>=0 && acc.mp_transf!=null;accDoneUpdate()">
                                                         </td>
                                                     </tr>
                                                     <tr
@@ -269,38 +262,38 @@
                                                         </td>
                                                     </tr>
                                                     <tr
-                                                        [ngClass]="{'table-danger':acc.cards_v===false,'table-success':acc.cards_v===true}">
-                                                        <td>Tarjetas</td>
+                                                        [ngClass]="{'table-danger':acc.cashbacks_v===false,'table-success':acc.cashbacks_v===true}">
+                                                        <td>Devoluciones</td>
                                                         <td class="cell-ellipsis d-none d-lg-table-cell"
                                                             style="--mw:150px;">
-                                                            Crédito/Débito</td>
-                                                        <td><input [(ngModel)]="acc.cards" inputmode="numeric"
+                                                            Devoluciones</td>
+                                                        <td><input [(ngModel)]="acc.cashbacks" inputmode="numeric"
                                                                 type="number" min="0" class="form-control"
-                                                                (input)="acc.cards_v=acc.cards>=0 && acc.cards!=null;accDoneUpdate()">
+                                                                (input)="acc.cashbacks_v=acc.cashbacks>=0 && acc.cashbacks!=null;accDoneUpdate()">
                                                         </td>
                                                     </tr>
                                                     <tr
-                                                        [ngClass]="{'table-danger':acc.expenses_v===false,'table-success':acc.expenses_v===true}">
-                                                        <td>Gastos</td>
+                                                        [ngClass]="{'table-danger':acc.recharges_v===false,'table-success':acc.recharges_v===true}">
+                                                        <td>Recargas</td>
                                                         <td class="cell-ellipsis d-none d-lg-table-cell"
                                                             style="--mw:150px;">
-                                                            Retiros
+                                                            Recargas L. Tradicional
                                                         </td>
-                                                        <td><input [(ngModel)]="acc.expenses" inputmode="numeric"
+                                                        <td><input [(ngModel)]="acc.recharges" inputmode="numeric"
                                                                 type="number" min="0" class="form-control"
-                                                                (input)="acc.expenses_v=acc.expenses>=0 && acc.expenses!=null;accDoneUpdate()">
+                                                                (input)="acc.recharges_v=acc.recharges>=0 && acc.recharges!=null;accDoneUpdate()">
                                                         </td>
                                                     </tr>
                                                     <tr
-                                                        [ngClass]="{'table-danger':acc.MercadoPago_v===false,'table-success':acc.MercadoPago_v===true}">
-                                                        <td>MPago</td>
+                                                        [ngClass]="{'table-danger':acc.pays_upfront_v===false,'table-success':acc.pays_upfront_v===true}">
+                                                        <td>Pagos/Adelantos</td>
                                                         <td class="cell-ellipsis d-none d-lg-table-cell"
                                                             style="--mw:150px;">
-                                                            MercadoPago
+                                                            Pagos o adelantos
                                                         </td>
-                                                        <td><input [(ngModel)]="acc.MercadoPago" inputmode="numeric"
+                                                        <td><input [(ngModel)]="acc.pays_upfront" inputmode="numeric"
                                                                 type="number" min="0" class="form-control"
-                                                                (input)="acc.MercadoPago_v=acc.MercadoPago>=0 && acc.MercadoPago!=null;accDoneUpdate()">
+                                                                (input)="acc.pays_upfront_v=acc.pays_upfront>=0 && acc.pays_upfront!=null;accDoneUpdate()">
                                                         </td>
                                                     </tr>
                                                     <tr

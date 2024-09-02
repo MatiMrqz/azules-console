@@ -162,13 +162,12 @@ interface Turns {
 }
 interface DetailAccountancy {
     cash: number,
-    envelopes_cash: number,
-    n_envelopes: number,
-    cards: number,
-    MercadoPago: number,
+    cashbacks: number,
     vouchers: number,
-    expenses: number,
-    others: number
+    mp_transf: number,
+    recharges: number,
+    pays_upfront: number,
+    others: number,
 }
 interface OperationBackup {
     backup_operation_id: number,
