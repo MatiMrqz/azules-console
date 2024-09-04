@@ -88,7 +88,7 @@ export class OperationEditComponent implements OnInit {
     this.posop.forEach(p => {
       if (p.validated) {
         done++
-        accumulated += +p.unit_price * +p.sales_in - +p.sales_out
+        accumulated += +p.unit_price * +p.sales_in
       }
     })
     this.tempData.posop = { done, accumulated }
@@ -107,7 +107,7 @@ export class OperationEditComponent implements OnInit {
     if (item.init_checkout == null || item.sales_in == null || item.sales_out == null || +item.sales_in < 0 || +item.sales_out < 0) {
       item.validated = false
     } else {
-      item.amount_sold = ((+item.sales_in - +item.sales_out) * (+item.unit_price)).toString()
+      item.amount_sold = ((+item.sales_in) * (+item.unit_price)).toString()
       item.validated = Boolean(Object.values(item))
     }
     this.refreshDonePoS()

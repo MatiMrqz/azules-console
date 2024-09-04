@@ -134,7 +134,7 @@ export class CloseTurnComponent implements OnInit {
     this.PoS.forEach(p => {
       if (p.validated) {
         done++
-        accumulated += p.unit_price * (p.sales_in - p.sales_out)
+        accumulated += p.unit_price * ( p.sales_in )
       }
     })
     this.tempData.posop = { done, accumulated }
@@ -207,7 +207,7 @@ export class CloseTurnComponent implements OnInit {
     }).filter(Boolean)
     const posop_operations = this.PoS.map(p => {
       if (p.validated) {
-        return { posop_id: p.id, sales_in: p.sales_in, sales_out: p.sales_out, unit_price: p.unit_price }
+        return { posop_id: p.id, sales_in: p.sales_in, sales_out: p.sales_in, unit_price: p.unit_price } //Se iguala salida a entrada para caja=0 siempre
       }
     }).filter(Boolean)
     const accountancy = {

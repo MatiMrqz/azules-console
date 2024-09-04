@@ -61,11 +61,11 @@
                                                     <tr>
                                                         <th class="col-2 col-lg-1">Nombre</th>
                                                         <th class="col-1 d-none d-lg-table-cell">Descripción</th>
-                                                        <th class="col-2 text-center">Inicial</th>
+                                                        <!-- <th class="col-2 text-center">Inicial</th> -->
                                                         <th class="col-2 text-center">Entrada</th>
-                                                        <th class="col-2 text-center">Salida</th>
+                                                        <!-- <th class="col-2 text-center">Salida</th> -->
                                                         <th class="col-2 text-center">Resultado</th>
-                                                        <th class="col-2 text-center">Caja</th>
+                                                        <!-- <th class="col-2 text-center">Caja</th> -->
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -79,27 +79,27 @@
                                                             class="set-max-width" style="--mw:200px" #outerItem> <span
                                                                 #innerItem>{{item.description}}</span>
                                                         </td>
-                                                        <td class=" text-center">
+                                                        <!-- <td class=" text-center">
                                                             <input [(ngModel)]="item.init_checkout" inputmode="numeric"
                                                                 type="number" min="0" class="form-control"
                                                                 (input)="calcPos(item)">
-                                                        </td>
+                                                        </td> -->
                                                         <td>
                                                             <input [(ngModel)]="item.sales_in" inputmode="numeric"
                                                                 type="number" min="0" class="form-control"
                                                                 (input)="calcPos(item)">
                                                         </td>
-                                                        <td>
+                                                        <!-- <td>
                                                             <input [(ngModel)]="item.sales_out" inputmode="numeric"
                                                                 type="number" min="0" class="form-control"
                                                                 (input)="calcPos(item)">
-                                                        </td>
+                                                        </td> -->
                                                         <td class=" text-center">
                                                             {{(item.amount_sold)|currency:'ARS'}}
                                                         </td>
-                                                        <td class=" text-center">
-                                                            {{(+item.init_checkout + +item.amount_sold)|currency:'ARS'}}
-                                                        </td>
+                                                        <!-- <td class=" text-center">
+                                                            {{( +item.amount_sold)|currency:'ARS'}}
+                                                        </td> -->
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -195,14 +195,14 @@
                                     <div class="d-flex align-items-center">
                                         <div>
                                             <i class="fa-2x"
-                                                [ngClass]="{'fa-square fa-regular':tempData.acc.done!=8,'fa-square-check fa-solid text-muted':tempData.acc.done==8}"></i>
+                                                [ngClass]="{'fa-square fa-regular':tempData.acc.done!=7,'fa-square-check fa-solid text-muted':tempData.acc.done==7}"></i>
                                         </div>
                                         <div class="mx-3">
                                             <p class="text-dark title"
-                                                [ngClass]="{'text-through text-muted':tempData.acc.done==8}">
+                                                [ngClass]="{'text-through text-muted':tempData.acc.done==7}">
                                                 Rendición</p>
                                             <p class=" text-muted">
-                                                {{tempData.acc.done}}/8
+                                                {{tempData.acc.done}}/7
                                             </p>
                                         </div>
                                         <div class="mx-5">
@@ -374,7 +374,7 @@
                             </div>
                         </div>
                         <button type="submit" class="btn btn-lg btn-block text-dark btn-warning mb-2"
-                            [disabled]="(tempData.products.done!=(products).length||tempData.posop.done!=(posop).length||tempData.acc.done!=8)||f.invalid||saving">
+                            [disabled]="(tempData.products.done!=(products).length||tempData.posop.done!=(posop).length||tempData.acc.done!=7)||f.invalid||saving">
                             <span [ngClass]="{'d-none':!saving}">
                                 <div class="sk-chase" style="font-size: 1.5em;margin-left: -1.5em;">
                                     <div class="sk-chase-dot"></div>

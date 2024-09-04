@@ -59,11 +59,11 @@
                                                 <tr>
                                                     <th class="col-2 col-lg-1">Nombre</th>
                                                     <th class="col-1 d-none d-lg-table-cell">Descripción</th>
-                                                    <th class="col-2 text-center">Inicial</th>
+                                                    <!-- <th class="col-2 text-center">Inicial</th>
                                                     <th class="col-2 text-center">Entrada</th>
-                                                    <th class="col-2 text-center">Salida</th>
+                                                    <th class="col-2 text-center">Salida</th> -->
                                                     <th class="col-2 text-center">Resultado</th>
-                                                    <th class="col-2 text-center">Caja</th>
+                                                    <!-- <th class="col-2 text-center">Caja</th> -->
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -76,12 +76,12 @@
                                                     <td class="cell-ellipsis d-none d-lg-table-cell"
                                                         style="--mw:150px;">
                                                         {{!item.description?'-':item.description}}</td>
-                                                    <td class=" text-center">{{item.init_checkout|currency:'ARS'}}</td>
-                                                    <td class=" text-center">{{item.sales_in|number:'1.2-2'}}</td>
-                                                    <td class=" text-center">{{item.sales_out|number:'1.2-2'}}</td>
+                                                    <!-- <td class=" text-center">{{item.init_checkout|currency:'ARS'}}</td> -->
+                                                    <!-- <td class=" text-center">{{item.sales_in|number:'1.2-2'}}</td> -->
+                                                    <!-- <td class=" text-center">{{item.sales_out|number:'1.2-2'}}</td> -->
                                                     <td class=" text-center">{{item.amount_sold??0|currency:'ARS'}}</td>
-                                                    <td class=" text-center">{{( +item.init_checkout + +item.amount_sold)??0|currency:'ARS'}}
-                                                    </td>
+                                                    <!-- <td class=" text-center">{{( +item.init_checkout + +item.amount_sold)??0|currency:'ARS'}}
+                                                    </td> -->
                                                 </tr>
                                             </tbody>
                                         </table>

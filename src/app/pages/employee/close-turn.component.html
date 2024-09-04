@@ -52,31 +52,31 @@
                                         <table class=" table table-fix-head nw-table" id="">
                                             <thead class="thead-dark text-primary">
                                                 <tr>
-                                                    <th class="col-2">Nombre</th>
-                                                    <th class="col-2 text-center">Inicial</th>
-                                                    <th class="col-2 text-center">Entrada</th>
-                                                    <th class="col-2 text-center">Salida</th>
-                                                    <th class="col-2 text-center">Resultado</th>
-                                                    <th class="col-2 text-center">Caja</th>
+                                                    <th class="w-25">Nombre</th>
+                                                    <!-- <th class="col-2 text-center">Inicial</th> -->
+                                                    <th class="w-25 text-center">Entrada</th>
+                                                    <!-- <th class="col-2 text-center">Salida</th>
+                                                    <th class="col-2 text-center">Resultado</th> -->
+                                                    <!-- <th class="col-2 text-center">Caja</th> -->
                                                 </tr>
                                             </thead>
                                             <tbody *ngIf="!isLoading">
                                                 <tr *ngFor="let item of PoS" [ngClass]="{'table-danger':item.validated===false,'table-success':item.validated===true}">
                                                     <td [ngClass]="{'scrolling-text':innerItem.offsetWidth>outerItem.clientWidth}" class="set-max-width" style="--mw:100px" #outerItem> <span #innerItem>{{item.name}}</span>
                                                     </td>
-                                                    <td class=" text-center">{{item.checkout|currency:'ARS'}}</td>
+                                                    <!-- <td class=" text-center">{{item.checkout|currency:'ARS'}}</td> -->
                                                     <td>
-                                                        <input [(ngModel)]="item.sales_in" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=(item.sales_in-item.sales_out)==item.amount_sold && item.sales_in!=null && item.sales_out!=null && item.amount_sold!=null;refreshDonePoS()">
-                                                    </td>
-                                                    <td>
+                                                        <input [(ngModel)]="item.sales_in" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=(item.sales_in >= 0); item.amount_sold = item.sales_in + item.checkout; item.sales_out=0; refreshDonePoS()">
+                                                    </td> 
+                                                    <!-- <td>
                                                         <input [(ngModel)]="item.sales_out" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=(item.sales_in-item.sales_out)==item.amount_sold && item.sales_in!=null && item.sales_out!=null && item.amount_sold!=null;refreshDonePoS()">
                                                     </td>
                                                     <td>
                                                         <input [(ngModel)]="item.amount_sold" inputmode="numeric" type="number" min="0" class="form-control" (input)="item.validated=(item.sales_in-item.sales_out)==item.amount_sold && item.sales_in!=null && item.sales_out!=null && item.amount_sold!=null;refreshDonePoS()">
-                                                    </td>
-                                                    <td class=" text-center">
-                                                        {{( +item.amount_sold + +item.checkout)|currency:'ARS'}}
-                                                    </td>
+                                                    </td>-->
+                                                    <!-- <td class=" text-center">
+                                                        {{( +item.sales_in + +item.checkout)|currency:'ARS'}}
+                                                    </td> -->
                                                 </tr>
                                             </tbody>
                                         </table>
