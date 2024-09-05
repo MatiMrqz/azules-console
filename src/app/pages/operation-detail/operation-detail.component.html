@@ -207,7 +207,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr [ngClass]="{'table-success':+operationDetail.accountancy.mp_transf>0}">
-                                                    <td>MPago/Transf</td>
+                                                    <td>MPago/Transf.</td>
                                                     <td class="cell-ellipsis d-none d-lg-table-cell" style="--mw:150px;">
                                                         MercadoPago/Transferencias
                                                     </td>
@@ -219,7 +219,7 @@
                                                     <td>Vales</td>
                                                     <td class="cell-ellipsis d-none d-lg-table-cell"
                                                         style="--mw:150px;">
-                                                        Vales entregados
+                                                        Vales
                                                     </td>
                                                     <td>{{operationDetail.accountancy.vouchers|currency:'ARS'}}
                                                     </td>
@@ -234,7 +234,7 @@
                                                 </tr>
                                                 <tr
                                                     [ngClass]="{'table-success':+operationDetail.accountancy.recharges>0}">
-                                                    <td>Recargas</td>
+                                                    <td>Recargas L. Tradicional</td>
                                                     <td class="cell-ellipsis d-none d-lg-table-cell"
                                                         style="--mw:150px;">
                                                         Recargas L. Tradicional
@@ -244,19 +244,19 @@
                                                 </tr>
                                                 <tr
                                                     [ngClass]="{'table-success':+operationDetail.accountancy.pays_upfront>0}">
-                                                    <td>Pagos/Adelantos</td>
+                                                    <td>Adelantos/Sueldos</td>
                                                     <td class="cell-ellipsis d-none d-lg-table-cell"
                                                         style="--mw:150px;">
-                                                        Pagos o adelantos
+                                                        Adelantos/Sueldos
                                                     </td>
                                                     <td>{{operationDetail.accountancy.pays_upfront|currency:'ARS'}}
                                                     </td>
                                                 </tr>
                                                 <tr [ngClass]="{'table-success':+operationDetail.accountancy.others>0}">
-                                                    <td>Otros</td>
+                                                    <td>Otros gastos</td>
                                                     <td class="cell-ellipsis d-none d-lg-table-cell"
                                                         style="--mw:150px;">
-                                                        Ingreso
+                                                        Otros gastos
                                                     </td>
                                                     <td>{{operationDetail.accountancy.others|currency:'ARS'}}
                                                     </td>

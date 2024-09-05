@@ -239,7 +239,7 @@
                                                     </tr>
                                                     <tr
                                                         [ngClass]="{'table-danger':acc.mp_transf_v===false,'table-success':acc.mp_transf_v===true}">
-                                                        <td>MP/Transf</td>
+                                                        <td>MPago/Transf.</td>
                                                         <td class="cell-ellipsis d-none d-lg-table-cell"
                                                             style="--mw:150px;">
                                                             MercadoPago/Transferencias
@@ -254,7 +254,7 @@
                                                         <td>Vales</td>
                                                         <td class="cell-ellipsis d-none d-lg-table-cell"
                                                             style="--mw:150px;">
-                                                            Vales entregados
+                                                            Vales
                                                         </td>
                                                         <td><input [(ngModel)]="acc.vouchers" inputmode="numeric"
                                                                 type="number" min="0" class="form-control"
@@ -274,7 +274,7 @@
                                                     </tr>
                                                     <tr
                                                         [ngClass]="{'table-danger':acc.recharges_v===false,'table-success':acc.recharges_v===true}">
-                                                        <td>Recargas</td>
+                                                        <td>Recargas L. Tradicional</td>
                                                         <td class="cell-ellipsis d-none d-lg-table-cell"
                                                             style="--mw:150px;">
                                                             Recargas L. Tradicional
@@ -286,10 +286,10 @@
                                                     </tr>
                                                     <tr
                                                         [ngClass]="{'table-danger':acc.pays_upfront_v===false,'table-success':acc.pays_upfront_v===true}">
-                                                        <td>Pagos/Adelantos</td>
+                                                        <td>Adelantos/Sueldos</td>
                                                         <td class="cell-ellipsis d-none d-lg-table-cell"
                                                             style="--mw:150px;">
-                                                            Pagos o adelantos
+                                                            Adelantos/Sueldos
                                                         </td>
                                                         <td><input [(ngModel)]="acc.pays_upfront" inputmode="numeric"
                                                                 type="number" min="0" class="form-control"
@@ -298,10 +298,10 @@
                                                     </tr>
                                                     <tr
                                                         [ngClass]="{'table-danger':acc.others_v===false,'table-success':acc.others_v===true}">
-                                                        <td>Otros</td>
+                                                        <td>Otros gastos</td>
                                                         <td class="cell-ellipsis d-none d-lg-table-cell"
                                                             style="--mw:150px;">
-                                                            Ingreso
+                                                            Otros gastos
                                                         </td>
                                                         <td><input [(ngModel)]="acc.others" inputmode="numeric"
                                                                 type="number" min="0" class="form-control"
