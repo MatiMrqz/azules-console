@@ -19,6 +19,11 @@ export const ROUTES: RouteInfo[] = [
     icon: "fa-solid fa-business-time",
   },
   {
+    path: "/reports",
+    title: "Reportes",
+    icon: "fa-solid fa-folder-open"
+  },
+  {
     path: "/invoices",
     title: "Facturación",
     icon: "fa-solid fa-receipt",
@@ -50,7 +55,7 @@ export const ROUTES: RouteInfo[] = [
   },
 ];
 
-const local= new BehaviorSubject<{name:string,address:string,email:string}>({name:'-',address:'-',email:'-'})
+const local = new BehaviorSubject<{ name: string, address: string, email: string }>({ name: '-', address: '-', email: '-' })
 const menuItems$: Subject<any[]> = new Subject<any[]>();
 
 @Component({
@@ -62,31 +67,31 @@ export class SidebarComponent implements OnInit {
   mItems = menuItems$
   local = local
   constructor(
-    private webService:WebService
+    private webService: WebService
   ) {
-    this.webService.getCompanySettings().then(res=>{
-      SidebarComponent.setLocal(res.LOCAL_NAME, res.LOCAL_ADDRESS, res.COMPANY_MAIL,res.INVOICING_ENABLED)
+    this.webService.getCompanySettings().then(res => {
+      SidebarComponent.setLocal(res.LOCAL_NAME, res.LOCAL_ADDRESS, res.COMPANY_MAIL, res.INVOICING_ENABLED)
     })
   }
 
   ngOnInit() {
   }
 
-  static setLocal(name:string,address:string,email:string,inv_enabled:boolean){
+  static setLocal(name: string, address: string, email: string, inv_enabled: boolean) {
     local.next({
-      name:name,
-      address:address,
-      email:email
+      name: name,
+      address: address,
+      email: email
     })
-    localStorage.setItem('localName',name)
-    localStorage.setItem('localAddress',address)
-    localStorage.setItem('localEmail',email)
-    if(inv_enabled){
-      sessionStorage.setItem('INV_ENABLED',"1")
+    localStorage.setItem('localName', name)
+    localStorage.setItem('localAddress', address)
+    localStorage.setItem('localEmail', email)
+    if (inv_enabled) {
+      sessionStorage.setItem('INV_ENABLED', "1")
       menuItems$.next(ROUTES)
-    }else{
+    } else {
       sessionStorage.removeItem('INV_ENABLED')
-      menuItems$.next(ROUTES.filter(item=>item.path!='/invoices'))
+      menuItems$.next(ROUTES.filter(item => item.path != '/invoices'))
     }
   }
   isMobileMenu() {

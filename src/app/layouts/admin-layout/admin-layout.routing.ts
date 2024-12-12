@@ -9,6 +9,7 @@ import { OperationsComponent } from "src/app/pages/operations/operations.compone
 import { InvoicesComponent } from "src/app/pages/invoices/invoices.component";
 import { SettingsComponent } from "src/app/pages/settings/settings.component";
 import { PosComponent } from "src/app/pages/pos/pos.component";
+import { ReportsComponent } from "src/app/pages/reports/reports.component";
 
 export const AdminLayoutRoutes: Routes = [
   { path: "dashboard", component: DashboardComponent },
@@ -18,6 +19,7 @@ export const AdminLayoutRoutes: Routes = [
   { path: "devices", component: DevicesComponent },
   { path: "users", component: UsersComponent },
   { path: "operations", component: OperationsComponent },
+  { path: "reports", component: ReportsComponent },
   { path: "invoices", component: InvoicesComponent },
   { path: "settings", component: SettingsComponent },
 ];

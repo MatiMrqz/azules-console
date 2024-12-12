@@ -1387,4 +1387,88 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
+  public async getEmployeesBetweenOperationsDates(fromDate:string,toDate:string): Promise<Array<Pick<Employee,"uuid"|"uname">>> {
+    return fetch(environment.baseUrl + `/operations/employees/betweenDates?from=${encodeURI(fromDate)}&to=${encodeURI(toDate)}`, {
+      method: 'GET',
+      headers: this.headersWithApiandAuth
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })
+  }
+  public async getXlsxReportByEmployee(from:string,to:string,employee:Pick<Employee,"uuid"|"uname">): Promise<Blob> {
+    return fetch(environment.baseUrl + '/operations/report/byemployee/xls', {
+      method: 'POST',
+      body: JSON.stringify({ from, to, employee }),
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.blob()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+      })
+  }
+  public async getXlsxReportGral(from:string,to:string): Promise<Blob> {
+    return fetch(environment.baseUrl + '/operations/report/general/xls', {
+      method: 'POST',
+      body: JSON.stringify({ from, to }),
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.blob()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+      })
+  }
+  public async getReportsArchiveList(): Promise<Array<ArchiveOperations>> {
+    return fetch(environment.baseUrl + '/operations/report/list', {
+      method: 'GET',
+      headers: this.headersWithApiandAuth
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })
+  }
+  public async getReportFile(key: string): Promise<Blob> {
+    return fetch(environment.baseUrl + `/operations/report/file?key=${key}`, {
+      method: 'GET',
+      headers: this.headersWithApiandAuth
+    }).then(
+      async res => {
+        const data = await res.blob()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+      })
+  }
 }

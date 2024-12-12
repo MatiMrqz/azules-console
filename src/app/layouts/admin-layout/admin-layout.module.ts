@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { AdminLayoutRoutes } from "./admin-layout.routing";
 import { DashboardComponent, OpByUname } from "../../pages/dashboard/dashboard.component";
@@ -34,6 +34,9 @@ import { OperationEditComponent } from "src/app/pages/operation-edit/operation-e
 import { OperationDetailComponent } from "src/app/pages/operation-detail/operation-detail.component";
 import { OperationSelectorComponent } from "src/app/pages/operation-selector/operation-selector.component";
 import { QRCodeModule } from "angularx-qrcode";
+import { ReportsComponent } from "src/app/pages/reports/reports.component";
+import { NewReportComponent } from "src/app/pages/reports/new-report/new-report.component";
+import { ArchiveComponent } from "src/app/pages/reports/archive/archive.component";
 
 @NgModule({
   imports: [
@@ -42,7 +45,8 @@ import { QRCodeModule } from "angularx-qrcode";
     FormsModule,
     NgbModule,
     ClipboardModule,
-    QRCodeModule
+    QRCodeModule,
+    ReactiveFormsModule
   ],
   declarations: [
     DashboardComponent,
@@ -72,7 +76,10 @@ import { QRCodeModule } from "angularx-qrcode";
     InvoiceDetailComponent,
     PosComponent,
     NewPosComponent,
-    EditPosComponent
+    EditPosComponent,
+    ReportsComponent,
+    NewReportComponent,
+    ArchiveComponent
   ],
   providers:[]
 })

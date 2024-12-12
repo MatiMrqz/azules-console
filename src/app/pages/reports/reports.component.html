@@ -1,0 +1,8 @@
+<div class="content">
+  <div class="row">
+    <div class="col-12"> 
+      <reports-new-report (reportGenerated)="updateArchiveComponent()"></reports-new-report>
+      <reports-archive [refreshTrigger]="event$|async"></reports-archive>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="card col-lg-12 col-xl-10">
+  <div class="card-header">
+    <div class="display-2">Archivo
+      @if(_loading$|async) {
+      <span style="font-size: 0.5em;">
+      <div class="sk-chase" style="font-size: 1em;">
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+      </div>
+    </span>
+  }
+  </div>
+  </div>
+  <div class="card-body">
+    <div class="col table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Fecha última modificación</th>
+            <th scope="col">Tamaño</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(file of reportsArchivePageItems; track file.name) {
+            <tr>
+              <td>{{file.id}}</td>
+              <td>{{file.name}}</td>
+              <td>{{file.lastModified|date:'short'}}</td>
+              <td>{{file.size|number:'1.0-0'}} KB</td>
+              <td><span style="cursor: pointer;" class="p-1"><a (click)="downloadFile(file)"><i class="fa-solid fa-download text-light pl-1"></i></a></span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-between p-3 flex-wrap">
+      <ngb-pagination [collectionSize]="collectionSize" size="sm" [maxSize]="4" [(page)]="page"
+        [pageSize]="pageSize" (pageChange)="refreshTable()">
+      </ngb-pagination>
+
+      <select class="form-control" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshTable()">
+        <option [ngValue]="5">5 items</option>
+        <option [ngValue]="10">10 items</option>
+        <option [ngValue]="50">50 items</option>
+      </select>
+    </div>
+  </div>
+</div>

@@ -302,3 +302,10 @@ interface PoS{
     description:string
     last_update?: string
 }
+interface ArchiveOperations {
+    name: string
+    key: string
+    lastModified: Date
+    size:number
+    eTag: string
+}
