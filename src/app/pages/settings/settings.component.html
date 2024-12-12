@@ -14,6 +14,36 @@
             <div class="card">
                 <div class="card-header">
                     <div class="display-2">
+                        Generales
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form #gralForm="ngForm" (submit)="passModal(pModal,gralForm.value, 'GRAL')" [ngClass]="{'was-validated':gralForm.invalid&&gralForm.touched}">
+                        <div class="form-group">
+                            <label for="folder">Carpeta Reportes</label>
+                            <input type="text" name="REPORTS_FOLDER" class="form-control" id="folder" aria-describedby="folderName" [ngModel]="gral.REPORTS_FOLDER" required>
+                            <div class="invalid-tooltip">
+                                Campo requerido
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sheetsPass">Contraseña de la hoja de cálculo</label>
+                            <input type="text" name="SHEET_PASS" [ngModel]="gral.SHEET_PASS" class="form-control" id="sheetsPass" aria-describedby="localName" required>
+                            <div class="invalid-tooltip">
+                                Campo requerido
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-neutral" [disabled]="gralForm.pristine||gralForm.invalid">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!isLoading" class="col-12 d-md-inline-block">
+            <div class="card">
+                <div class="card-header">
+                    <div class="display-2">
                         Datos de Sucursal
                     </div>
                 </div>

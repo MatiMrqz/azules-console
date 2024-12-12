@@ -41,13 +41,15 @@ export class NewReportComponent {
     fromDate: new FormControl<NgbDate>(null, [Validators.required, this.validDate()]),
     toDate: new FormControl<NgbDate | null>(null, [Validators.required, this.validDate()]),
     selectedEmployee: new FormControl<Pick<Employee, "uuid" | "uname"> | null>({ value: null, disabled: true }, [this.validEmployee()]),
-    retrieveReportButton: new FormControl({ value: 'Obtener reporte', disabled: true })
+    retrieveReportButton: new FormControl({ value: 'Obtener reporte', disabled: true }),
+    saveCheck: new FormControl(false)
   })
 
   get fromDate() { return this.getReportForm.get('fromDate') }
   get toDate() { return this.getReportForm.get('toDate') }
   get selectedEmployee() { return this.getReportForm.get('selectedEmployee') }
   get retrieveReportButton() { return this.getReportForm.get('retrieveReportButton') }
+  get saveCheck() { return this.getReportForm.get('saveCheck') }
 
   private updateButtonStatus(validForm: boolean, control: AbstractControl) {
     if (validForm && control.disabled) {
@@ -140,7 +142,7 @@ export class NewReportComponent {
     this.retrieveReportButton.setValue('Generando reporte...')
     this.retrieveReportButton.disable({ emitEvent: false })
     if (this.selectedEmployee.value.uuid !== '1') {
-    this.webService.getXlsxReportByEmployee(this.formatter.format(this.fromDate.value), this.formatter.format(this.toDate.value), this.selectedEmployee.value)
+    this.webService.getXlsxReportByEmployee(this.formatter.format(this.fromDate.value), this.formatter.format(this.toDate.value), this.selectedEmployee.value, this.saveCheck.value )
       .then(blob => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -157,7 +159,7 @@ export class NewReportComponent {
         console.error(err)
       })
     } else{
-      this.webService.getXlsxReportGral(this.formatter.format(this.fromDate.value), this.formatter.format(this.toDate.value))
+      this.webService.getXlsxReportGral(this.formatter.format(this.fromDate.value), this.formatter.format(this.toDate.value), this.saveCheck.value )
       .then(blob => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');

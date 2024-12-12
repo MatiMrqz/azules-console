@@ -294,6 +294,10 @@ interface AutoSettings {
     AI_PROD_ALIQUOT_TYPE: number,
     AI_PROD_INV_MIN_THRESHOLD: number,
 }
+interface GeneralSettings {
+    REPORTS_FOLDER: string
+    SHEET_PASS: string
+}
 interface PoS{
     id:number
     name:string

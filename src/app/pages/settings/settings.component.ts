@@ -16,6 +16,7 @@ export class SettingsComponent implements OnInit {
   public vouchersAllowed
   public vaTouched: boolean = false
   public company: CompanySettings
+  public gral: GeneralSettings
   public afip: AfipSettings
   public auto: AutoSettings
   public isLoading: boolean = true
@@ -33,6 +34,9 @@ export class SettingsComponent implements OnInit {
   private fetchData() {
     this.isLoading = true
     Promise.all([
+      this.webService.getGralSettings().then(res => {
+        this.gral = res
+      }),
       this.webService.getCompanySettings().then(res => {
         this.company = res
       }),
@@ -52,17 +56,17 @@ export class SettingsComponent implements OnInit {
     })
   }
 
-  public passModal(content, formData: any, type: 'LOCAL' | 'FISCAL' | 'AUTO') {
+  public passModal(content, formData: any, type: 'LOCAL' | 'FISCAL' | 'AUTO' | 'GRAL') {
     this.modalService.open(content)
       .result
       .then((value) => {
-        if (type == 'FISCAL') {
+        if (type === 'FISCAL') {
           formData = { ...formData, EMP_ALLOWED_VTYPES: [...this.vouchersAllowed] }
         }
         this.webService.settingSetter({ payload: formData, pass: value, type })
           .then(res => {
             this.showSuccess('Datos actualizados correctamente')
-            if (type == 'LOCAL') {
+            if (type === 'LOCAL') {
               SidebarComponent.setLocal(formData.LOCAL_NAME, formData.LOCAL_ADDRESS, formData.COMPANY_MAIL, formData.INVOICING_ENABLED)
             }
             this.fetchData()

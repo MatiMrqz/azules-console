@@ -1369,6 +1369,23 @@ export class WebService {
         throw data.error;
       })//Ver si agregar catch para cuando no hay conexion a internet
   }
+  public getGralSettings(): Promise<GeneralSettings> {
+    return fetch(environment.baseUrl + '/settings/general', {
+      method: 'GET',
+      headers: this.headersWithApiandAuth,
+    }).then(
+      async res => {
+        const data = await res.json()
+        if (res.status == 200) {
+          this.updateAutoToken(res.headers.get('authorization'))
+          return data
+        }
+        else if (res.status == 401) {
+          this.authService.logout()
+        }
+        throw data.error;
+      })//Ver si agregar catch para cuando no hay conexion a internet
+  }
   public settingSetter(payload:any){
     return fetch(environment.baseUrl + '/settings/set', {
       method: 'POST',
@@ -1404,10 +1421,10 @@ export class WebService {
         throw data.error;
       })
   }
-  public async getXlsxReportByEmployee(from:string,to:string,employee:Pick<Employee,"uuid"|"uname">): Promise<Blob> {
+  public async getXlsxReportByEmployee(from:string,to:string,employee:Pick<Employee,"uuid"|"uname">, save:boolean): Promise<Blob> {
     return fetch(environment.baseUrl + '/operations/report/byemployee/xls', {
       method: 'POST',
-      body: JSON.stringify({ from, to, employee }),
+      body: JSON.stringify({ from, to, employee, save }),
       headers: this.headersWithApiandAuth,
     }).then(
       async res => {
@@ -1421,10 +1438,10 @@ export class WebService {
         }
       })
   }
-  public async getXlsxReportGral(from:string,to:string): Promise<Blob> {
+  public async getXlsxReportGral(from:string,to:string, save:boolean): Promise<Blob> {
     return fetch(environment.baseUrl + '/operations/report/general/xls', {
       method: 'POST',
-      body: JSON.stringify({ from, to }),
+      body: JSON.stringify({ from, to, save }),
       headers: this.headersWithApiandAuth,
     }).then(
       async res => {

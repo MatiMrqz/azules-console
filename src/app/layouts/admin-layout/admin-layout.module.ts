@@ -79,7 +79,7 @@ import { ArchiveComponent } from "src/app/pages/reports/archive/archive.componen
     EditPosComponent,
     ReportsComponent,
     NewReportComponent,
-    ArchiveComponent
+    ArchiveComponent,
   ],
   providers:[]
 })
