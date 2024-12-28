@@ -19,7 +19,12 @@
             <option [ngValue]="null">-</option>
             <option *ngFor="let c of categories" [ngValue]="c.id">{{c.name}}</option>
         </select>
-      </div>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Stock</span>
+        <input [(ngModel)]="item.stock" type="text" class="form-control" [disabled]="item.hidden"
+            aria-describedby="inputGroup-sizing-default">
+    </div>
     <div class="input-group mb-3">
         <span class="input-group-text">Precio Unitario</span>
         <span class="input-group-text">$</span>
